@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Planning Lumpsum Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .calculator-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .input-field {
+            position: relative;
+        }
+        /* Removed fixed padding to rely purely on Tailwind utility classes */
+        .input-field input[type="number"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: right;
+        }
+        .input-field input[type="number"].pl-8 {
+            padding-left: 2rem;
+        }
+        .input-field input[type="number"].pr-10 {
+            padding-right: 2.5rem;
+        }
+        .input-field .currency-symbol {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-field .unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .results-container {
+            background-color: #e0f2f1;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: #1f2937;
+        }
+        .results-container .result-item {
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 1rem;
+        }
+        .result-value {
+            font-weight: 700;
+            color: #00897b;
+            text-align: right;
+            font-size: 1.125rem;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00897b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .chart-container {
+            background-color: #f7fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<main class="w-full max-w-2xl">
+    <header class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Goal Planning Lumpsum Calculator</h1>
+        <p class="text-md md:text-lg text-gray-600 mt-2">Determine the one-time investment required to reach your financial goal.</p>
+    </header>
+
+    <div class="calculator-card">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1">
+                <!-- Target Corpus Input -->
+                <div class="input-group">
+                    <label for="corpus-input" class="text-sm font-semibold text-gray-700">Target Corpus / Future Goal (₹)</label>
+                    <div class="input-field">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="corpus-input" value="1000000" class="pl-8 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="corpus-range" min="10000" max="10000000" step="10000" value="1000000" class="range-slider mt-2" oninput="syncInputs('corpus')">
+
+                <!-- Investment Duration Input -->
+                <div class="input-group mt-6">
+                    <label for="duration-input" class="text-sm font-semibold text-gray-700">Investment Duration (Years)</label>
+                    <div class="input-field">
+                        <input type="number" id="duration-input" value="15" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="duration-range" min="1" max="50" step="1" value="15" class="range-slider mt-2" oninput="syncInputs('duration')">
+
+                <!-- Return Rate Input -->
+                <div class="input-group mt-6">
+                    <label for="return-rate-input" class="text-sm font-semibold text-gray-700">Expected Rate of Return (p.a. %)</label>
+                    <div class="input-field">
+                        <input type="number" id="return-rate-input" value="12" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <input type="range" id="return-rate-range" min="1" max="30" step="0.5" value="12" class="range-slider mt-2" oninput="syncInputs('return-rate')">
+            </div>
+
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
+                    <canvas id="goal-lumpsum-chart"></canvas>
+                </div>
+                <div class="results-container bg-teal-100 p-6 rounded-2xl gap-4 shadow-inner mt-6">
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Required Lumpsum Investment:</span>
+                        <!-- Display the calculated required investment -->
+                        <span id="required-lumpsum" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Total Wealth Gained (Returns):</span>
+                        <!-- Display the calculated returns -->
+                        <span id="estimated-returns" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    let goalLumpsumChart;
+    const nonBreakingSpace = '\u00A0';
+
+    const calculate = () => {
+        const targetCorpus = parseFloat(document.getElementById('corpus-input').value);
+        const duration = parseFloat(document.getElementById('duration-input').value);
+        const returnRate = parseFloat(document.getElementById('return-rate-input').value);
+
+        if (isNaN(targetCorpus) || isNaN(duration) || isNaN(returnRate) || targetCorpus <= 0 || duration <= 0 || returnRate < 0) {
+            document.getElementById('required-lumpsum').innerText = '₹ 0';
+            document.getElementById('estimated-returns').innerText = '₹ 0';
+            updateChart(0, 0, 0);
+            return;
+        }
+
+        const annualRate = returnRate / 100;
+        
+        let requiredLumpsum;
+
+        // Check for 0% return rate
+        if (returnRate === 0) {
+            // If return is 0%, Lumpsum = Target Corpus
+            requiredLumpsum = targetCorpus;
+        } else {
+            // Inverted Compound Interest Formula to find P (Principal/Lumpsum)
+            // P = FV / (1 + r)^n
+            const denominator = Math.pow(1 + annualRate, duration);
+            requiredLumpsum = targetCorpus / denominator;
+        }
+
+        const estimatedReturns = targetCorpus - requiredLumpsum;
+        
+        // Display results with non-breaking space for proper formatting
+        document.getElementById('required-lumpsum').innerText = `₹${nonBreakingSpace}${Math.round(requiredLumpsum).toLocaleString('en-IN')}`;
+        document.getElementById('estimated-returns').innerText = `₹${nonBreakingSpace}${Math.round(estimatedReturns).toLocaleString('en-IN')}`;
+
+        updateChart(requiredLumpsum, estimatedReturns, targetCorpus);
+    };
+
+    const updateChart = (lumpsum, returns, targetCorpus) => {
+        const ctx = document.getElementById('goal-lumpsum-chart').getContext('2d');
+        const labels = ['Required Investment', 'Estimated Returns'];
+        const data = [lumpsum, returns];
+        // Use colors that highlight the goal achievement
+        const colors = ['#00897b', '#4db6ac']; 
+
+        if (goalLumpsumChart) {
+            goalLumpsumChart.destroy();
+        }
+
+        goalLumpsumChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Goal Breakdown',
+                    data: data,
+                    backgroundColor: colors,
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb',
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            callback: function(value) {
+                                return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        // Restored previous title spacing
+                        text: `Target Corpus: ₹${nonBreakingSpace}${Math.round(targetCorpus).toLocaleString('en-IN')}`,
+                        font: { size: 18, weight: '900' }, 
+                        color: '#00897b' 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ₹${nonBreakingSpace}${Math.round(context.raw).toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    const syncInputs = (id) => {
+        const range = document.getElementById(`${id}-range`);
+        const input = document.getElementById(`${id}-input`);
+        input.value = range.value;
+        calculate();
+    };
+
+    document.getElementById('corpus-input').addEventListener('input', calculate);
+    document.getElementById('duration-input').addEventListener('input', calculate);
+    document.getElementById('return-rate-input').addEventListener('input', calculate);
+    
+    // Initial calculation on page load
+    calculate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Retirement Planning Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .calculator-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .input-field {
+            position: relative;
+        }
+        /* Removed fixed padding to rely purely on Tailwind utility classes */
+        .input-field input[type="number"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: right;
+        }
+        .input-field input[type="number"].pl-8 {
+            padding-left: 2rem;
+        }
+        .input-field input[type="number"].pr-10 {
+            padding-right: 2.5rem;
+        }
+        .input-field .currency-symbol {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-field .unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .results-container {
+            background-color: #e0f2f1;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column; 
+            gap: 0.75rem; 
+            color: #1f2937;
+        }
+        .results-container .result-item {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: baseline;
+            font-size: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #b2dfdb; 
+        }
+        /* Remove border for the last item */
+        .results-container .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-value {
+            font-weight: 700;
+            color: #00897b;
+            text-align: right;
+            font-size: 1.125rem;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00897b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .chart-container {
+            background-color: #f7fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 300px;
+        }
+        /* Style adjustments for two-column inputs */
+        .two-column-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .two-column-group > div {
+            flex: 1;
+        }
+        /* Style adjustments for three-column age inputs */
+        .three-column-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .three-column-group > div {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<main class="w-full max-w-2xl">
+    <header class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Realistic Retirement Planning Calculator</h1>
+        <p class="text-md md:text-lg text-gray-600 mt-2">Estimate the monthly SIP needed, accounting for future inflation.</p>
+    </header>
+
+    <div class="calculator-card">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1">
+                
+                <!-- Age & Expectancy Inputs (3 Columns) -->
+                <div class="three-column-group">
+                    <div class="input-group">
+                        <label for="current-age-input" class="text-sm font-semibold text-gray-700">Current Age</label>
+                        <div class="input-field">
+                            <input type="number" id="current-age-input" value="30" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="retirement-age-input" class="text-sm font-semibold text-gray-700">Retirement Age</label>
+                        <div class="input-field">
+                            <input type="number" id="retirement-age-input" value="60" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="life-expectancy-input" class="text-sm font-semibold text-gray-700">Life Expectancy</label>
+                        <div class="input-field">
+                            <input type="number" id="life-expectancy-input" value="85" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Annual Expense Input -->
+                <div class="input-group mt-6">
+                    <label for="current-expense-input" class="text-sm font-semibold text-gray-700">Current Annual Expenses (₹)</label>
+                    <div class="input-field">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="current-expense-input" value="360000" class="pl-8 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="expense-range" min="100000" max="5000000" step="10000" value="360000" class="range-slider mt-2" oninput="syncInputs('current-expense')">
+                
+                <!-- Rate Inputs (2 Columns) -->
+                <div class="two-column-group mt-6">
+                    <div class="input-group">
+                        <label for="return-rate-input" class="text-sm font-semibold text-gray-700">Expected Return (p.a. %)</label>
+                        <div class="input-field">
+                            <input type="number" id="return-rate-input" value="10" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="inflation-rate-input" class="text-sm font-semibold text-gray-700">Average Inflation (p.a. %)</label>
+                        <div class="input-field">
+                            <input type="number" id="inflation-rate-input" value="6" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+                </div>
+                <input type="range" id="return-rate-range" min="1" max="25" step="0.5" value="10" class="range-slider mt-2" oninput="syncInputs('return-rate')">
+                <input type="range" id="inflation-rate-range" min="1" max="15" step="0.1" value="6" class="range-slider mt-2 hidden" oninput="syncInputs('inflation-rate')">
+
+            </div>
+
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
+                    <canvas id="retirement-chart"></canvas>
+                </div>
+                <div class="results-container bg-teal-100 p-6 rounded-2xl shadow-inner mt-6">
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Future Annual Expense:</span>
+                        <span id="future-expense" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Target Retirement Corpus:</span>
+                        <span id="target-corpus" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Required Monthly SIP:</span>
+                        <span id="required-sip" class="text-red-600 font-extrabold ml-2 text-xl">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    let retirementChart;
+    const nonBreakingSpace = '\u00A0';
+
+    const calculate = () => {
+        const currentAge = parseFloat(document.getElementById('current-age-input').value) || 0;
+        const retirementAge = parseFloat(document.getElementById('retirement-age-input').value) || 0;
+        const lifeExpectancy = parseFloat(document.getElementById('life-expectancy-input').value) || 0;
+        const annualExpense = parseFloat(document.getElementById('current-expense-input').value) || 0;
+        const returnRateAnnual = parseFloat(document.getElementById('return-rate-input').value) / 100 || 0;
+        const inflationRateAnnual = parseFloat(document.getElementById('inflation-rate-input').value) / 100 || 0;
+
+        // Basic sanity checks
+        if (currentAge >= retirementAge || retirementAge >= lifeExpectancy || annualExpense <= 0) {
+            document.getElementById('future-expense').innerText = '₹ 0';
+            document.getElementById('target-corpus').innerText = '₹ 0';
+            document.getElementById('required-sip').innerText = '₹ 0';
+            updateChart(0, 0, 0);
+            return;
+        }
+
+        const yearsToRetirement = retirementAge - currentAge;
+        const yearsInRetirement = lifeExpectancy - retirementAge;
+
+        // --- Step 1: Calculate Future Annual Expense (Inflation Adjusted) ---
+        // FV = PV * (1 + i)^n
+        const futureAnnualExpense = annualExpense * Math.pow(1 + inflationRateAnnual, yearsToRetirement); 
+        
+        // --- Step 2: Calculate Required Retirement Corpus ---
+        // Calculate the Real Rate of Return (used for post-retirement withdrawal phase)
+        // Real Return = ((1 + Return) / (1 + Inflation)) - 1
+        const realReturnAnnual = ((1 + returnRateAnnual) / (1 + inflationRateAnnual)) - 1;
+        const realReturnMonthly = realReturnAnnual / 12;
+
+        // The annual withdrawal amount (Pmt) in retirement is the futureAnnualExpense
+        const totalRetirementMonths = yearsInRetirement * 12;
+
+        let requiredCorpus = 0;
+
+        if (realReturnMonthly <= 0) {
+             // If return is less than or equal to inflation, we assume simple depletion
+            requiredCorpus = futureAnnualExpense * yearsInRetirement;
+        } else {
+            // Formula for Present Value of an Annuity (PV of Annuity is the Corpus needed)
+            // We use the real rate of return and the future annual expense (since it represents today's purchasing power)
+            
+            // Annuity Formula: PV = Pmt * [ (1 - (1 + r)^-n) / r ]
+            requiredCorpus = futureAnnualExpense * ((1 - Math.pow(1 + realReturnAnnual, -yearsInRetirement)) / realReturnAnnual);
+        }
+        
+        // --- Step 3: Calculate Monthly SIP Required Today ---
+        // We use the standard Expected Return (nominal rate) to calculate the monthly SIP needed 
+        // to reach the requiredCorpus (FV).
+        
+        const nominalReturnMonthly = returnRateAnnual / 12;
+        const totalPreRetMonths = yearsToRetirement * 12;
+        
+        let requiredMonthlySIP;
+
+        if (nominalReturnMonthly === 0) {
+            requiredMonthlySIP = requiredCorpus / totalPreRetMonths;
+        } else {
+            // SIP Annuity Due Formula (investment made at start of month)
+            const numerator = requiredCorpus * nominalReturnMonthly;
+            const denominator = (Math.pow(1 + nominalReturnMonthly, totalPreRetMonths) - 1) * (1 + nominalReturnMonthly);
+            requiredMonthlySIP = numerator / denominator;
+        }
+
+        // Final calculated amounts
+        const totalInvestedAmount = requiredMonthlySIP * totalPreRetMonths;
+        const estimatedReturns = requiredCorpus - totalInvestedAmount;
+        
+        // --- Display Results ---
+        // Future Annual Expense is displayed.
+        document.getElementById('future-expense').innerText = `₹${nonBreakingSpace}${Math.round(futureAnnualExpense).toLocaleString('en-IN')}`;
+        document.getElementById('target-corpus').innerText = `₹${nonBreakingSpace}${Math.round(requiredCorpus).toLocaleString('en-IN')}`;
+        document.getElementById('required-sip').innerText = `₹${nonBreakingSpace}${Math.round(requiredMonthlySIP).toLocaleString('en-IN')}`;
+
+        updateChart(totalInvestedAmount, estimatedReturns, requiredCorpus);
+    };
+
+    const updateChart = (invested, returns, targetCorpus) => {
+        const ctx = document.getElementById('retirement-chart').getContext('2d');
+        const labels = ['Total Investment', 'Estimated Wealth Gained'];
+        const data = [invested, returns];
+        const colors = ['#00897b', '#4db6ac']; 
+
+        if (retirementChart) {
+            retirementChart.destroy();
+        }
+
+        retirementChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Goal Breakdown',
+                    data: data,
+                    backgroundColor: colors,
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb',
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            callback: function(value) {
+                                return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: `Target Retirement Corpus: ₹${nonBreakingSpace}${Math.round(targetCorpus).toLocaleString('en-IN')}`,
+                        font: { size: 18, weight: '900' }, 
+                        color: '#00897b' 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ₹${nonBreakingSpace}${Math.round(context.raw).toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    const syncInputs = (id) => {
+        const range = document.getElementById(`${id}-range`);
+        const input = document.getElementById(`${id}-input`);
+        
+        if (range && input) {
+            input.value = range.value;
+        }
+
+        // Special handling for dependent age inputs
+        const currentAgeInput = document.getElementById('current-age-input');
+        const retirementAgeInput = document.getElementById('retirement-age-input');
+        const lifeExpectancyInput = document.getElementById('life-expectancy-input');
+
+        if (id === 'current-age' || id === 'retirement-age' || id === 'life-expectancy') {
+            const cAge = parseFloat(currentAgeInput.value);
+            const rAge = parseFloat(retirementAgeInput.value);
+            const lExp = parseFloat(lifeExpectancyInput.value);
+
+            // Ensure Retirement Age is between Current Age and Life Expectancy
+            if (cAge >= rAge) {
+                 if (id === 'current-age') currentAgeInput.value = rAge - 1;
+                 if (id === 'retirement-age') retirementAgeInput.value = cAge + 1;
+            }
+            if (rAge >= lExp) {
+                 if (id === 'retirement-age') retirementAgeInput.value = lExp - 1;
+                 if (id === 'life-expectancy') lifeExpectancyInput.value = rAge + 1;
+            }
+        }
+        
+        calculate();
+    };
+
+    // Add event listeners for all inputs
+    document.getElementById('current-age-input').addEventListener('input', calculate);
+    document.getElementById('retirement-age-input').addEventListener('input', calculate);
+    document.getElementById('life-expectancy-input').addEventListener('input', calculate);
+    document.getElementById('current-expense-input').addEventListener('input', calculate);
+    document.getElementById('return-rate-input').addEventListener('input', calculate);
+    document.getElementById('inflation-rate-input').addEventListener('input', calculate);
+    
+    document.getElementById('expense-range').addEventListener('input', () => syncInputs('current-expense'));
+    document.getElementById('return-rate-range').addEventListener('input', () => syncInputs('return-rate'));
+    document.getElementById('inflation-rate-range').addEventListener('input', () => syncInputs('inflation-rate'));
+
+    // Initial calculation on page load
+    calculate();
+</script>
+
+</body>
+</html>

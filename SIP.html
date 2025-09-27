@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .container {
+            max-width: 1280px;
+            margin: auto;
+            padding: 1.5rem;
+        }
+        .calculator-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .input-field {
+            position: relative;
+        }
+        .input-field input[type="number"] {
+            width: 100%;
+            /* FIX: Removed 'padding: 0.5rem 0.75rem;' to allow Tailwind classes to control padding (pr-10, pl-8) */
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: right;
+        }
+        .input-field input[type="number"].pl-8 {
+            padding-left: 2rem;
+        }
+        .input-field .currency-symbol {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-field .unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .results-container {
+            background-color: #e0f2f1;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: #1f2937;
+        }
+        .results-container .result-item {
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 1rem;
+        }
+        .result-value {
+            font-weight: 700;
+            color: #00897b;
+            text-align: right;
+            font-size: 1.125rem;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00897b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        .chart-container {
+            background-color: #f7fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<main class="w-full max-w-2xl">
+    <header class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">SIP Calculator</h1>
+        <p class="text-md md:text-lg text-gray-600 mt-2">Estimate the future value of your monthly SIP investment.</p>
+    </header>
+
+    <div class="calculator-card">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1">
+                <div class="input-group">
+                    <label for="sip-amount-input" class="text-sm font-semibold text-gray-700">Monthly SIP Amount (₹)</label>
+                    <div class="input-field">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="sip-amount-input" value="5000" class="pl-8 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="sip-amount-range" min="500" max="100000" step="100" value="5000" class="range-slider mt-2" oninput="syncInputs('sip-amount')">
+
+                <div class="input-group mt-6">
+                    <label for="duration-input" class="text-sm font-semibold text-gray-700">Investment Duration (Years)</label>
+                    <div class="input-field">
+                        <input type="number" id="duration-input" value="10" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="duration-range" min="1" max="50" step="1" value="10" class="range-slider mt-2" oninput="syncInputs('duration')">
+
+                <div class="input-group mt-6">
+                    <label for="return-rate-input" class="text-sm font-semibold text-gray-700">Expected Rate of Return (p.a. %)</label>
+                    <div class="input-field">
+                        <!-- FIX: Increased padding from pr-8 to pr-10 for better mobile responsiveness -->
+                        <input type="number" id="return-rate-input" value="12" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <input type="range" id="return-rate-range" min="1" max="30" step="0.5" value="12" class="range-slider mt-2" oninput="syncInputs('return-rate')">
+            </div>
+
+            <div class="flex-1 flex flex-col gap-6">
+                <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
+                    <canvas id="sip-chart"></canvas>
+                </div>
+                <div class="results-container bg-teal-100 p-6 rounded-2xl gap-4 shadow-inner mt-6">
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Your Investment:</span>
+                        <span id="invested-amount" class="text-teal-700 font-bold ml-2">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Future value:</span>
+                        <span id="total-value" class="text-teal-700 font-bold ml-2">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    let sipChart;
+
+    const calculate = () => {
+        const sipAmount = parseFloat(document.getElementById('sip-amount-input').value);
+        const duration = parseFloat(document.getElementById('duration-input').value);
+        const returnRate = parseFloat(document.getElementById('return-rate-input').value);
+
+        if (isNaN(sipAmount) || isNaN(duration) || isNaN(returnRate) || sipAmount <= 0 || duration <= 0 || returnRate < 0) {
+            document.getElementById('invested-amount').innerText = '₹ 0';
+            document.getElementById('total-value').innerText = '₹ 0';
+            updateChart(0, 0, 0);
+            return;
+        }
+
+        const investedAmount = sipAmount * duration * 12;
+        const monthlyRate = returnRate / 100 / 12;
+        const totalMonths = duration * 12;
+        const totalValue = sipAmount * (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate));
+        const estimatedReturns = totalValue - investedAmount;
+        
+        // FIX: Use non-breaking space (\u00A0) to keep rupee symbol and value on the same line
+        const nonBreakingSpace = '\u00A0';
+
+        document.getElementById('invested-amount').innerText = `₹${nonBreakingSpace}${investedAmount.toLocaleString('en-IN')}`;
+        document.getElementById('total-value').innerText = `₹${nonBreakingSpace}${Math.round(totalValue).toLocaleString('en-IN')}`;
+
+        updateChart(investedAmount, estimatedReturns, totalValue);
+    };
+
+    const updateChart = (invested, returns, totalValue) => {
+        const ctx = document.getElementById('sip-chart').getContext('2d');
+        const labels = ['Your Investment', 'Estimated Returns', 'Future Value'];
+        const data = [invested, returns, totalValue];
+        const colors = ['#059669', '#00BFFF', '#008B8B'];
+        const nonBreakingSpace = '\u00A0'; // For chart tooltips and axis
+
+        if (sipChart) {
+            sipChart.destroy();
+        }
+
+        sipChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Financial Summary',
+                    data: data,
+                    backgroundColor: colors,
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb',
+                        },
+                        ticks: {
+                            color: '#4b5563',
+                            callback: function(value) {
+                                return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ₹${nonBreakingSpace}${Math.round(context.raw).toLocaleString('en-IN')}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    const syncInputs = (id) => {
+        const range = document.getElementById(`${id}-range`);
+        const input = document.getElementById(`${id}-input`);
+        input.value = range.value;
+        calculate();
+    };
+
+    document.getElementById('sip-amount-input').addEventListener('input', calculate);
+    document.getElementById('duration-input').addEventListener('input', calculate);
+    document.getElementById('return-rate-input').addEventListener('input', calculate);
+
+    // Initial calculation on page load
+    calculate();
+</script>
+
+</body>
+</html>

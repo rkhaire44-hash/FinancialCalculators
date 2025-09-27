@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Home Loan Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .calculator-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .input-field {
+            position: relative;
+        }
+        /* Style for number inputs */
+        .input-field input[type="number"] {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: right;
+        }
+        .input-field input[type="number"].pl-8 {
+            padding-left: 2rem;
+        }
+        .input-field input[type="number"].pr-10 {
+            padding-right: 2.5rem;
+        }
+        .input-field .currency-symbol {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-field .unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .results-container {
+            background-color: #e0f2f1;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column; 
+            gap: 0.75rem; 
+            color: #1f2937;
+        }
+        .results-container .result-item {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: baseline;
+            font-size: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #b2dfdb; 
+        }
+        /* Remove border for the last item */
+        .results-container .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-value {
+            font-weight: 700;
+            color: #00897b;
+            text-align: right;
+            font-size: 1.125rem;
+        }
+        /* Chart specific styling */
+        .chart-container {
+            background-color: #f7fafc;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 300px;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00897b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        /* Amortization Schedule Styles */
+        .schedule-table-container {
+            max-height: 400px; /* Limit height for scrolling */
+            overflow-y: auto;
+            border: 1px solid #d1ddff;
+            border-radius: 10px;
+            background-color: #ffffff;
+            margin-top: 1.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .schedule-table th, .schedule-table td {
+            padding: 0.75rem 0.5rem;
+            text-align: right;
+            border-bottom: 1px solid #e0f2f1;
+        }
+        .schedule-table th {
+            background-color: #e0f2f1;
+            color: #00897b;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-align: center;
+        }
+        .schedule-table td:nth-child(1) {
+            text-align: center;
+            font-weight: 600;
+        }
+        .schedule-table tr:hover {
+            background-color: #f0fff4;
+        }
+
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<main class="w-full max-w-4xl">
+    <header class="text-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Advanced Home Loan Calculator</h1>
+        <p class="text-md md:text-lg text-gray-600 mt-2">Calculate your EMI and view the detailed amortization schedule.</p>
+    </header>
+
+    <div class="calculator-card">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1">
+                
+                <!-- Loan Amount Input -->
+                <div class="input-group">
+                    <label for="loan-amount-input" class="text-sm font-semibold text-gray-700">Principal Loan Amount (₹)</label>
+                    <div class="input-field">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="loan-amount-input" value="5000000" class="pl-8 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="loan-amount-range" min="100000" max="50000000" step="50000" value="5000000" class="range-slider mt-2" oninput="syncInputs('loan-amount')">
+
+                <!-- Interest Rate Input -->
+                <div class="input-group mt-6">
+                    <label for="interest-rate-input" class="text-sm font-semibold text-gray-700">Annual Interest Rate (p.a. %)</label>
+                    <div class="input-field">
+                        <input type="number" id="interest-rate-input" value="8.5" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <input type="range" id="interest-rate-range" min="1" max="25" step="0.1" value="8.5" class="range-slider mt-2" oninput="syncInputs('interest-rate')">
+
+                <!-- Loan Tenure Input -->
+                <div class="input-group mt-6">
+                    <label for="tenure-input" class="text-sm font-semibold text-gray-700">Loan Tenure (Years)</label>
+                    <div class="input-field">
+                        <input type="number" id="tenure-input" value="20" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    </div>
+                </div>
+                <input type="range" id="tenure-range" min="1" max="30" step="1" value="20" class="range-slider mt-2" oninput="syncInputs('tenure')">
+            </div>
+
+            <div class="flex-1 flex flex-col gap-6">
+                
+                <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
+                    <canvas id="loan-chart"></canvas>
+                </div>
+                
+                <div class="results-container bg-teal-100 p-6 rounded-2xl shadow-inner mt-6">
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Monthly EMI Amount:</span>
+                        <span id="emi-amount" class="text-red-600 font-extrabold ml-2 text-xl">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Total Interest Payable:</span>
+                        <span id="total-interest" class="text-teal-700 font-bold ml-2">₹ 0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="text-gray-600 whitespace-nowrap">Total Repayment:</span>
+                        <span id="total-repayment" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Amortization Schedule Table -->
+        <div id="schedule-section" class="mt-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Yearly Amortization Schedule</h2>
+            <div id="schedule-table-container" class="schedule-table-container hidden">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Principal Paid (₹)</th>
+                            <th>Interest Paid (₹)</th>
+                            <th>Balance (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="amortization-body">
+                        <!-- Rows populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="schedule-error" class="text-center text-red-500 hidden mt-4">Please enter valid loan details to view the schedule.</p>
+        </div>
+        <!-- End Amortization Schedule Table -->
+
+    </div>
+</main>
+
+<script>
+    let loanChart;
+    const nonBreakingSpace = '\u00A0';
+
+    const calculateEmi = (principal, monthlyRate, totalMonths) => {
+        if (monthlyRate === 0) {
+            return principal / totalMonths;
+        }
+        const powerFactor = Math.pow(1 + monthlyRate, totalMonths);
+        return principal * monthlyRate * powerFactor / (powerFactor - 1);
+    };
+
+    const formatCurrency = (amount) => {
+        return `₹${nonBreakingSpace}${Math.round(amount).toLocaleString('en-IN')}`;
+    };
+
+    const calculate = () => {
+        const principal = parseFloat(document.getElementById('loan-amount-input').value) || 0;
+        const interestRateAnnual = parseFloat(document.getElementById('interest-rate-input').value) / 100 || 0;
+        const tenureYears = parseFloat(document.getElementById('tenure-input').value) || 0;
+
+        const totalMonths = tenureYears * 12;
+        const monthlyRate = interestRateAnnual / 12;
+        
+        // Reset schedule and show error if inputs are invalid
+        if (principal <= 0 || totalMonths <= 0) {
+            document.getElementById('emi-amount').innerText = '₹ 0';
+            document.getElementById('total-interest').innerText = '₹ 0';
+            document.getElementById('total-repayment').innerText = '₹ 0';
+            document.getElementById('schedule-table-container').classList.add('hidden');
+            document.getElementById('schedule-error').classList.remove('hidden');
+            updateChart(0, 0);
+            return;
+        }
+
+        // --- 1. Calculate Summary Metrics ---
+        const emi = calculateEmi(principal, monthlyRate, totalMonths);
+        const totalRepayment = emi * totalMonths;
+        const totalInterest = totalRepayment - principal;
+        
+        // --- 2. Generate Amortization Schedule ---
+        let balance = principal;
+        let schedule = [];
+        let totalInterestPaid = 0;
+        let totalPrincipalPaid = 0;
+
+        for (let year = 1; year <= tenureYears; year++) {
+            let annualInterest = 0;
+            let annualPrincipal = 0;
+            
+            for (let month = 1; month <= 12; month++) {
+                if (balance <= 0) break;
+
+                const interestComponent = balance * monthlyRate;
+                let principalComponent = emi - interestComponent;
+                
+                // Ensure the last payment doesn't overshoot
+                if (balance < principalComponent) {
+                    principalComponent = balance;
+                    // The last EMI would be smaller here, but we simplify by using the full EMI logic 
+                    // and let the remaining balance be paid by the principal component.
+                }
+
+                balance -= principalComponent;
+                annualInterest += interestComponent;
+                annualPrincipal += principalComponent;
+                
+                totalInterestPaid += interestComponent;
+                totalPrincipalPaid += principalComponent;
+
+                if (balance <= 0) break;
+            }
+            
+            // Add year data to schedule
+            schedule.push({
+                year: year,
+                principal: annualPrincipal,
+                interest: annualInterest,
+                balance: Math.max(0, balance) 
+            });
+
+            if (balance <= 0) break; 
+        }
+
+        // --- 3. Display Results ---
+        document.getElementById('schedule-error').classList.add('hidden');
+        document.getElementById('schedule-table-container').classList.remove('hidden');
+
+        document.getElementById('emi-amount').innerText = formatCurrency(emi);
+        document.getElementById('total-interest').innerText = formatCurrency(totalInterest);
+        document.getElementById('total-repayment').innerText = formatCurrency(totalRepayment);
+
+        updateScheduleTable(schedule);
+        updateChart(principal, totalInterest);
+    };
+    
+    const updateScheduleTable = (schedule) => {
+        const tbody = document.getElementById('amortization-body');
+        tbody.innerHTML = '';
+        
+        schedule.forEach(item => {
+            const row = tbody.insertRow();
+            row.insertCell().innerHTML = item.year;
+            row.insertCell().innerHTML = formatCurrency(item.principal);
+            row.insertCell().innerHTML = formatCurrency(item.interest);
+            row.insertCell().innerHTML = formatCurrency(item.balance);
+        });
+    };
+
+    const updateChart = (principal, interest) => {
+        const ctx = document.getElementById('loan-chart').getContext('2d');
+        const labels = ['Principal', 'Interest'];
+        const data = [principal, interest];
+        const colors = ['#00897b', '#f44336']; 
+
+        if (loanChart) {
+            loanChart.destroy();
+        }
+
+        loanChart = new Chart(ctx, {
+            type: 'pie', 
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Repayment Breakdown',
+                    data: data,
+                    backgroundColor: colors,
+                    hoverOffset: 10,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 14 } }
+                    },
+                    title: {
+                        display: true,
+                        text: `Total Repayment Breakdown`,
+                        font: { size: 18, weight: '900' }, 
+                        color: '#00897b' 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                const total = principal + interest;
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+                                return `${context.label}: ${formatCurrency(value)} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    };
+
+    const syncInputs = (id) => {
+        const range = document.getElementById(`${id}-range`);
+        const input = document.getElementById(`${id}-input`);
+        
+        if (range && input) {
+            input.value = range.value;
+        }
+        
+        calculate();
+    };
+
+    // Add event listeners for all inputs
+    document.getElementById('loan-amount-input').addEventListener('input', calculate);
+    document.getElementById('interest-rate-input').addEventListener('input', calculate);
+    document.getElementById('tenure-input').addEventListener('input', calculate);
+    
+    document.getElementById('loan-amount-range').addEventListener('input', () => syncInputs('loan-amount'));
+    document.getElementById('interest-rate-range').addEventListener('input', () => syncInputs('interest-rate'));
+    document.getElementById('tenure-range').addEventListener('input', () => syncInputs('tenure'));
+
+    // Initial calculation on page load
+    calculate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step-up SIP Calculator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for better aesthetics and structure */
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .calculator-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .input-field {
+            position: relative;
+        }
+        .input-field input[type="number"] {
+            width: 100%;
+            /* Removed conflicting custom padding to rely on Tailwind classes for responsiveness */
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #1f2937;
+            text-align: right;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .input-field input[type="number"]:focus {
+            border-color: #00897b;
+            box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.25);
+        }
+        .input-field input[type="number"].pl-8 {
+            padding-left: 2rem;
+        }
+        .input-field .currency-symbol {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-field .unit {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .results-container {
+            background-color: #e0f2f1; /* Light Teal background */
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            color: #1f2937;
+        }
+        .results-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-label {
+            font-size: 1rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+        .result-value {
+            font-weight: 700;
+            color: #00897b; /* Dark Teal text */
+            font-size: 1.25rem;
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+            transition: opacity 0.15s ease-in-out;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #00897b;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-container {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 1rem;
+            height: 350px; /* Increased height for better chart visibility */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+<main class="w-full max-w-3xl">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800">Step-up SIP Calculator</h1>
+        <p class="text-lg text-gray-600 mt-2">Plan your future wealth by increasing your monthly investment annually.</p>
+    </header>
+
+    <div class="calculator-card">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Inputs Column -->
+            <div class="space-y-6">
+                
+                <!-- 1. Initial Monthly SIP Amount -->
+                <div class="input-group">
+                    <label for="sip-amount-input" class="text-sm font-semibold text-gray-700">Initial Monthly SIP Amount (₹)</label>
+                    <div class="input-field">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="sip-amount-input" value="5000" min="100" class="pl-8 pr-3 py-2">
+                    </div>
+                </div>
+                <input type="range" id="sip-amount-range" min="500" max="100000" step="500" value="5000" class="range-slider" oninput="syncInputs('sip-amount')">
+
+                <!-- 2. Annual Step-up Rate -->
+                <div class="input-group">
+                    <label for="stepup-rate-input" class="text-sm font-semibold text-gray-700">Annual Step-up Rate (%)</label>
+                    <div class="input-field">
+                        <input type="number" id="stepup-rate-input" value="10" min="0" max="100" step="1" class="pl-3 pr-9 py-2">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <input type="range" id="stepup-rate-range" min="0" max="30" step="1" value="10" class="range-slider" oninput="syncInputs('stepup-rate')">
+
+                <!-- 3. Investment Duration -->
+                <div class="input-group">
+                    <label for="duration-input" class="text-sm font-semibold text-gray-700">Investment Duration (Years)</label>
+                    <div class="input-field">
+                        <input type="number" id="duration-input" value="15" min="1" max="50" class="px-3 py-2">
+                    </div>
+                </div>
+                <input type="range" id="duration-range" min="1" max="50" step="1" value="15" class="range-slider" oninput="syncInputs('duration')">
+
+                <!-- 4. Expected Return Rate -->
+                <div class="input-group">
+                    <label for="return-rate-input" class="text-sm font-semibold text-gray-700">Expected Rate of Return (p.a. %)</label>
+                    <div class="input-field">
+                        <input type="number" id="return-rate-input" value="12" min="1" max="30" step="0.5" class="pl-3 pr-9 py-2">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <input type="range" id="return-rate-range" min="1" max="30" step="0.5" value="12" class="range-slider" oninput="syncInputs('return-rate')">
+            </div>
+
+            <!-- Results Column -->
+            <div class="flex flex-col">
+                
+                <div class="results-container mt-4 lg:mt-0">
+                    <h2 class="text-xl font-bold text-teal-800 border-b pb-2 mb-2">Estimated Wealth</h2>
+                    
+                    <div class="results-row">
+                        <span class="result-label">Total Amount Invested:</span>
+                        <span id="invested-amount" class="result-value">₹ 0</span>
+                    </div>
+
+                    <div class="results-row">
+                        <span class="result-label">Total Wealth Gained (Returns):</span>
+                        <span id="estimated-returns" class="result-value text-blue-600">₹ 0</span>
+                    </div>
+                    
+                    <div class="results-row pt-2 border-t border-teal-300">
+                        <span class="result-label font-bold text-gray-800">Future Value (Corpus):</span>
+                        <span id="total-value" class="result-value text-2xl text-teal-700">₹ 0</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container shadow-inner mt-8">
+                    <canvas id="stepup-sip-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    let sipChart;
+
+    // Function to calculate the Step-up SIP value
+    const calculate = () => {
+        const sipAmount = parseFloat(document.getElementById('sip-amount-input').value);
+        const duration = parseFloat(document.getElementById('duration-input').value);
+        const returnRate = parseFloat(document.getElementById('return-rate-input').value);
+        const stepUpRate = parseFloat(document.getElementById('stepup-rate-input').value);
+
+        // Input validation
+        if (isNaN(sipAmount) || isNaN(duration) || isNaN(returnRate) || isNaN(stepUpRate) || sipAmount <= 0 || duration <= 0 || returnRate < 0) {
+            document.getElementById('invested-amount').innerText = '₹ 0';
+            document.getElementById('estimated-returns').innerText = '₹ 0';
+            document.getElementById('total-value').innerText = '₹ 0';
+            updateChart(0, 0);
+            return;
+        }
+
+        let currentMonthlySIP = sipAmount;
+        let totalValue = 0; // Accumulated corpus at the beginning of the month
+        let investedAmount = 0;
+        
+        const monthlyRate = returnRate / 100 / 12;
+        const totalMonths = duration * 12;
+        const stepUpFactor = 1 + (stepUpRate / 100);
+        
+        // Monthly iterative calculation loop for Step-up SIP
+        for (let month = 1; month <= totalMonths; month++) {
+            // 1. Accumulate interest on the previous month's total value (Annuity Due logic)
+            totalValue *= (1 + monthlyRate); 
+            
+            // 2. Add the current month's SIP contribution
+            totalValue += currentMonthlySIP; 
+            
+            // 3. Track the invested principal
+            investedAmount += currentMonthlySIP;
+            
+            // 4. Check for annual step-up (at the end of the year, before the first investment of the next year)
+            if (month % 12 === 0 && month < totalMonths) {
+                currentMonthlySIP *= stepUpFactor;
+            }
+        }
+        
+        const estimatedReturns = totalValue - investedAmount;
+        
+        // Display results, rounding for currency and using Indian locale for comma separation
+        // FIX: Use non-breaking space (\u00A0) to ensure the currency symbol and amount stay on the same line.
+        const nonBreakingSpace = '\u00A0';
+        document.getElementById('invested-amount').innerText = `₹${nonBreakingSpace}${Math.round(investedAmount).toLocaleString('en-IN')}`;
+        document.getElementById('estimated-returns').innerText = `₹${nonBreakingSpace}${Math.round(estimatedReturns).toLocaleString('en-IN')}`;
+        document.getElementById('total-value').innerText = `₹${nonBreakingSpace}${Math.round(totalValue).toLocaleString('en-IN')}`;
+
+        updateChart(investedAmount, estimatedReturns);
+    };
+
+    // Function to update the bar chart
+    const updateChart = (invested, returns) => {
+        const ctx = document.getElementById('stepup-sip-chart').getContext('2d');
+        const totalValue = invested + returns;
+        
+        const data = {
+            labels: ['Your Investment', 'Estimated Returns'],
+            datasets: [{
+                data: [invested, returns],
+                backgroundColor: ['#00897b', '#4db6ac'], // Teal shades
+                hoverBackgroundColor: ['#00695c', '#26a69a'],
+                borderRadius: 8,
+            }]
+        };
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    stacked: true,
+                    grid: { display: false },
+                    ticks: { display: false }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    grid: { color: '#e5e7eb' },
+                    ticks: {
+                        color: '#4b5563',
+                        callback: function(value) {
+                            // Formatting Y-axis labels for readability (e.g., in Lakhs or Crores if large)
+                            const nonBreakingSpace = '\u00A0';
+                            if (value >= 10000000) {
+                                return `₹${nonBreakingSpace}${(value / 10000000).toFixed(1)} Cr`;
+                            } else if (value >= 100000) {
+                                return `₹${nonBreakingSpace}${(value / 100000).toFixed(1)} L`;
+                            }
+                            return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: `Projected Corpus: ₹ ${Math.round(totalValue).toLocaleString('en-IN')}`,
+                    font: { size: 16, weight: 'bold' },
+                    color: '#1f2937'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const nonBreakingSpace = '\u00A0';
+                            return `${context.label}: ₹${nonBreakingSpace}${Math.round(context.raw).toLocaleString('en-IN')}`;
+                        }
+                    }
+                }
+            },
+            indexAxis: 'y', // Horizontal bar chart
+        };
+
+        if (sipChart) {
+            sipChart.destroy();
+        }
+
+        sipChart = new Chart(ctx, { type: 'bar', data: data, options: options });
+    };
+
+    // Function to synchronize slider and input box
+    const syncInputs = (id) => {
+        const range = document.getElementById(`${id}-range`);
+        const input = document.getElementById(`${id}-input`);
+        input.value = range.value;
+        calculate();
+    };
+
+    // Event listeners to trigger recalculation on any input change
+    document.getElementById('sip-amount-input').addEventListener('input', calculate);
+    document.getElementById('duration-input').addEventListener('input', calculate);
+    document.getElementById('return-rate-input').addEventListener('input', calculate);
+    document.getElementById('stepup-rate-input').addEventListener('input', calculate);
+    
+    // Initial calculation on page load
+    window.onload = calculate;
+</script>
+
+</body>
+</html>
