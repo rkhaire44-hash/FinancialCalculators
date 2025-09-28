@@ -37,6 +37,11 @@
             text-align: right;
             padding-right: 2.5rem; /* Space for unit/percentage */
         }
+        /* Ensure there's enough padding on the left for the currency symbol on the Monthly Amount input */
+        .input-field input[type="number"]#monthly-amount-input {
+            padding-left: 2.5rem; 
+        }
+
         .input-field .currency-symbol {
             position: absolute;
             left: 0.75rem;
@@ -86,6 +91,13 @@
         .chart-container {
             height: 350px;
         }
+
+        /* Mobile specific style adjustments for better look */
+        @media (max-width: 639px) {
+            .calculator-card {
+                padding: 1.5rem 1rem; /* Reduced padding on very small screens */
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
@@ -103,6 +115,7 @@
                 <label for="monthly-amount-input" class="text-sm font-semibold text-gray-700">Monthly Investment (₹)</label>
                 <div class="input-field">
                     <span class="currency-symbol">₹</span>
+                    <!-- The pl-8 class is now included here for correct spacing -->
                     <input type="number" id="monthly-amount-input" value="5000" min="500" class="pl-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <input type="range" id="monthly-amount-range" min="500" max="100000" step="500" value="5000" class="range-slider range-slider-sip" oninput="syncInputs('monthly-amount')">
@@ -165,7 +178,8 @@
                     <span id="invested-amount" class="text-lg font-extrabold text-gray-800">₹ 0</span>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-4 mt-4">
+                <!-- Updated grid to stack on mobile (grid-cols-1) and show side-by-side on larger screens (sm:grid-cols-2) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                     <!-- SIP Results -->
                     <div class="p-4 bg-teal-100 rounded-lg shadow-inner">
                         <h4 class="font-bold text-teal-800 mb-1">SIP (Market-Linked)</h4>
