@@ -8,12 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f3f4f6;
         }
         .calculator-card {
             background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             padding: 2rem;
             display: flex;
             flex-direction: column;
@@ -31,7 +32,7 @@
         .input-field {
             position: relative;
         }
-        /* Removed fixed padding to rely purely on Tailwind utility classes */
+        /* Style for number inputs */
         .input-field input[type="number"] {
             width: 100%;
             border: 1px solid #d1d5db;
@@ -39,12 +40,12 @@
             font-weight: 500;
             color: #1f2937;
             text-align: right;
+            padding: 0.5rem 0.75rem; /* Default padding */
+            padding-right: 2.5rem; /* Space for unit/percentage */
         }
+        /* Ensure left padding for currency symbol */
         .input-field input[type="number"].pl-8 {
-            padding-left: 2rem;
-        }
-        .input-field input[type="number"].pr-10 {
-            padding-right: 2.5rem;
+            padding-left: 2.5rem;
         }
         .input-field .currency-symbol {
             position: absolute;
@@ -63,7 +64,7 @@
         .results-container {
             background-color: #e0f2f1;
             border-radius: 1rem;
-            padding: 1rem;
+            padding: 1.5rem; /* Increased padding */
             display: flex;
             flex-direction: column; 
             gap: 0.75rem; 
@@ -72,10 +73,11 @@
         .results-container .result-item {
             display: flex; 
             justify-content: space-between; 
-            align-items: baseline;
+            align-items: center; /* Adjusted alignment for better stability */
             font-size: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px dashed #b2dfdb; 
+            flex-wrap: wrap; /* Allows label/value to wrap onto the next line if space is tight */
         }
         /* Remove border for the last item */
         .results-container .result-item:last-child {
@@ -87,6 +89,11 @@
             text-align: right;
             font-size: 1.125rem;
         }
+        /* Styles for the Monthly SIP amount - Removed fixed font size here */
+        #required-sip {
+            color: #dc2626; /* Red 600 */
+            font-weight: 900;
+        }
         .range-slider {
             -webkit-appearance: none;
             width: 100%;
@@ -94,8 +101,8 @@
             background: #d1d5db;
             border-radius: 5px;
             outline: none;
+            margin-top: 0.5rem;
         }
-
         .range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -201,18 +208,22 @@
                 <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
                     <canvas id="retirement-chart"></canvas>
                 </div>
-                <div class="results-container bg-teal-100 p-6 rounded-2xl shadow-inner mt-6">
+                <!-- Results container - updated classes for mobile responsiveness -->
+                <div class="results-container bg-teal-100 p-6 rounded-2xl shadow-inner lg:mt-6">
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Future Annual Expense:</span>
-                        <span id="future-expense" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                        <!-- Responsive font size: text-lg on mobile, sm:text-xl on wider screens -->
+                        <span id="future-expense" class="text-teal-700 font-bold ml-2 text-lg sm:text-xl">₹ 0</span>
                     </div>
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Target Retirement Corpus:</span>
-                        <span id="target-corpus" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                        <!-- Responsive font size: text-lg on mobile, sm:text-xl on wider screens -->
+                        <span id="target-corpus" class="text-teal-700 font-bold ml-2 text-lg sm:text-xl">₹ 0</span>
                     </div>
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Required Monthly SIP:</span>
-                        <span id="required-sip" class="text-red-600 font-extrabold ml-2 text-xl">₹ 0</span>
+                        <!-- Responsive font size: text-xl on mobile, sm:text-2xl on wider screens -->
+                        <span id="required-sip" class="text-red-600 font-extrabold ml-2 text-xl sm:text-2xl">₹ 0</span>
                     </div>
                 </div>
             </div>
@@ -261,7 +272,7 @@
 
         if (realReturnMonthly <= 0) {
              // If return is less than or equal to inflation, we assume simple depletion
-            requiredCorpus = futureAnnualExpense * yearsInRetirement;
+             requiredCorpus = futureAnnualExpense * yearsInRetirement;
         } else {
             // Formula for Present Value of an Annuity (PV of Annuity is the Corpus needed)
             // We use the real rate of return and the future annual expense (since it represents today's purchasing power)
@@ -346,6 +357,10 @@
                         ticks: {
                             color: '#4b5563',
                             callback: function(value) {
+                                // Display in millions (M) if the number is large
+                                if (value >= 1000000) {
+                                    return `₹${(value / 1000000).toFixed(1)}M`;
+                                }
                                 return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
                             }
                         }
@@ -358,7 +373,7 @@
                     title: {
                         display: true,
                         text: `Target Retirement Corpus: ₹${nonBreakingSpace}${Math.round(targetCorpus).toLocaleString('en-IN')}`,
-                        font: { size: 18, weight: '900' }, 
+                        font: { size: 16, weight: 'bold' }, 
                         color: '#00897b' 
                     },
                     tooltip: {
@@ -415,7 +430,6 @@
     
     document.getElementById('expense-range').addEventListener('input', () => syncInputs('current-expense'));
     document.getElementById('return-rate-range').addEventListener('input', () => syncInputs('return-rate'));
-    document.getElementById('inflation-rate-range').addEventListener('input', () => syncInputs('inflation-rate'));
 
     // Initial calculation on page load
     calculate();
