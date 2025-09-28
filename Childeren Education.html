@@ -8,12 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f3f4f6;
         }
         .calculator-card {
             background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             padding: 2rem;
             display: flex;
             flex-direction: column;
@@ -39,12 +40,12 @@
             font-weight: 500;
             color: #1f2937;
             text-align: right;
+            padding: 0.5rem 0.75rem; /* Default padding */
+            padding-right: 2.5rem; /* Space for unit/percentage */
         }
+        /* Ensure left padding for currency symbol */
         .input-field input[type="number"].pl-8 {
-            padding-left: 2rem;
-        }
-        .input-field input[type="number"].pr-10 {
-            padding-right: 2.5rem;
+            padding-left: 2.5rem;
         }
         .input-field .currency-symbol {
             position: absolute;
@@ -63,7 +64,7 @@
         .results-container {
             background-color: #e0f2f1;
             border-radius: 1rem;
-            padding: 1rem;
+            padding: 1.5rem; /* Increased padding */
             display: flex;
             flex-direction: column; 
             gap: 0.75rem; 
@@ -72,10 +73,11 @@
         .results-container .result-item {
             display: flex; 
             justify-content: space-between; 
-            align-items: baseline;
+            align-items: center; /* Adjusted alignment for better stability */
             font-size: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px dashed #b2dfdb; 
+            flex-wrap: wrap; /* FIX: Allow the label and value to wrap if the number is too long */
         }
         /* Remove border for the last item */
         .results-container .result-item:last-child {
@@ -87,6 +89,12 @@
             text-align: right;
             font-size: 1.125rem;
         }
+        /* Styles for the Monthly SIP amount - Removed fixed font size here */
+        #required-sip {
+            color: #dc2626; /* Red 600 */
+            /* font-size: 1.5rem; <-- Removed to use responsive Tailwind class */
+            font-weight: 900;
+        }
         .range-slider {
             -webkit-appearance: none;
             width: 100%;
@@ -94,8 +102,8 @@
             background: #d1d5db;
             border-radius: 5px;
             outline: none;
+            margin-top: 0.5rem;
         }
-
         .range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -113,22 +121,7 @@
             padding: 1rem;
             height: 300px;
         }
-        /* Style adjustments for two-column inputs */
-        .two-column-group {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .two-column-group > div {
-            flex: 1;
-        }
-        /* Style adjustments for age inputs */
-        .age-inputs {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .age-inputs > div {
-            flex: 1;
-        }
+        /* Removed custom layout CSS classes and moved to Tailwind utility classes in HTML */
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
@@ -140,73 +133,80 @@
     </header>
 
     <div class="calculator-card">
+        <!-- Main container uses flex-col on mobile, and flex-row on large screens (lg) -->
         <div class="flex flex-col lg:flex-row gap-6">
             <div class="flex-1">
                 
-                <!-- Age Inputs (2 Columns) -->
-                <div class="age-inputs">
+                <!-- Age Inputs: Changed from 'grid-cols-1 sm:grid-cols-2' back to 'grid-cols-2' to maintain two columns on mobile -->
+                <div class="grid grid-cols-2 gap-6">
                     <div class="input-group">
                         <label for="child-age-input" class="text-sm font-semibold text-gray-700">Child's Current Age</label>
                         <div class="input-field">
-                            <input type="number" id="child-age-input" value="5" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="number" id="child-age-input" value="5" min="0" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
                     <div class="input-group">
                         <label for="education-age-input" class="text-sm font-semibold text-gray-700">Education Start Age</label>
                         <div class="input-field">
-                            <input type="number" id="education-age-input" value="18" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="number" id="education-age-input" value="18" min="1" class="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                     </div>
                 </div>
                 
-                <!-- Current Annual Cost Input -->
+                <!-- Current Annual Cost Input (Remains full width) -->
                 <div class="input-group mt-6">
                     <label for="current-cost-input" class="text-sm font-semibold text-gray-700">Current Annual Education Cost (₹)</label>
                     <div class="input-field">
                         <span class="currency-symbol">₹</span>
-                        <input type="number" id="current-cost-input" value="500000" class="pl-8 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <!-- Added pl-8 for currency symbol alignment -->
+                        <input type="number" id="current-cost-input" value="500000" min="10000" class="pl-8 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                     </div>
                 </div>
                 <input type="range" id="cost-range" min="100000" max="10000000" step="50000" value="500000" class="range-slider mt-2" oninput="syncInputs('current-cost')">
                 
-                <!-- Rate Inputs (2 Columns) -->
-                <div class="two-column-group mt-6">
+                <!-- Rate Inputs: Changed from 'grid-cols-1 sm:grid-cols-2' back to 'grid-cols-2' to maintain two columns on mobile -->
+                <div class="grid grid-cols-2 gap-6 mt-6">
                     <div class="input-group">
                         <label for="return-rate-input" class="text-sm font-semibold text-gray-700">Expected Return (p.a. %)</label>
                         <div class="input-field">
-                            <input type="number" id="return-rate-input" value="12" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <!-- Removed pr-10 class as padding is handled in CSS/tailwind -->
+                            <input type="number" id="return-rate-input" value="12" min="1" max="25" step="0.1" class="pl-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                             <span class="unit">%</span>
                         </div>
                     </div>
                     <div class="input-group">
                         <label for="inflation-rate-input" class="text-sm font-semibold text-gray-700">Education Inflation (p.a. %)</label>
                         <div class="input-field">
-                            <input type="number" id="inflation-rate-input" value="8" class="pl-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <!-- Removed pr-10 class as padding is handled in CSS/tailwind -->
+                            <input type="number" id="inflation-rate-input" value="8" min="1" max="15" step="0.1" class="pl-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                             <span class="unit">%</span>
                         </div>
                     </div>
                 </div>
                 <input type="range" id="return-rate-range" min="1" max="25" step="0.5" value="12" class="range-slider mt-2" oninput="syncInputs('return-rate')">
-                <input type="range" id="inflation-rate-range" min="1" max="15" step="0.1" value="8" class="range-slider mt-2 hidden" oninput="syncInputs('inflation-rate')">
-
             </div>
 
             <div class="flex-1 flex flex-col gap-6">
+                <!-- Chart container (fills available space) -->
                 <div class="chart-container bg-gray-50 p-6 rounded-2xl shadow-inner">
                     <canvas id="education-chart"></canvas>
                 </div>
-                <div class="results-container bg-teal-100 p-6 rounded-2xl shadow-inner mt-6">
+                
+                <!-- Results container -->
+                <div class="results-container bg-teal-100 rounded-2xl shadow-inner lg:mt-6">
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Years Remaining for Goal:</span>
                         <span id="years-to-goal" class="text-teal-700 font-bold ml-2">0</span>
                     </div>
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Future Cost of Education:</span>
-                        <span id="target-corpus" class="text-teal-700 font-bold ml-2 text-xl">₹ 0</span>
+                        <!-- FIX: Applied smaller mobile font size (text-lg) and scaled up (sm:text-xl) -->
+                        <span id="target-corpus" class="text-teal-700 font-bold ml-2 text-lg sm:text-xl">₹ 0</span>
                     </div>
                     <div class="result-item">
                         <span class="text-gray-600 whitespace-nowrap">Required Monthly SIP:</span>
-                        <span id="required-sip" class="text-red-600 font-extrabold ml-2 text-xl">₹ 0</span>
+                        <!-- FIX: Applied smaller mobile font size (text-xl) and scaled up (sm:text-2xl) -->
+                        <span id="required-sip" class="font-extrabold ml-2 text-xl sm:text-2xl">₹ 0</span>
                     </div>
                 </div>
             </div>
@@ -228,7 +228,7 @@
         const yearsToGoal = educationAge - childAge;
 
         // Basic sanity checks
-        if (yearsToGoal <= 0 || currentCost <= 0 || returnRateAnnual <= 0) {
+        if (yearsToGoal <= 0 || currentCost <= 0 || educationAge <= childAge) {
             document.getElementById('years-to-goal').innerText = '0';
             document.getElementById('target-corpus').innerText = '₹ 0';
             document.getElementById('required-sip').innerText = '₹ 0';
@@ -314,6 +314,10 @@
                         ticks: {
                             color: '#4b5563',
                             callback: function(value) {
+                                // Display in millions (M) if the number is large
+                                if (value >= 1000000) {
+                                    return `₹${(value / 1000000).toFixed(1)}M`;
+                                }
                                 return `₹${nonBreakingSpace}${value.toLocaleString('en-IN')}`;
                             }
                         }
@@ -326,7 +330,7 @@
                     title: {
                         display: true,
                         text: `Future Education Cost: ₹${nonBreakingSpace}${Math.round(targetCorpus).toLocaleString('en-IN')}`,
-                        font: { size: 18, weight: '900' }, 
+                        font: { size: 16, weight: 'bold' }, 
                         color: '#00897b' 
                     },
                     tooltip: {
@@ -353,13 +357,13 @@
         const childAgeInput = document.getElementById('child-age-input');
         const educationAgeInput = document.getElementById('education-age-input');
 
-        if (id === 'child-age' || id === 'education-age') {
+        if (childAgeInput && educationAgeInput) {
             const cAge = parseFloat(childAgeInput.value);
             const eAge = parseFloat(educationAgeInput.value);
 
-            // Ensure Education Age is greater than Child's Age
+            // Constraint: Education Age must be greater than Child's Age
             if (cAge >= eAge) {
-                 if (id === 'child-age') childAgeInput.value = eAge - 1;
+                 if (id === 'child-age') childAgeInput.value = Math.max(0, eAge - 1); // Clamp at 0
                  if (id === 'education-age') educationAgeInput.value = cAge + 1;
             }
         }
@@ -368,15 +372,16 @@
     };
 
     // Add event listeners for all inputs
+    // We synchronize the range input value back to the number input on input event
     document.getElementById('child-age-input').addEventListener('input', calculate);
     document.getElementById('education-age-input').addEventListener('input', calculate);
     document.getElementById('current-cost-input').addEventListener('input', calculate);
     document.getElementById('return-rate-input').addEventListener('input', calculate);
     document.getElementById('inflation-rate-input').addEventListener('input', calculate);
     
+    // Range listeners synchronize value to number input and trigger calculate
     document.getElementById('cost-range').addEventListener('input', () => syncInputs('current-cost'));
     document.getElementById('return-rate-range').addEventListener('input', () => syncInputs('return-rate'));
-    document.getElementById('inflation-rate-range').addEventListener('input', () => syncInputs('inflation-rate'));
 
     // Initial calculation on page load
     calculate();
