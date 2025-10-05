@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Calculator Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            background-color: #f3f4f6;
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #111827; /* Dark background */
         }
         .calculator-card {
             display: block;
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
+            background-color: #1f2937; /* Darker card background */
+            border: 1px solid #374151; /* Subtle border */
             border-radius: 1rem;
             padding: 1.5rem;
             text-align: center;
@@ -22,49 +25,50 @@
             cursor: pointer;
         }
         .calculator-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2), 0 4px 6px -4px rgba(13, 148, 136, 0.1);
             border-color: #0d9488; /* Teal-600 */
         }
         .calculator-card:active {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
         .card-icon {
             font-size: 2.5rem;
-            color: #0d9488; /* Teal-600 */
+            line-height: 1;
             margin-bottom: 0.75rem;
+            display: inline-block;
         }
         .card-title {
             font-size: 1.125rem;
             font-weight: 700;
-            color: #1f2937;
+            color: #f9fafb; /* Lighter title color */
         }
         .card-description {
             font-size: 0.875rem;
-            color: #6b7280;
+            color: #9ca3af; /* Lighter description color */
             margin-top: 0.25rem;
         }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 sm:p-6 lg:p-8">
 
 <main class="max-w-6xl mx-auto">
-    <header class="text-center py-12 mb-8 bg-white rounded-xl shadow-lg">
-        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900">Financial Tools Suite</h1>
-        <p class="text-lg md:text-xl text-gray-600 mt-3">Invest Wisely - Rupesh Khaire</p>
+    <header class="text-center py-12 mb-10 bg-gray-800 rounded-xl shadow-2xl border border-gray-700">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-white">Financial Tools Suite – Rupesh Khaire</h1>
+        <p class="text-lg md:text-xl text-gray-400 mt-4">Access your custom-built SIP, Loan, and Goal Planners.</p>
     </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-        <!-- FIX: Updated href to match uploaded file names exactly, including capitalization and spaces/encoding (%20) -->
-        
-        <a href="SIP.html" class="calculator-card" target="_blank">
+        <!-- Calculator Card Template -->
+        <!-- Note: target="_blank" opens the calculator in a new browser tab. -->
+        <a href="sip.html" class="calculator-card" target="_blank">
             <span class="card-icon">📈</span>
             <div class="card-title">SIP Calculator</div>
             <div class="card-description">Future value of monthly recurring investments.</div>
         </a>
 
-        <a href="Lumpsum.html" class="calculator-card" target="_blank">
+        <a href="lumpsum.html" class="calculator-card" target="_blank">
             <span class="card-icon">💰</span>
             <div class="card-title">Lumpsum Calculator</div>
             <div class="card-description">Future value of a one-time principal investment.</div>
@@ -88,7 +92,7 @@
             <div class="card-description">Calculate the required one-time investment for a goal.</div>
         </a>
         
-        <a href="Retirement.html" class="calculator-card" target="_blank">
+        <a href="retirement.html" class="calculator-card" target="_blank">
             <span class="card-icon">🏝️</span>
             <div class="card-title">Retirement Planner</div>
             <div class="card-description">Determine the SIP needed for your future lifestyle.</div>
@@ -100,7 +104,7 @@
             <div class="card-description">Plan the SIP required for future education costs.</div>
         </a>
 
-        <a href="EMI.html" class="calculator-card" target="_blank">
+        <a href="emi.html" class="calculator-card" target="_blank">
             <span class="card-icon">🏦</span>
             <div class="card-title">EMI Calculator</div>
             <div class="card-description">Calculate the monthly installment for any loan.</div>
@@ -124,10 +128,10 @@
             <div class="card-description">Shows the SIP vs RD Difference to make better decision.</div>
         </a>
 
+
     </div>
 </main>
 
 </body>
 </html>
-
 
