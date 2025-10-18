@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Conventions & Practicalities - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Common Conventions & Practicalities</h1>
+        <p>The market standards, legal frameworks, and practical rules that govern how derivative trades are documented, calculated, and settled.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The ISDA Framework (Master Agreement & CSA)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The International Swaps and Derivatives Association (ISDA) provides the legal backbone for the OTC derivatives market. The two core documents are:</p>
+            <ul>
+                <li><strong>ISDA Master Agreement:</strong> A standardized contract that sets out the general legal and credit terms governing all OTC derivative transactions between two parties.</li>
+                <li><strong>Credit Support Annex (CSA):</strong> An appendix to the Master Agreement that defines the rules for collateral exchange (margining), including eligible collateral types, haircuts, and margin thresholds.</li>
+            </ul>
+            <h4>Mechanism</h4>
+            <p>By signing one Master Agreement, two parties can enter into multiple trades without renegotiating the core legal terms each time. In the event of a default, the agreement allows for the termination and close-out netting of all outstanding transactions into a single net payment.</p>
+            <h4>Example</h4>
+            <p>If Bank A defaults, the ISDA Master Agreement allows Bank B to terminate all trades, calculate a single net amount owed, and seize the collateral held under the CSA to cover that amount. This prevents a complex, trade-by-trade legal battle.</p>
+        </div>
+
+        <button class="accordion">2. Day Count & Business Day Conventions</button>
+        <div class="panel">
+            <h4>Day Count Conventions</h4>
+            <p>These are rules used to calculate the amount of accrued interest over a period. Different markets use different conventions.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Convention</th><th>Calculation</th><th>Commonly Used For</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>ACT/360</strong></td><td>Actual number of days in the period / 360</td><td>Money markets, USD LIBOR/SOFR swaps.</td></tr>
+                        <tr><td><strong>30/360</strong></td><td>Assumes 30 days per month / 360 days a year</td><td>Corporate bonds, some swaps.</td></tr>
+                        <tr><td><strong>ACT/365 (Fixed)</strong></td><td>Actual number of days / 365</td><td>UK Government Bonds (Gilts), GBP swaps.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Business Day Conventions</h4>
+            <p>These rules adjust payment dates that fall on a non-business day (weekend or holiday).</p>
+            <ul>
+                <li><strong>Following:</strong> The payment date is moved to the next business day.</li>
+                <li><strong>Modified Following:</strong> The payment date is moved to the next business day, unless that day falls in the next calendar month, in which case it is moved to the preceding business day. This is the most common convention.</li>
+                <li><strong>Preceding:</strong> The payment date is moved to the previous business day.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">3. Notional, Payment Frequencies & Roll Dates</button>
+        <div class="panel">
+            <h4>Notional Principal</h4>
+            <p>The notional is the theoretical principal amount on which interest payments and other calculations are based. It is a reference amount and is typically not exchanged, except in certain derivatives like cross-currency swaps.</p>
+            <h4>Payment Frequencies</h4>
+            <p>This defines how often payments are exchanged. Common frequencies for swaps are Quarterly (3M), Semi-Annually (6M), or Annually (1Y).</p>
+            <h4>Roll Dates & IMM Dates</h4>
+            <p>For many derivatives, payment and reset dates are aligned with standard "roll dates." The most common are the <strong>IMM (International Monetary Market) dates</strong>, which are the third Wednesday of March, June, September, and December.</p>
+            <h4>Example</h4>
+            <p>A 5-year USD interest rate swap with a quarterly frequency will have its payment dates aligned with the IMM dates for the next 20 quarters.</p>
+        </div>
+
+        <button class="accordion">4. Fixings, Resets & Reference Rates</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>For floating-rate derivatives, the interest rate for a given period is "fixed" or "set" based on a published benchmark reference rate. This process is called a fixing or a reset.</p>
+            <h4>Mechanism</h4>
+            <p>The fixing typically occurs at the beginning of the accrual period (or with a small look-back of 1-2 days). The rate is taken from a designated source (e.g., the Federal Reserve Bank of New York for SOFR) and is used to calculate the floating payment for that period.</p>
+            <h4>Example</h4>
+            <p>An interest rate swap has a floating leg based on 3-month SOFR. For the period starting June 20th, the floating rate will be determined by the compounded SOFR rate over the preceding 3-month period, which is then published and used to calculate the next payment.</p>
+        </div>
+
+        <button class="accordion">5. Key Identifiers (LEI, UTI, UPI)</button>
+        <div class="panel">
+            <p>These are global standardized codes required for regulatory reporting to increase transparency in the derivatives market.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Identifier</th><th>Stands For</th><th>Purpose</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>LEI</strong></td><td>Legal Entity Identifier</td><td>A unique 20-character code that identifies a legal entity (e.g., a bank, fund, or corporation) involved in a financial transaction.</td></tr>
+                        <tr><td><strong>UTI</strong></td><td>Unique Transaction Identifier</td><td>A unique code assigned to each individual trade to track it throughout its lifecycle for regulatory reporting (under EMIR, Dodd-Frank, etc.).</td></tr>
+                         <tr><td><strong>UPI</strong></td><td>Unique Product Identifier</td><td>A code that classifies the derivative product itself, allowing regulators to aggregate data on specific types of instruments.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <button class="accordion">6. SWIFT Messaging Standards</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>SWIFT is the global messaging network that financial institutions use to send and receive information, such as payment instructions and trade confirmations. There are two main standards:</p>
+            <ul>
+                <li><strong>MT (Message Type):</strong> The legacy standard, with fixed formats and numeric codes (e.g., MT300 for an FX confirmation, MT541/543 for securities settlement).</li>
+                <li><strong>MX / ISO 20022:</strong> The modern, XML-based standard that is more data-rich, structured, and flexible. It is gradually replacing the older MT messages.</li>
+            </ul>
+             <h4>Example</h4>
+            <p>When a derivative trade is confirmed, the back office systems will automatically generate and send a SWIFT MT3xx series message to the counterparty. When a collateral payment is made, an MT202 (General Financial Institution Transfer) message might be used.</p>
+        </div>
+
+        <button class="accordion">7. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Convention/Concept</th><th>Core Purpose</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>ISDA Master Agreement</strong></td><td>Standardizes legal terms for all OTC trades between two parties.</td><td>Enables close-out netting upon default.</td></tr>
+                        <tr><td><strong>CSA (Credit Support Annex)</strong></td><td>Defines the rules for collateral exchange (margining).</td><td>Specifies eligible collateral and haircuts.</td></tr>
+                        <tr><td><strong>Day Count Convention</strong></td><td>Determines how interest is calculated for a period.</td><td>ACT/360 for USD swaps.</td></tr>
+                        <tr><td><strong>Business Day Convention</strong></td><td>Adjusts payment dates that fall on non-business days.</td><td>Modified Following.</td></tr>
+                        <tr><td><strong>IMM Dates</strong></td><td>Standardized quarterly roll dates for many derivatives.</td><td>Third Wednesday of Mar, Jun, Sep, Dec.</td></tr>
+                        <tr><td><strong>LEI / UTI</strong></td><td>Unique identifiers for entities and trades for regulatory reporting.</td><td>Required under EMIR and Dodd-Frank.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to explain why day count conventions matter (they affect the exact cash amount of an interest payment). Understand the critical role of the ISDA and CSA in mitigating counterparty credit risk. Know what LEIs and UTIs are used for, as this demonstrates awareness of the modern regulatory landscape.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

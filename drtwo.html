@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Instruments - Derivative Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Core Instruments</h1>
+        <p>A deep dive into the mechanics, pricing logic, and examples of foundational derivative instruments.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Forwards & Futures</button>
+        <div class="panel">
+            <h4>A. Forwards</h4>
+            <p><strong>Definition:</strong> A forward is an OTC contract between two parties to buy or sell an underlying asset at a pre-agreed price (the forward price) on a future date. It is fully customizable but carries counterparty credit risk as it is not centrally cleared or marked-to-market daily.</p>
+            <p><strong>Example:</strong> A 6-month forward on oil with a spot price of $80 and a risk-free rate of 5% would have a forward price of approximately $82.02. If the spot price at expiry is $90, the long position gains $7.98 per barrel. If the spot is $75, the long position loses $7.02 per barrel.</p>
+
+            <h4>B. Futures</h4>
+            <p><strong>Definition:</strong> A futures contract is a standardized forward contract traded on an exchange and cleared through a central counterparty (CCP). This eliminates counterparty risk.</p>
+            <p><strong>Key Characteristics:</strong> Standardized terms (size, expiry), exchange-traded, no counterparty risk, and requires daily margining (Initial and Variation Margin). Profits and losses are realized daily through the mark-to-market process.</p>
+            <p><strong>Example:</strong> You buy 1 S&P 500 futures contract at 4,500 index points (with a multiplier of $250). If the index rises to 4,520 the next day, your gain is 20 points × $250/point = $5,000, which is credited to your margin account.</p>
+
+            <h4>Special Topics</h4>
+            <ul>
+                <li><strong>Basis:</strong> The difference between the spot price and the futures price (Basis = Spot - Futures). The basis converges to zero as the contract approaches expiry.</li>
+                <li><strong>Convenience Yield:</strong> The non-monetary benefit of physically holding a commodity, which can cause futures prices to be lower than the spot price (backwardation).</li>
+                <li><strong>Cheapest-to-Deliver (CTD):</strong> In bond futures, the short party can choose from a basket of eligible bonds to deliver. They will choose the one that is cheapest for them to deliver.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">2. Options</button>
+        <div class="panel">
+            <h4>A. Vanilla Options</h4>
+            <p><strong>Definition:</strong> A contract giving the holder the right, but not the obligation, to buy (a call option) or sell (a put option) an underlying asset at a specified strike price on or before a certain expiry date.</p>
+            <p><strong>Example (European Call):</strong> You buy a 3-month call option on a stock with a strike price of $105 for a premium of $3. If the stock price at expiry is $120, your payoff is $120 - $105 = $15, for a net profit of $12 ($15 payoff - $3 premium). If the stock is below $105, the option expires worthless, and your loss is the $3 premium.</p>
+
+            <h4>B. Option Styles (Exotics)</h4>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Barrier</strong></td><td>Activated or voided if the price crosses a pre-set barrier level.</td></tr>
+                        <tr><td><strong>Binary/Digital</strong></td><td>Pays a fixed amount if a certain condition is met (e.g., pays $1 if S > K).</td></tr>
+                        <tr><td><strong>Asian</strong></td><td>Payoff is based on the average price of the underlying over a period.</td></tr>
+                        <tr><td><strong>Lookback</strong></td><td>Payoff is based on the maximum or minimum price observed during the option's life.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>C. The Greeks (Sensitivities)</h4>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Greek</th><th>Meaning</th><th>Interpretation</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Delta</strong></td><td>∂Price/∂Underlying</td><td>The hedge ratio; how much the option's price changes for a $1 move in the underlying.</td></tr>
+                        <tr><td><strong>Gamma</strong></td><td>∂²Price/∂Underlying²</td><td>The rate of change of Delta; the convexity of the option's price.</td></tr>
+                        <tr><td><strong>Vega</strong></td><td>∂Price/∂Volatility</td><td>Sensitivity of the option's price to changes in implied volatility.</td></tr>
+                        <tr><td><strong>Theta</strong></td><td>∂Price/∂Time</td><td>Time decay; how much value the option loses each day as it approaches expiry.</td></tr>
+                        <tr><td><strong>Rho</strong></td><td>∂Price/∂Interest Rate</td><td>Sensitivity of the option's price to changes in interest rates.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">3. Swaps</button>
+        <div class="panel">
+            <h4>A. Interest Rate Swaps (IRS)</h4>
+            <p>An agreement to exchange fixed-rate interest payments for floating-rate payments on a notional principal amount.</p>
+            <p><strong>Example:</strong> On a $100m notional, Party A pays a fixed 3% and receives a floating rate (e.g., 3-month SOFR). Each quarter, only the net difference between the fixed and floating payments is exchanged.</p>
+            
+            <h4>B. FX Swaps / Forwards</h4>
+            <p>An FX Forward locks in an exchange rate for a future date. An FX Swap involves a simultaneous spot and forward transaction, effectively swapping currencies now and agreeing to reverse the transaction later.</p>
+
+            <h4>C. Total Return Swaps (TRS)</h4>
+            <p>One party receives the total return (price appreciation + dividends) of a reference asset, while the other party receives a floating interest rate plus a spread. This is used to gain synthetic long exposure, often with leverage.</p>
+
+            <h4>D. Inflation Swaps</h4>
+            <p>An agreement to exchange a fixed-rate payment for a payment linked to a realized inflation rate (e.g., CPI).</p>
+        </div>
+
+        <button class="accordion">4. Swaptions, Caps, and Floors</button>
+        <div class="panel">
+            <h4>A. Swaption</h4>
+            <p>An option to enter into an interest rate swap in the future. A <strong>Payer Swaption</strong> is the right to pay a fixed rate (valuable if rates rise), and a <strong>Receiver Swaption</strong> is the right to receive a fixed rate (valuable if rates fall).</p>
+
+            <h4>B. Caps & Floors</h4>
+            <p>A <strong>Cap</strong> is a series of call options on an interest rate (caplets) that protects a borrower from rates rising above a certain level. A <strong>Floor</strong> is a series of put options (floorlets) that guarantees a minimum income for a lender.</p>
+        </div>
+
+        <button class="accordion">5. Credit Derivatives</button>
+        <div class="panel">
+            <h4>A. Credit Default Swap (CDS)</h4>
+            <p>An insurance-like contract against the credit default of a reference entity. The protection buyer pays a periodic premium (the spread), and the protection seller agrees to compensate the buyer if a credit event (like a default) occurs.</p>
+            <p><strong>Example:</strong> On a $10m notional with a 1.5% spread, the buyer pays $150,000 per year. If the referenced entity defaults, the seller pays the loss given default to the buyer.</p>
+
+            <h4>B. CDS Indices</h4>
+            <p>These are baskets of single-name CDSs that allow investors to trade the overall credit risk of a market segment efficiently. Examples include iTraxx (Europe) and CDX (US).</p>
+        </div>
+
+        <button class="accordion">6. Exotic & Structured Products</button>
+        <div class="panel">
+            <h4>A. Exotic Options</h4>
+            <p>Options with more complex features than standard vanilla options, such as Barrier, Asian, and Lookback options.</p>
+            
+            <h4>B. Structured Notes</h4>
+            <p>Debt instruments with embedded derivatives that create customized payoff profiles. Examples include:</p>
+            <ul>
+                <li><strong>Principal-Protected Note:</strong> A zero-coupon bond combined with a call option to provide downside protection with upside participation.</li>
+                <li><strong>Reverse Convertible:</strong> A note with a high coupon that exposes the investor to downside risk in an underlying stock (effectively selling a put option).</li>
+            </ul>
+
+            <h4>C. Variance & Volatility Products</h4>
+            <p>Instruments used to trade volatility itself. A <strong>Variance Swap</strong> has a payoff based on the difference between realized variance and a strike variance. <strong>VIX Futures/Options</strong> allow investors to trade the implied volatility of the S&P 500.</p>
+        </div>
+
+        <button class="accordion">7. Summary Table</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Instrument</th>
+                            <th>Payoff Type</th>
+                            <th>Venue</th>
+                            <th>Risk</th>
+                            <th>Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Forwards</td>
+                            <td>Linear</td>
+                            <td>OTC</td>
+                            <td>Credit</td>
+                            <td>Hedging/speculation</td>
+                        </tr>
+                        <tr>
+                            <td>Futures</td>
+                            <td>Linear</td>
+                            <td>Exchange</td>
+                            <td>Minimal</td>
+                            <td>Liquid hedging</td>
+                        </tr>
+                        <tr>
+                            <td>Options</td>
+                            <td>Non-linear</td>
+                            <td>OTC/Exchange</td>
+                            <td>Optionality</td>
+                            <td>Hedging/alpha</td>
+                        </tr>
+                        <tr>
+                            <td>Swaps</td>
+                            <td>Linear</td>
+                            <td>OTC</td>
+                            <td>Credit</td>
+                            <td>Interest/FX/commodity exposure</td>
+                        </tr>
+                        <tr>
+                            <td>Swaptions/Caps</td>
+                            <td>Convex</td>
+                            <td>OTC</td>
+                            <td>Credit</td>
+                            <td>IR risk management</td>
+                        </tr>
+                        <tr>
+                            <td>CDS</td>
+                            <td>Contingent</td>
+                            <td>OTC</td>
+                            <td>Credit</td>
+                            <td>Credit protection</td>
+                        </tr>
+                        <tr>
+                            <td>Exotics</td>
+                            <td>Complex</td>
+                            <td>OTC</td>
+                            <td>Credit</td>
+                            <td>Tailored payoffs</td>
+                        </tr>
+                        <tr>
+                            <td>Structured Notes</td>
+                            <td>Hybrid</td>
+                            <td>OTC</td>
+                            <td>Issuer credit</td>
+                            <td>Retail/Wealth products</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+

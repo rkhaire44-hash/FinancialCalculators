@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Microstructure & Electronic Trading - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Market Microstructure & Electronic Trading</h1>
+        <p>How the mechanics of trading, order flow, and technology shape derivative market behavior and price discovery.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Overview of Market Microstructure</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Market microstructure is the study of how trading mechanisms, processes, and rules affect price formation, liquidity, and trading costs. In derivatives, it focuses on how electronic platforms, algorithmic trading, and regulatory structures influence the market.</p>
+            <h4>Key Areas of Focus</h4>
+            <ul>
+                <li><strong>Price Discovery:</strong> How new information is incorporated into prices through trading.</li>
+                <li><strong>Liquidity:</strong> The ability to trade large quantities quickly without significant price impact.</li>
+                <li><strong>Transaction Costs:</strong> Explicit costs (fees, commissions) and implicit costs (bid-ask spread, market impact).</li>
+                <li><strong>Market Structure:</strong> The rules and platforms governing how buyers and sellers interact.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">2. Electronic Trading Platforms</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>These are the venues where most modern derivative trading occurs, replacing traditional open-outcry pits.</p>
+            <h4>Platform Types</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Platform Type</th><th>Description</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Central Limit Order Book (CLOB)</strong></td><td>An anonymous, order-driven system used by futures exchanges where orders are matched by price-time priority.</td><td>CME Globex, Eurex.</td></tr>
+                        <tr><td><strong>Request for Quote (RFQ)</strong></td><td>A system where a client requests a price from multiple dealers and chooses the best quote. Common for OTC options.</td><td>Bloomberg RFQ, Tradeweb.</td></tr>
+                        <tr><td><strong>Swap Execution Facility (SEF)</strong></td><td>A regulated platform (post-Dodd-Frank) for trading OTC swaps, offering either a CLOB or RFQ model.</td><td>Tradeweb, MarketAxess.</td></tr>
+                        <tr><td><strong>Dark Pools / Block Trading</strong></td><td>Venues for executing large trades anonymously to minimize market impact, though less common for standardized derivatives than for equities.</td><td>Broker-dealer internal crossing networks.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">3. Algorithmic & High-Frequency Trading (HFT)</button>
+        <div class="panel">
+            <h4>Algorithmic Trading ("Algos")</h4>
+            <p>The use of computer programs to execute trading strategies automatically. In derivatives, this is used for execution, market making, and arbitrage.</p>
+            <h4>Common Execution Algorithms</h4>
+             <ul>
+                <li><strong>VWAP (Volume-Weighted Average Price):</strong> Slices a large order into smaller pieces to execute in line with historical volume profiles, aiming to achieve the day's average price.</li>
+                <li><strong>TWAP (Time-Weighted Average Price):</strong> Executes small, uniform chunks of an order over a specified time period to minimize market impact.</li>
+                <li><strong>Implementation Shortfall (IS):</strong> An aggressive algorithm that tries to minimize the difference between the decision price and the final execution price, balancing speed and market impact.</li>
+            </ul>
+            <h4>High-Frequency Trading (HFT)</h4>
+            <p>A subset of algorithmic trading characterized by extremely high speeds (microseconds), high turnover, and very short holding periods. HFT strategies in derivatives include:</p>
+            <ul>
+                <li><strong>Automated Market Making:</strong> Providing continuous bid/ask quotes on futures and options.</li>
+                <li><strong>Statistical Arbitrage:</strong> Exploiting short-term mispricings between related contracts (e.g., a future and its underlying index).</li>
+                <li><strong>Latency Arbitrage:</strong> Exploiting speed advantages to trade on price information before others receive it.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">4. Latency, Co-location & Technology</button>
+        <div class="panel">
+            <h4>Latency</h4>
+            <p>The time delay in transmitting data or executing a trade. In HFT, minimizing latency is critical. It is measured in microseconds (millionths of a second) or even nanoseconds.</p>
+            <h4>Co-location</h4>
+            <p>The practice of placing trading firms' servers in the same physical data center as the exchange's matching engine. This drastically reduces latency by minimizing the physical distance data has to travel.</p>
+            <h4>Technology Infrastructure</h4>
+            <p>This includes specialized hardware like FPGAs (Field-Programmable Gate Arrays) for ultra-fast processing and dedicated microwave or fiber optic networks for the fastest possible data transmission between trading hubs (e.g., Chicago and New York).</p>
+        </div>
+
+        <button class="accordion">5. Market Impact & Liquidity Measurement</button>
+        <div class="panel">
+            <h4>Market Impact</h4>
+            <p>The effect that a trader's own orders have on the market price. A large buy order can push the price up, while a large sell order can push it down. Execution algorithms are designed to minimize this impact.</p>
+            <h4>Measures of Liquidity</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Metric</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Bid-Ask Spread</strong></td><td>The difference between the best bid and best ask price. A tight spread indicates high liquidity.</td></tr>
+                        <tr><td><strong>Market Depth</strong></td><td>The volume of orders available at different price levels in the order book. A deep book can absorb large orders with less impact.</td></tr>
+                        <tr><td><strong>Trading Volume</strong></td><td>The total number of contracts traded over a period. High volume is a general indicator of liquidity.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <button class="accordion">6. Key Regulatory Frameworks</button>
+        <div class="panel">
+            <h4>MiFID II (Markets in Financial Instruments Directive II) - Europe</h4>
+            <p>A comprehensive set of regulations aimed at increasing transparency and competition in financial markets. For derivatives, it introduced pre- and post-trade transparency requirements for OTC trades and mandated that many be traded on regulated venues.</p>
+            <h4>Dodd-Frank Act (Title VII) - US</h4>
+            <p>Introduced sweeping reforms for the OTC derivatives market after the 2008 crisis. Key provisions include mandatory central clearing for standardized swaps and the creation of Swap Execution Facilities (SEFs) for trading.</p>
+             <h4>Regulation AT (Automated Trading) - US (Proposed)</h4>
+            <p>A proposed set of rules by the CFTC aimed at managing the risks associated with algorithmic and high-frequency trading in the futures markets, including requirements for risk controls and testing.</p>
+        </div>
+
+        <button class="accordion">7. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Concept</th><th>Core Idea</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>CLOB</strong></td><td>Anonymous, price-time priority matching.</td><td>CME Globex for futures.</td></tr>
+                        <tr><td><strong>SEF</strong></td><td>Regulated venue for trading swaps.</td><td>Tradeweb.</td></tr>
+                        <tr><td><strong>Execution Algos</strong></td><td>Automated strategies to minimize market impact.</td><td>VWAP, TWAP.</td></tr>
+                        <tr><td><strong>HFT</strong></td><td>Ultra-fast, algorithm-driven trading.</td><td>Latency arbitrage.</td></tr>
+                        <tr><td><strong>Co-location</strong></td><td>Placing servers next to the exchange's engine.</td><td>Reducing latency for HFT firms.</td></tr>
+                        <tr><td><strong>Market Impact</strong></td><td>Your own trade moving the market price.</td><td>A large order consuming liquidity.</td></tr>
+                        <tr><td><strong>MiFID II / Dodd-Frank</strong></td><td>Regulations increasing transparency and clearing.</td><td>Mandatory clearing of swaps.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to explain the difference between a CLOB and an RFQ system. Understand how execution algorithms like VWAP work to minimize market impact. Be able to discuss the role of HFT in providing liquidity versus the controversies around it (e.g., latency arbitrage). Mentioning key regulations like Dodd-Frank and MiFID II shows a broader understanding of the market structure.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

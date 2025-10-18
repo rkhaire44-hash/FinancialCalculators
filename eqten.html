@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Data, Indices & Benchmarks - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="equity.html" class="back-link">← Back to Equity</a>
+        <h1>Market Data, Indices & Benchmarks</h1>
+        <p>How indices are constructed, maintained, and used as benchmarks to measure the performance of equity markets and portfolios.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Major Equity Indices</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>An equity index is a statistical measure that tracks the performance of a basket of stocks representing a specific market, sector, or investment theme. They are used as benchmarks, underlyings for ETFs and derivatives, and indicators of market sentiment.</p>
+            <h4>Major Global Indices (by Region)</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Region</th><th>Index</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>US</strong></td><td><strong>S&P 500</strong></td><td>500 large-cap U.S. companies; float-adjusted, market-cap-weighted.</td></tr>
+                        <tr><td> </td><td><strong>Dow Jones (DJIA)</strong></td><td>30 large U.S. blue-chip companies; price-weighted.</td></tr>
+                        <tr><td> </td><td><strong>Nasdaq 100</strong></td><td>100 largest non-financial companies listed on Nasdaq.</td></tr>
+                        <tr><td><strong>UK</strong></td><td><strong>FTSE 100</strong></td><td>100 largest UK-listed companies.</td></tr>
+                        <tr><td><strong>Europe</strong></td><td><strong>DAX 40 (Germany)</strong></td><td>40 largest German companies.</td></tr>
+                        <tr><td><strong>Asia</strong></td><td><strong>Nikkei 225 (Japan)</strong></td><td>225 blue-chip Japanese stocks; price-weighted.</td></tr>
+                         <tr><td><strong>India</strong></td><td><strong>BSE Sensex / NSE Nifty 50</strong></td><td>30 / 50 leading Indian companies.</td></tr>
+                         <tr><td><strong>Global</strong></td><td><strong>MSCI World / MSCI EM</strong></td><td>Market-cap weighted global indices for developed and emerging markets.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">2. Index Construction Methodologies</button>
+        <div class="panel">
+            <h4>A. Price-Weighted Index</h4>
+            <p>Each stock’s weight is proportional to its share price. Higher-priced stocks have more influence, regardless of their market cap. The Dow Jones (DJIA) is a famous example.</p>
+            <p><strong>Example:</strong> If Stock A is $100 and Stock B is $25, Stock A has 4x the weight of Stock B, even if it's a smaller company.</p>
+            
+            <h4>B. Market Capitalization-Weighted Index</h4>
+            <p>Each stock’s weight is its market cap divided by the total market cap of all constituents. This reflects a company's economic size. The S&P 500 is a primary example.</p>
+            <p><strong>Example:</strong> In the S&P 500, Apple and Microsoft make up a significant portion of the index's weight due to their massive market caps.</p>
+            
+            <h4>C. Float-Adjusted Market Cap Weighting</h4>
+            <p>This is the modern standard, used by S&P, MSCI, and FTSE. It is similar to market-cap weighting but excludes restricted/non-tradable shares (e.g., insider or government holdings) to reflect the actual investable portion of the company.</p>
+            
+            <h4>D. Equal-Weighted Index</h4>
+            <p>Every stock in the index is given the same weight (e.g., 1/500th in an equal-weighted S&P 500). This requires regular rebalancing and gives smaller companies more influence than in a market-cap index.</p>
+        </div>
+
+        <button class="accordion">3. Index Rebalancing & Turnover</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Rebalancing is the periodic process of updating an index’s constituents and weights to ensure it continues to accurately represent its intended market segment.</p>
+            <h4>Mechanism</h4>
+            <ol>
+                <li><strong>Data Review:</strong> The index provider reviews all eligible companies based on criteria like market cap, float, and liquidity.</li>
+                <li><strong>Additions/Deletions:</strong> Companies are added or removed based on their ranking.</li>
+                <li><strong>Weight Adjustment:</strong> Weights are recalculated based on new market values.</li>
+                <li><strong>Implementation:</strong> Portfolio managers and ETFs tracking the index must adjust their holdings accordingly.</li>
+            </ol>
+            <h4>Example</h4>
+            <p>When Tesla was added to the S&P 500 in December 2020, it triggered approximately $80 billion of inflows as passive funds tracking the index were forced to buy its shares to stay aligned with the new composition.</p>
+        </div>
+
+        <button class="accordion">4. Custom & Sector Indices</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Specialized indices created to represent specific sectors, themes, or strategies. They are often used for benchmarking or as the basis for investment products like ETFs.</p>
+            <h4>Types & Examples</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Sector Indices</strong></td><td>Track one specific industry.</td><td>S&P 500 Information Technology Index, NIFTY Bank Index.</td></tr>
+                        <tr><td><strong>Thematic Indices</strong></td><td>Focus on specific trends or themes.</td><td>MSCI ESG Leaders Index, Nasdaq Clean Energy Index.</td></tr>
+                        <tr><td><strong>Factor Indices</strong></td><td>Track investment factors like value or momentum.</td><td>MSCI Value Weighted Index, S&P Low Volatility Index.</td></tr>
+                        <tr><td><strong>Regional Indices</strong></td><td>Focus on a specific geography.</td><td>MSCI Asia ex-Japan, STOXX Europe 600.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">5. Benchmarking & Tracking Error</button>
+        <div class="panel">
+            <h4>Benchmarking</h4>
+            <p>The process of comparing a portfolio’s performance against a relevant reference index to measure its relative return (alpha).</p>
+            <p><strong>Example:</strong> If a portfolio returns 10% and its benchmark (the S&P 500) returns 8%, the portfolio has generated an alpha of +2%.</p>
+            
+            <h4>Tracking Error</h4>
+            <p>Measures how closely a portfolio or ETF tracks its benchmark. It is the standard deviation of the difference between the portfolio's and the benchmark's returns.</p>
+            <p><strong>Causes of Tracking Error:</strong> Fees, transaction costs, sampling instead of full replication, and cash drag (uninvested cash).</p>
+        </div>
+        
+        <button class="accordion">6. Total Return vs. Price Return Indices</button>
+        <div class="panel">
+            <h4>Price Return Index</h4>
+            <p>Reflects only the price appreciation of the constituent stocks and excludes dividends. This is the version most often quoted in daily financial news (e.g., the standard S&P 500 index value).</p>
+            
+            <h4>Total Return Index</h4>
+            <p>Reflects both price changes and the reinvestment of all dividends paid by the constituent stocks. This represents the true, complete return an investor would receive over time.</p>
+            <p><strong>Formula:</strong> Total Return = Price Return + Dividend Yield (Reinvested)</p>
+            <h4>Example</h4>
+            <p>Over a 30-year period, the S&P 500 Price Index might rise ~700%, but the S&P 500 Total Return Index could rise ~1600% due to the powerful effect of compounding reinvested dividends.</p>
+        </div>
+
+        <button class="accordion">7. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Concept</th><th>Definition</th><th>Key Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Major Indices</strong></td><td>Track specific market segments.</td><td>S&P 500, FTSE 100, Nikkei 225</td></tr>
+                        <tr><td><strong>Price-Weighted</strong></td><td>Weighted by stock prices.</td><td>Dow Jones Industrial Average</td></tr>
+                        <tr><td><strong>Market-Cap Weighted</strong></td><td>Weighted by market value.</td><td>S&P 500, MSCI World</td></tr>
+                        <tr><td><strong>Rebalancing</strong></td><td>Updating constituents & weights.</td><td>Tesla's addition to the S&P 500</td></tr>
+                        <tr><td><strong>Tracking Error</strong></td><td>Measure of deviation from a benchmark.</td><td>ETF replication accuracy</td></tr>
+                        <tr><td><strong>Total Return Index</strong></td><td>Includes the reinvestment of dividends.</td><td>S&P 500 TR Index</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Know the difference between price-weighted and market-cap-weighted indices. Understand index rebalancing mechanics and their market impact. Be able to explain tracking error and the critical difference between price return and total return.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

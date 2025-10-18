@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Mechanics & Microstructure - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="equity.html" class="back-link">← Back to Equity</a>
+        <h1>Trading Mechanics & Microstructure</h1>
+        <p>The inner workings of how trades are executed, from order types and matching engines to liquidity and market impact.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Auction / Opening & Closing Mechanisms</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Auctions are periodic trading sessions used at the start and end of the trading day—and sometimes during volatility halts—to determine a single clearing price for a stock where the maximum volume can be matched.</p>
+            <h4>Types</h4>
+            <ul>
+                <li><strong>Opening Auction (Opening Cross):</strong> Sets the day’s first official trading price.</li>
+                <li><strong>Closing Auction:</strong> Determines the official closing price, which is critical for index funds, ETFs, and NAV calculations.</li>
+            </ul>
+            <h4>Example</h4>
+            <p>Before the market opens, orders for Stock ABC are collected. The auction mechanism finds the equilibrium price (e.g., $100.50) that allows the maximum number of shares to trade, and all matching orders execute simultaneously at that single price.</p>
+        </div>
+
+        <button class="accordion">2. Continuous Trading & Matching Engines</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>After the opening auction, markets enter a continuous trading phase where orders are matched in real-time by an electronic matching engine based on price-time priority (highest bid, lowest ask).</p>
+            <h4>Mechanism</h4>
+            <p>A central limit order book (LOB) is continuously updated. Trades occur instantly when a buy order's price is greater than or equal to a sell order's price.</p>
+            <h4>Example</h4>
+            <p>The order book shows a bid for 1,000 shares at $50.10 and an ask for 500 shares at $50.12. A market order to buy 500 shares would execute immediately against the ask at $50.12.</p>
+        </div>
+
+        <button class="accordion">3. Market Depth & Order Book (Level 1/2/3 Data)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The order book is the real-time list of all outstanding buy and sell orders for a security at various price levels.</p>
+            <ul>
+                <li><strong>Level 1:</strong> Shows only the best bid and best ask (the "top of the book").</li>
+                <li><strong>Level 2:</strong> Shows the full depth of the order book, with multiple price levels and the size of orders at each level.</li>
+                <li><strong>Level 3:</strong> Includes trader-specific data, typically only available to market makers.</li>
+            </ul>
+            <h4>Example (Order Book Snapshot)</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Bid</th><th>Quantity</th><th>Ask</th><th>Quantity</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>$50.10</td><td>5,000</td><td>$50.12</td><td>4,000</td></tr>
+                        <tr><td>$50.09</td><td>3,000</td><td>$50.13</td><td>6,000</td></tr>
+                        <tr><td>$50.08</td><td>2,500</td><td>$50.14</td><td>8,000</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">4. Bid-Ask Spread, Liquidity & Market Impact</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Bid:</strong> The highest price a buyer is willing to pay.</li>
+                <li><strong>Ask:</strong> The lowest price a seller is willing to accept.</li>
+                <li><strong>Spread:</strong> The difference between the ask and the bid, indicating liquidity and trading cost.</li>
+            </ul>
+            <h4>Market Impact</h4>
+            <p>When a large order consumes all the liquidity at the best price level and moves on to worse prices, it moves the market against the trader.</p>
+            <h4>Example</h4>
+            <p>A liquid stock might have a tight spread of $100.00 / $100.01. An illiquid stock might have a wide spread of $100.00 / $100.20, indicating a higher cost to trade.</p>
+        </div>
+        
+        <button class="accordion">5. Slippage & Implementation Shortfall</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+             <ul>
+                <li><strong>Slippage:</strong> The difference between the expected execution price of a trade and the actual price at which it was executed.</li>
+                <li><strong>Implementation Shortfall:</strong> The total performance difference between an ideal "paper" portfolio and the real-world execution after all costs, slippage, and market impact are accounted for.</li>
+            </ul>
+             <h4>Example</h4>
+            <p>You intend to buy 10,000 shares when the price is $100. By the time your order is filled, the average price is $100.20. Your slippage is $0.20 per share, or $2,000 in total.</p>
+        </div>
+
+        <button class="accordion">6. High-Frequency Trading (HFT) Basics</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>HFT involves ultra-fast algorithmic trading strategies that operate in microseconds to exploit tiny price inefficiencies and market structure dynamics, often using co-located servers placed physically near exchange matching engines.</p>
+            <h4>Example (Arbitrage)</h4>
+            <p>An HFT algorithm sees Apple stock trading at $150.00 on Nasdaq and $150.02 on the BATS exchange. It instantly buys on Nasdaq and sells on BATS, profiting $0.02 per share with minimal risk.</p>
+            <blockquote><strong>Interview Tip:</strong> HFT is credited with adding liquidity to markets but is controversial for potential advantages like front-running and latency arbitrage.</blockquote>
+        </div>
+
+        <button class="accordion">7. Dark Pools vs. Lit Markets & Hidden Liquidity</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Dark Pools:</strong> Private trading venues with no pre-trade transparency, allowing institutions to execute large orders anonymously without causing significant market impact.</li>
+                <li><strong>Lit Markets:</strong> Public exchanges with full order book visibility.</li>
+                <li><strong>Hidden Liquidity:</strong> Liquidity that is available for matching but not visible to the public, such as the hidden portion of an iceberg order or orders resting in dark pools.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">8. Circuit Breakers, Trading Halts & Limit Up/Down</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>These are exchange mechanisms designed to pause trading during periods of extreme volatility to prevent panic selling and ensure orderly markets.</p>
+            <ul>
+                <li><strong>Circuit Breakers:</strong> Triggered by significant percentage drops in major indices (e.g., S&P 500), leading to market-wide trading halts.</li>
+                <li><strong>Limit Up/Down (LULD):</strong> Prevents individual stocks from trading outside a specified price band based on their recent average price.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">9. Short Selling Mechanics</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Short selling is the practice of selling borrowed shares in the hope that the price will decline, allowing the seller to buy them back at a lower price to return to the lender.</p>
+            <h4>Mechanism</h4>
+            <ol>
+                <li>Borrow shares from a lender (via a prime broker).</li>
+                <li>Sell the borrowed shares on the open market.</li>
+                <li>Later, repurchase the same number of shares ("cover" the short).</li>
+                <li>Return the shares to the lender. The profit is the difference between the initial sale price and the repurchase price.</li>
+            </ol>
+            <h4>Example</h4>
+            <p>You short 100 shares of XYZ at $100 per share. The price drops to $80, and you buy back 100 shares to cover your position. Your gross profit is ($100 - $80) × 100 = $2,000.</p>
+        </div>
+
+        <button class="accordion">10. Margin Trading & Leverage</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Margin trading involves borrowing money from a broker to purchase securities, which amplifies both potential gains and losses.</p>
+            <h4>Mechanism</h4>
+            <p>An investor deposits an initial margin (e.g., 50% of the purchase price). The broker lends the remaining amount. If the portfolio value drops below a certain level (the maintenance margin), the broker issues a "margin call," requiring the investor to deposit more funds or sell securities.</p>
+            <h4>Example</h4>
+            <p>You buy $100,000 worth of stock using $50,000 of your own cash and $50,000 borrowed on margin. If the stock rises 20% to $120,000, your equity becomes $70,000 ($120k - $50k loan), a 40% return on your initial cash. If it falls 20%, your equity becomes $30,000, a 40% loss.</p>
+        </div>
+
+        <button class="accordion">11. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Concept</th><th>Purpose</th><th>Key Insight</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Auctions</td><td>Price discovery</td><td>Maximize volume at a single price</td></tr>
+                        <tr><td>Continuous Trading</td><td>Real-time matching</td><td>Price-time priority</td></tr>
+                        <tr><td>Order Book</td><td>View supply/demand</td><td>Depth indicates liquidity</td></tr>
+                        <tr><td>Bid-Ask Spread</td><td>Transaction cost</td><td>Tight spread = liquid</td></tr>
+                        <tr><td>Slippage</td><td>Execution risk</td><td>Minimize via algorithms</td></tr>
+                        <tr><td>HFT</td><td>Exploit micro-inefficiencies</td><td>Arbitrage, market making</td></tr>
+                        <tr><td>Dark Pools</td><td>Reduce market impact</td><td>Hidden liquidity</td></tr>
+                        <tr><td>Circuit Breakers</td><td>Market stability</td><td>Pause trading on volatility</td></tr>
+                        <tr><td>Short Selling</td><td>Profit from declines</td><td>Must borrow shares first</td></tr>
+                        <tr><td>Margin Trading</td><td>Amplify returns</td><td>Leverage increases risk</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Expect questions like: “Walk me through how a short sale works.”, “What’s slippage and how do you minimize it?”, “Why do dark pools exist and what are their pros/cons?”, and “How does margin trading amplify returns—and risks?”</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

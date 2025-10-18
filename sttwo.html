@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearing (CCP) vs. Bilateral Settlement - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="settlement.html" class="back-link">← Back to Settlement</a>
+        <h1>Clearing (CCP) vs. Bilateral Settlement</h1>
+        <p>The two fundamental models for managing risk and finalizing obligations in the post-trade environment.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The Core Difference: Managing Counterparty Risk</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Clearing is the process of reconciling and guaranteeing a trade's obligations before final settlement. The primary distinction in settlement models lies in how counterparty risk—the risk that the other side of your trade will default before fulfilling its obligations—is managed.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Aspect</th><th>Bilateral Settlement</th><th>Central Clearing (CCP)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Risk Model</strong></td><td>Direct counterparty-to-counterparty risk.</td><td>Counterparty risk is transferred to a central entity (the CCP).</td></tr>
+                        <tr><td><strong>Guarantee</strong></td><td>None. Relies on the creditworthiness of the counterparty.</td><td>The CCP guarantees the trade's settlement.</td></tr>
+                        <tr><td><strong>Common For</strong></td><td>Uncleared OTC derivatives, some FX trades.</td><td>Exchange-traded derivatives, standardized OTC swaps.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">2. Bilateral Settlement: The Traditional OTC Model</button>
+        <div class="panel">
+            <h4>Mechanism</h4>
+            <p>In a bilateral model, two parties trade directly with each other. The credit risk is managed through legal agreements and the bilateral exchange of collateral. This creates a complex web of interconnected exposures between institutions.</p>
+            <h4>The ISDA Master Agreement & CSA</h4>
+            <ul>
+                <li><strong>ISDA Master Agreement:</strong> The legal foundation for all OTC trades between two parties. Its most critical function is to enable **close-out netting**, allowing all outstanding trades to be netted into a single payment if one party defaults.</li>
+                <li><strong>Credit Support Annex (CSA):</strong> A legal document that sits alongside the ISDA and defines the rules for collateral exchange, including margin thresholds, eligible collateral types, and haircuts.</li>
+            </ul>
+            <h4>Risk Profile</h4>
+            <p>The primary risk is direct **counterparty credit risk**. If your counterparty defaults, you face a direct financial loss. There is also significant operational complexity in managing multiple bilateral collateral agreements and disputes.</p>
+            <h4>Example</h4>
+            <p>A corporate treasurer enters into a 10-year interest rate swap with Bank A. If Bank A's credit rating is downgraded five years later, the treasurer is now exposed to significant, unmitigated risk that the bank may not be able to fulfill its obligations for the remaining five years.</p>
+        </div>
+
+        <button class="accordion">3. Central Clearing: The Modern Standard via CCP</button>
+        <div class="panel">
+            <h4>Mechanism: Novation</h4>
+            <p>Central clearing is built on the legal process of **novation**. Once a trade is submitted to a Central Counterparty (CCP), the original contract between the buyer and seller is legally terminated and replaced by two new contracts: one between the buyer and the CCP, and one between the seller and the CCP. The CCP becomes the buyer to every seller and the seller to every buyer.</p>
+            <h4>Benefits</h4>
+            <ul>
+                <li><strong>Elimination of Bilateral Risk:</strong> Each party only faces the credit risk of the highly-regulated and well-capitalized CCP.</li>
+                <li><strong>Multilateral Netting:</strong> The CCP can net a member's obligations across all their trades, significantly reducing overall market exposure and collateral requirements.</li>
+                <li><strong>Increased Transparency & Standardization:</strong> Promotes the use of standard contracts and provides regulators with a central view of market risk.</li>
+            </ul>
+            <h4>Example</h4>
+            <p>A hedge fund trades a standardized swap with a dealer bank. The trade is submitted to a CCP like LCH. Through novation, LCH becomes the counterparty to both the fund and the bank. Now, neither party worries about the other defaulting; they only face the extremely low credit risk of LCH.</p>
+        </div>
+
+        <button class="accordion">4. The CCP Risk Waterfall: A Layered Defense</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>A CCP's risk waterfall is its layered defense mechanism designed to absorb losses from a defaulting clearing member without impacting the CCP's solvency or the broader market.</p>
+            <h4>The Layers of Protection (in order)</h4>
+            <ol>
+                <li><strong>Initial Margin of the Defaulting Member:</strong> The first line of defense is the collateral posted by the failed firm.</li>
+                <li><strong>Default Fund Contribution of the Defaulting Member:</strong> The failed firm's own contribution to the shared insurance pool is used next.</li>
+                <li><strong>CCP's Own Capital ("Skin-in-the-Game"):</strong> The CCP contributes its own capital to cover further losses.</li>
+                <li><strong>Default Fund Contributions of Surviving Members:</strong> The shared pool of capital from all other members is then utilized.</li>
+                <li><strong>Further Assessment Powers:</strong> In an extreme, unprecedented event, the CCP may have the right to call for additional funds from surviving members.</li>
+            </ol>
+        </div>
+
+        <button class="accordion">5. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Comparison</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Aspect</th><th>Bilateral Settlement</th><th>Central Clearing (CCP)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Risk Exposure</strong></td><td>Direct to counterparty</td><td>To the CCP only</td></tr>
+                        <tr><td><strong>Legal Framework</strong></td><td>ISDA Master Agreement + CSA</td><td>CCP Rulebook</td></tr>
+                        <tr><td><strong>Margining</strong></td><td>Bilateral (VM and sometimes IM)</td><td>Standardized and mandatory (IM + daily VM)</td></tr>
+                        <tr><td><strong>Transparency</strong></td><td>Low (private)</td><td>High (regulators have full view)</td></tr>
+                        <tr><td><strong>Systemic Impact</strong></td><td>High (risk of contagion)</td><td>Low (risk is contained by the CCP)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to explain the process of novation and why it is the cornerstone of central clearing. Understand and be able to list the layers of a CCP's risk waterfall. Articulate the primary benefit of central clearing as the mitigation of systemic risk by breaking the chain of bilateral counterparty exposures. Know the role of an ISDA and a CSA in managing risk for uncleared trades.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

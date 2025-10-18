@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clearing, Settlement & Post-Trade - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Clearing, Settlement & Post-Trade</h1>
+        <p>The ecosystem ensuring trades are matched, risks are mitigated, and obligations are fulfilled post-execution.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Trade Lifecycle Overview</button>
+        <div class="panel">
+            <p>Once a trade is agreed, an entire ecosystem ensures trade details are matched, risks are mitigated, obligations are fulfilled, and positions are monitored.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Stage</th><th>What Happens</th><th>Key Parties</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Trade Execution</strong></td><td>Dealer/client agree on trade terms.</td><td>Front Office (Sales, Trader)</td></tr>
+                        <tr><td><strong>Trade Capture</strong></td><td>Trade is entered into booking systems.</td><td>Trading Desk, Trade Support</td></tr>
+                        <tr><td><strong>Confirmation</strong></td><td>Both sides confirm exact trade terms electronically.</td><td>Counterparties, Confirmation Platform</td></tr>
+                        <tr><td><strong>Clearing</strong></td><td>Trade risk is novated to a clearing house (for cleared products).</td><td>CCP, Clearing Members</td></tr>
+                        <tr><td><strong>Settlement</strong></td><td>Final exchange of cash or securities.</td><td>Custodian, Clearing Bank</td></tr>
+                        <tr><td><strong>Post-Trade Management</strong></td><td>Margining, collateral, reporting, reconciliation, lifecycle events.</td><td>Middle/Back Office, Risk, Compliance</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">2. Clearing Systems: Bilateral vs. Central</button>
+        <div class="panel">
+            <h4>A. Bilateral (OTC Uncleared Trades)</h4>
+            <p>Each counterparty faces direct credit exposure to the other. Risk is mitigated by legal agreements like the ISDA Master Agreement and a Credit Support Annex (CSA), which defines collateral requirements. Collateral is exchanged based on the Mark-to-Market (MtM) value of the trades.</p>
+            
+            <h4>B. Central Clearing (via CCP)</h4>
+            <p>A Central Counterparty (CCP) like LCH or CME steps in between counterparties through a process called "novation," becoming the buyer to every seller and the seller to every buyer. This eliminates bilateral credit risk and reduces systemic risk through multilateral netting.</p>
+            <h4>CCP Risk Waterfall</h4>
+            <p>A CCP manages defaults through a layered defense system:</p>
+            <ol>
+                <li><strong>Initial Margin (IM)</strong> of the defaulting member.</li>
+                <li><strong>Default Fund</strong> contribution of the defaulting member.</li>
+                <li><strong>CCP's own capital</strong> ("skin in the game").</li>
+                <li><strong>Default Fund</strong> contributions of surviving members.</li>
+                <li>Further assessment powers over surviving members.</li>
+            </ol>
+        </div>
+
+        <button class="accordion">3. Margin Mechanics (Deep Dive)</button>
+        <div class="panel">
+            <h4>A. Core Margin Types</h4>
+            <ul>
+                <li><strong>Initial Margin (IM):</strong> Collateral posted upfront to cover *potential future exposure* between the last margin call and a potential default close-out.</li>
+                <li><strong>Variation Margin (VM):</strong> Cash settled daily or intraday to cover the *realized* daily profit or loss (mark-to-market).</li>
+            </ul>
+             <h4>B. How CCPs Calculate IM</h4>
+            <ul>
+                <li><strong>SPAN (Standard Portfolio Analysis of Risk):</strong> A scenario-based model used for futures & options (e.g., by CME). It calculates the worst-case portfolio loss under a series of hypothetical price and volatility shocks.</li>
+                <li><strong>Historical VaR (Value-at-Risk):</strong> Used for swaps and OTC derivatives (e.g., by LCH). It applies historical market movements to the current portfolio to calculate a potential loss at a high confidence level (e.g., 99% over 5 days).</li>
+            </ul>
+             <h4>C. Stress & Add-on Margins</h4>
+             <p>CCPs add extra margin layers to cover risks beyond standard models:</p>
+             <ul>
+                 <li><strong>Stress Margin:</strong> For extreme but plausible market moves.</li>
+                 <li><strong>Concentration Add-on:</strong> If a member holds a very large, concentrated position.</li>
+                 <li><strong>Liquidity Add-on:</strong> If a position would be difficult to unwind quickly.</li>
+             </ul>
+        </div>
+
+        <button class="accordion">4. Netting and Settlement</button>
+        <div class="panel">
+            <h4>A. Netting</h4>
+            <p>Netting reduces credit exposure and settlement flows by offsetting obligations. <strong>Trade netting</strong> combines multiple trades into a single position, while <strong>payment netting</strong> offsets cash flows due between two parties.</p>
+            <h4>B. Settlement</h4>
+            <p>The final exchange of cash or securities, which occurs through specialized systems like CLS (for FX), Euroclear/Clearstream/DTC (for securities), and Fedwire/TARGET2 (for payments).</p>
+        </div>
+
+        <button class="accordion">5. Collateral Management (Deep Dive)</button>
+        <div class="panel">
+            <h4>A. Collateral Eligibility and Haircuts</h4>
+            <p>CCPs define a list of eligible collateral (e.g., cash, government bonds). A **haircut** is applied to non-cash collateral to protect against a drop in its value. For example, a 2% haircut on a US Treasury bond means you must post $102.04 million worth of bonds to meet a $100 million margin call.</p>
+            <h4>B. Collateral Optimization</h4>
+            <p>This is the process of choosing the cheapest eligible asset to meet margin calls, considering factors like opportunity cost (funding rate), haircuts, and any concentration limits. Banks use sophisticated optimization engines to automate this.</p>
+            <h4>C. Tri-Party Repo & Collateral Management</h4>
+            <p>A tri-party agent (like BNY Mellon or JPMorgan) acts as an intermediary, holding and valuing collateral, ensuring eligibility, and automating settlement and substitution between two parties. This greatly improves operational efficiency.</p>
+        </div>
+
+        <button class="accordion">6. Trade Repositories & Regulatory Reporting</button>
+        <div class="panel">
+            <p>Following the 2008 financial crisis, regulations like EMIR (EU) and Dodd-Frank (US) mandate that all derivative trades be reported to a **Trade Repository (TR)**, such as the DTCC. These reports include counterparty identifiers (LEIs), trade economics (notional, maturity), and daily valuation and collateral updates to increase market transparency.</p>
+        </div>
+        
+        <button class="accordion">7. Summary & End-to-End Example</button>
+        <div class="panel">
+            <h4>End-to-End Workflow Example (Cleared IRS)</h4>
+            <ol>
+                <li>A fund buys a 5-year EUR Interest Rate Swap; the trade is executed and booked.</li>
+                <li>The trade is sent to a platform like MarkitWire and is **affirmed** by both parties.</li>
+                <li>The trade is **novated** to a CCP like LCH, which replaces the original counterparty.</li>
+                <li>LCH calculates and calls for **Initial Margin (IM)** and **Variation Margin (VM)**.</li>
+                <li>The fund posts the required collateral.</li>
+                <li>The trade is reported to a **Trade Repository** under EMIR.</li>
+                <li>The middle office **reconciles** margin calls and collateral balances daily.</li>
+            </ol>
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Function</th><th>Core Mechanism</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Clearing</strong></td><td>CCP novation, IM/VM margining</td><td>LCH, CME, Eurex</td></tr>
+                        <tr><td><strong>Settlement</strong></td><td>Exchange of cash/securities</td><td>Fedwire, Euroclear</td></tr>
+                        <tr><td><strong>Netting</strong></td><td>Reduce exposures by offsetting</td><td>Portfolio-level exposure reduction</td></tr>
+                        <tr><td><strong>Collateral Management</strong></td><td>Optimize pledged assets & apply haircuts</td><td>Using cheapest-to-deliver collateral</td></tr>
+                        <tr><td><strong>Reconciliation</strong></td><td>Match records to avoid breaks</td><td>DTCC vs. internal system checks</td></tr>
+                        <tr><td><strong>Regulatory Reporting</strong></td><td>Trade Repository submissions</td><td>EMIR/Dodd-Frank reporting</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

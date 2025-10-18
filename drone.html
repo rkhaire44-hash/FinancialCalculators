@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Picture / Basic Concepts - Derivative Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Big Picture / Basic Concepts</h1>
+        <p>The foundational building blocks of derivatives, from definitions and payoff types to settlement and conventions.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. What is a Derivative? (Definition + Purpose)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>A derivative is a contract whose value is derived from (i.e., depends on) the price or behavior of one or more underlying assets. These underlyings can be stocks, bonds, FX rates, commodity prices, interest rates, indices, or credit events.</p>
+            <h4>Purpose / Uses</h4>
+            <ul>
+                <li><strong>Hedging:</strong> To lock in prices or protect against adverse market movements (e.g., an airline hedging jet fuel prices).</li>
+                <li><strong>Speculation:</strong> To take directional or volatility bets, often with leverage.</li>
+                <li><strong>Arbitrage / Relative-Value:</strong> To exploit pricing differences across related markets or products.</li>
+                <li><strong>Access / Structuring:</strong> To create customized payout profiles that are difficult to achieve with standard instruments.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">2. Classes: Exchange-Traded vs. OTC</button>
+        <div class="panel">
+            <h4>Exchange-Traded Derivatives</h4>
+            <p><strong>Characteristics:</strong> These are standardized contracts (fixed size, expiry, tick size) traded on an exchange (like CME, ICE, Eurex). They are centrally cleared through a CCP, which requires daily margining (initial and variation margin). This makes them highly liquid, transparent, and low in counterparty credit risk.</p>
+            <p><strong>Example (Futures):</strong> You buy 1 oil futures contract for 1,000 barrels at $60/barrel. If the price rises to $62 the next day, your position is marked-to-market, and your margin account is credited with a gain of ($62 - $60) × 1,000 = $2,000.</p>
+            
+            <h4>OTC (Over-The-Counter) / Bespoke Derivatives</h4>
+            <p><strong>Characteristics:</strong> These are private, customizable contracts negotiated bilaterally between two counterparties (e.g., a bank and a corporate client). They carry counterparty credit risk unless collateralized or centrally cleared. While many standard OTC swaps are now cleared, uncleared trades are subject to strict margin rules.</p>
+            <p><strong>Example (Interest Rate Swap):</strong> Company A agrees to pay a fixed 2% interest rate on a $100 million notional amount and receive a floating rate (e.g., SOFR) on the same notional for 5 years. Each quarter, the parties exchange only the net difference between the fixed and floating payments.</p>
+        </div>
+
+        <button class="accordion">3. Payoff Types</button>
+        <div class="panel">
+            <h4>Linear Payoffs</h4>
+            <p>The payoff changes proportionally with the underlying asset. Instruments include forwards, futures, and swaps. The payoff for a long forward is (S_T - K), where S_T is the spot price at maturity and K is the strike price.</p>
+            <p><strong>Example:</strong> For a long forward with a strike of $100, if the spot price at maturity is $120, the payoff is +$20. If the spot is $90, the payoff is -$10.</p>
+
+            <h4>Convex Payoffs</h4>
+            <p>The payoff is non-linear, offering convex gains on the upside with limited downside. The primary instruments are options (calls and puts). The payoff for a European call option is max(S_T - K, 0).</p>
+            <p><strong>Example:</strong> For a call option with a strike of $50, if the spot price at expiry is $70, the payoff is $20. If the spot is $40, the payoff is $0 (the premium is lost).</p>
+
+            <h4>Path-Dependent Payoffs</h4>
+            <p>The payoff depends on the path the underlying asset takes over time, not just its final value. Examples include Asian options (based on an average price) and barrier options (knock-in/knock-out).</p>
+            <p><strong>Example (Barrier):</strong> A call option with a strike of $100 has an "up-and-out" barrier at $130. If the underlying's price touches or exceeds $130 at any point before expiry, the option becomes void and pays zero.</p>
+
+            <h4>Contingent / Credit Payoffs</h4>
+            <p>The payoff is contingent on a non-price event, such as a credit default. The main instrument is a Credit Default Swap (CDS).</p>
+             <p><strong>Example (CDS):</strong> A protection buyer pays a periodic spread (e.g., 2% per year) on a $10 million notional. If the referenced company defaults and the recovery rate is 40%, the protection seller pays the buyer (1 - 0.40) × $10 million = $6 million.</p>
+        </div>
+        
+        <button class="accordion">4. Settlement Styles & Exercise Rights</button>
+        <div class="panel">
+            <h4>Physical vs. Cash Settlement</h4>
+            <ul>
+                <li><strong>Physical Settlement:</strong> The underlying asset is actually delivered. For example, in a corn futures contract, the seller delivers bushels of corn to the buyer.</li>
+                <li><strong>Cash Settlement:</strong> The payoff is paid in cash, equal to the difference between the contract price and a reference price. For example, S&P 500 index futures are cash-settled.</li>
+            </ul>
+            <h4>Exercise Rights: European / American / Bermudan</h4>
+            <ul>
+                <li><strong>European:</strong> Can be exercised only at the maturity date. Common for index options.</li>
+                <li><strong>American:</strong> Can be exercised at any time up to and including the expiry date. Typical for single-stock options in US markets.</li>
+                <li><strong>Bermudan:</strong> Can be exercised on specific, pre-determined discrete dates before maturity.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">5. Convention Basics</button>
+        <div class="panel">
+            <h4>Notional</h4>
+            <p>The reference amount on which payments are calculated. It doesn't usually change hands (e.g., in an interest rate swap, only the net interest difference is exchanged).</p>
+            <h4>Day-Count Conventions</h4>
+            <p>These rules convert an accrual period into a year fraction for interest calculations. Common conventions include ACT/360, ACT/365, and 30/360.</p>
+            <p><strong>Example:</strong> A $100m notional at a 3% rate for 90 days using an ACT/360 convention would have a coupon payment of 0.03 × $100,000,000 × (90/360) = $750,000.</p>
+            <h4>Business Day Conventions</h4>
+            <p>Rules to adjust payment or reset dates that fall on weekends or holidays, such as "Following," "Modified Following," or "Preceding."</p>
+        </div>
+
+        <button class="accordion">6. Pricing/Forward Relationships</button>
+        <div class="panel">
+            <h4>Cost of Carry / Forward Price</h4>
+            <p>The theoretical forward price is determined by the spot price and the "cost of carry" (the net cost of holding the asset), which includes interest rates and any income from the asset (like dividends).</p>
+            <p><strong>Formula (Continuous):</strong> F_0 = S_0 * e^((r - q)T)</p>
+            <p><strong>Example:</strong> Spot price = $100, risk-free rate (r) = 2%, dividend yield (q) = 1%, time (T) = 0.5 years. The forward price would be approximately $100.50, as the financing cost is greater than the dividend yield.</p>
+        </div>
+
+        <button class="accordion">7. Margining & Marking-to-Market</button>
+        <div class="panel">
+            <h4>Exchange-Traded Margining</h4>
+            <ul>
+                <li><strong>Initial Margin (IM):</strong> Collateral posted to open a position, covering potential future exposure.</li>
+                <li><strong>Variation Margin (VM):</strong> Daily (or intra-day) cash transfers equal to the daily profit or loss (mark-to-market).</li>
+            </ul>
+            <h4>OTC Margining</h4>
+            <p>For cleared OTC trades, margin rules are similar to futures. For uncleared OTC trades, collateral is exchanged bilaterally under a CSA (Credit Support Annex), with daily VM and IM required for larger counterparties.</p>
+        </div>
+        
+        <button class="accordion">8. Interview Summary & Next Steps</button>
+        <div class="panel">
+             <h4>Quick Interview Summary</h4>
+            <p>If asked to explain derivatives basics, cover these five points:</p>
+            <ol>
+                <li><strong>Definition & Uses:</strong> They derive value from underlyings and are used for hedging, speculation, and arbitrage.</li>
+                <li><strong>Two Main Classes:</strong> Exchange-traded (standardized, cleared, daily margin) vs. OTC (customizable, counterparty risk).</li>
+                <li><strong>Payoff Types:</strong> Linear (forwards/swaps), convex (options), path-dependent (barriers), and contingent (CDS).</li>
+                <li><strong>Settlement/Exercise:</strong> Physical vs. cash settlement; European, American, or Bermudan exercise styles.</li>
+                <li><strong>Conventions:</strong> Mention that notional, day counts, and business day rules determine the exact cash flows.</li>
+            </ol>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

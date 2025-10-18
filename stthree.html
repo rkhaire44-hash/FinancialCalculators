@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settlement Systems & CSDs - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="settlement.html" class="back-link">← Back to Settlement</a>
+        <h1>Settlement Systems & CSDs</h1>
+        <p>The core infrastructure that enables the final, irrevocable transfer of securities and cash between market participants.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. What are CSDs and Settlement Systems?</button>
+        <div class="panel">
+            <h4>Central Securities Depository (CSD)</h4>
+            <p>A CSD is a financial market infrastructure that holds securities (like stocks and bonds) in a centralized, electronic (dematerialized) form and enables the processing of securities transactions through book-entry transfers. Think of it as the "bank for securities."</p>
+            <h4>Settlement Systems</h4>
+            <p>These are the electronic systems that facilitate the final settlement of trades. They are operated by CSDs and central banks and ensure that the transfer of securities and funds is conducted securely and efficiently.</p>
+            <h4>Key Functions</h4>
+            <ul>
+                <li><strong>Safekeeping of Assets:</strong> Holding securities in a centralized and secure location.</li>
+                <li><strong>Book-Entry Transfer:</strong> Transferring ownership of securities electronically without the physical movement of certificates.</li>
+                <li><strong>Settlement Finality:</strong> Ensuring that once a transfer is complete, it is final and irrevocable.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">2. Major Global CSDs and ICSDs</button>
+        <div class="panel">
+            <p>There are two main types of CSDs: domestic and international.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>Description</th><th>Examples</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Domestic CSDs</strong></td><td>Operate within a single country, settling trades for that domestic market.</td><td><strong>DTCC</strong> (Depository Trust & Clearing Corporation) in the US, <strong>NSDL/CDSL</strong> in India.</td></tr>
+                        <tr><td><strong>ICSDs (International CSDs)</strong></td><td>Specialize in the settlement of cross-border trades involving international securities (like Eurobonds).</td><td><strong>Euroclear</strong> (based in Belgium) and <strong>Clearstream</strong> (based in Luxembourg).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Example</h4>
+            <p>A trade in Apple stock (a US security) between two US institutions would settle at the DTCC. A trade in a USD-denominated bond issued by a German company (a Eurobond) would likely settle at Euroclear or Clearstream.</p>
+        </div>
+
+        <button class="accordion">3. The Settlement Process & DvP Mechanism</button>
+        <div class="panel">
+            <h4>The Settlement Workflow</h4>
+            <ol>
+                <li><strong>Trade Affirmation:</strong> Both parties confirm the trade details and send settlement instructions to their respective custodians.</li>
+                <li><strong>Instruction Matching:</strong> The custodians submit these instructions to the CSD. The CSD's system matches the instruction from the buyer's side with the instruction from the seller's side.</li>
+                <li><strong>Settlement Cycle:</strong> The CSD processes all matched instructions in batches on the settlement date (e.g., T+1).</li>
+                <li><strong>Book-Entry Transfer:</strong> The CSD debits the securities from the seller's account and credits them to the buyer's account. Simultaneously, it instructs the corresponding cash transfer.</li>
+            </ol>
+            <h4>Delivery vs. Payment (DvP)</h4>
+            <p>This is the most critical principle in modern settlement. DvP is a settlement mechanism that links the transfer of securities to the transfer of funds, ensuring that the delivery of securities occurs only if and when the corresponding payment is made. This eliminates principal risk.</p>
+            <p><strong>DvP Models:</strong> There are three main models (Model 1, 2, and 3) which differ in how they process transfers (gross vs. net) and when the transfers occur during the day.</p>
+        </div>
+
+        <button class="accordion">4. Immobilisation and Dematerialisation</button>
+        <div class="panel">
+            <h4>Immobilisation</h4>
+            <p>This is the process where physical share certificates are deposited with a CSD and are "immobilized," meaning they are no longer physically moved. Ownership is then transferred via electronic book-entry, but the underlying physical certificate still exists in the CSD's vault.</p>
+            <h4>Dematerialisation ("Demat")</h4>
+            <p>This goes a step further. Physical certificates are completely eliminated and replaced by purely electronic records of ownership held by the CSD. This is the standard in most modern markets as it is more efficient and secure.</p>
+            <h4>Example</h4>
+            <p>When you buy a share of a company today, you don't receive a paper certificate. Instead, your ownership is recorded as an electronic entry in a dematerialized account held with a depository participant, which in turn holds the securities at the CSD.</p>
+        </div>
+
+        <button class="accordion">5. The Role of RTGS Systems in Settlement</button>
+        <div class="panel">
+            <h4>Definition: Real-Time Gross Settlement (RTGS)</h4>
+            <p>RTGS systems are high-value payment systems, typically operated by central banks, that process fund transfers individually (on a "gross" basis) in real-time. This provides immediate and final settlement of cash payments.</p>
+            <h4>Role in Securities Settlement</h4>
+            <p>The cash leg of a securities transaction is often settled through an RTGS system. The CSD sends payment instructions to the RTGS system, which then facilitates the transfer of central bank money between the participants' cash accounts. This ensures the "payment" part of DvP is final and irrevocable.</p>
+            <h4>Examples of RTGS Systems</h4>
+            <ul>
+                <li><strong>Fedwire</strong> in the United States.</li>
+                <li><strong>TARGET2</strong> in the Eurozone.</li>
+                <li><strong>CHAPS</strong> in the United Kingdom.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">6. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Concept</th><th>Core Function</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>CSD</strong></td><td>Centralized safekeeping and book-entry transfer of securities.</td><td>DTCC, Euroclear, Clearstream.</td></tr>
+                        <tr><td><strong>ICSD</strong></td><td>Specializes in the settlement of cross-border and international securities.</td><td>Euroclear, Clearstream.</td></tr>
+                        <tr><td><strong>DvP</strong></td><td>Ensures the simultaneous exchange of securities and cash, eliminating principal risk.</td><td>Model 1 DvP settles on a gross basis.</td></tr>
+                        <tr><td><strong>Dematerialisation</strong></td><td>Eliminating physical share certificates in favor of purely electronic records.</td><td>Most modern stock markets.</td></tr>
+                        <tr><td><strong>RTGS System</strong></td><td>Real-time, final settlement of high-value cash payments.</td><td>Fedwire, TARGET2.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be able to clearly articulate the difference between a CSD and an ICSD. Explain the concept of DvP and why it is critical for eliminating principal risk. Understand the relationship between a CSD (which settles the securities leg) and an RTGS system (which settles the cash leg). Mentioning specific CSDs like DTCC, Euroclear, and Clearstream shows practical knowledge of the market infrastructure.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

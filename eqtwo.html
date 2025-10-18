@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Capital Structure - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="equity.html" class="back-link">← Back to Equity</a>
+        <h1>Corporate Capital Structure & Share Capital Concepts</h1>
+        <p>Understanding the building blocks of a company's equity and its implications.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Authorized / Issued / Outstanding / Treasury Shares</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Authorized Shares:</strong> Maximum number of shares a company is legally allowed to issue, as specified in its corporate charter.</li>
+                <li><strong>Issued Shares:</strong> Total number of shares that have actually been issued to investors (may include treasury shares).</li>
+                <li><strong>Outstanding Shares:</strong> Total shares currently held by shareholders, excluding treasury shares. These shares receive dividends and have voting rights.</li>
+                <li><strong>Treasury Shares:</strong> Shares that were issued but later repurchased by the company. They have no voting rights or dividends.</li>
+            </ul>
+            <h4>Example</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Number of Shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authorized</td>
+                            <td>1,000,000</td>
+                        </tr>
+                        <tr>
+                            <td>Issued</td>
+                            <td>800,000</td>
+                        </tr>
+                        <tr>
+                            <td>Treasury (repurchased)</td>
+                            <td>100,000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Outstanding</strong></td>
+                            <td><strong>700,000</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>Calculation:</strong> Outstanding Shares = Issued Shares – Treasury Shares = 700,000.</p>
+            <blockquote><strong>Interview Tip:</strong> If asked about EPS calculation, always use outstanding shares, not issued or authorized.</blockquote>
+        </div>
+
+        <button class="accordion">2. Float vs. Restricted Float</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Public Float (Free Float):</strong> Shares available for trading by the public, which excludes insider holdings, government stakes, or other restricted shares.</li>
+                <li><strong>Restricted Shares:</strong> Shares held by insiders, founders, or employees that are not immediately tradable (e.g., due to lock-up periods).</li>
+            </ul>
+            <h4>Example</h4>
+            <p>A company has 100 million total outstanding shares. Of these, 40 million are held by insiders and are restricted. The public float is therefore 100 million - 40 million = 60 million shares.</p>
+            <blockquote><strong>Interview Tip:</strong> Many major stock indices (like MSCI) use a free-float adjusted market capitalization instead of the total market cap to better reflect tradable liquidity.</blockquote>
+        </div>
+
+        <button class="accordion">3. Fully Diluted Share Count</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The fully diluted share count represents the maximum possible number of shares if all convertible securities (options, warrants, convertible bonds, etc.) were exercised or converted into common shares. This is used to calculate diluted EPS for a more conservative view of per-share metrics.</p>
+            <h4>Example</h4>
+            <p>A company has 100 million basic shares outstanding, 5 million stock options, and convertible bonds that would convert into 10 million shares. The fully diluted share count is 100 + 5 + 10 = 115 million shares.</p>
+            <blockquote><strong>Interview Tip:</strong> Always use the fully diluted share count in valuation metrics like P/E or EV per share for greater accuracy.</blockquote>
+        </div>
+
+        <button class="accordion">4. Treasury Stock Method & If-Converted Method</button>
+        <div class="panel">
+            <h4>Treasury Stock Method (TSM) - For Options & Warrants</h4>
+            <p>This method assumes that all in-the-money options are exercised and that the company uses the proceeds from the exercise to buy back its own shares at the current market price.</p>
+            <h4>Example (TSM)</h4>
+            <p>A company has 10 million options with an exercise price of $20. The current market price is $50.</p>
+            <ol>
+                <li><strong>Proceeds from exercise:</strong> 10 million options × $20/option = $200 million.</li>
+                <li><strong>Shares repurchased:</strong> $200 million / $50 market price = 4 million shares.</li>
+                <li><strong>Net new shares issued:</strong> 10 million new shares - 4 million repurchased = 6 million additional shares.</li>
+            </ol>
+            <h4>If-Converted Method - For Convertible Securities</h4>
+            <p>This method assumes that all convertible bonds or preferred shares are converted into common stock. For diluted EPS calculations, the interest saved (after-tax) or preferred dividends are added back to net income.</p>
+        </div>
+        
+        <button class="accordion">5. Share Classes & Pre-emptive Rights</button>
+        <div class="panel">
+             <h4>Share Classes</h4>
+            <p>Companies can issue multiple classes of stock with different rights (e.g., voting, dividends). This is common in dual-class structures where founders retain control (e.g., Alphabet Class A/B/C).</p>
+            <h4>Pre-emptive Rights</h4>
+            <p>These rights give existing shareholders the opportunity to buy new shares in a future offering before they are made available to the public, allowing them to maintain their proportional ownership and protect against dilution.</p>
+        </div>
+
+        <button class="accordion">6. Authorized but Unissued Shares & Par Value</button>
+        <div class="panel">
+            <h4>Authorized but Unissued Shares</h4>
+            <p>These are shares that a company is legally authorized to issue but has not yet sold to investors. They are kept in reserve for future needs like funding, employee compensation, or acquisitions.</p>
+            <h4>Par Value vs. No-Par</h4>
+            <ul>
+                <li><strong>Par Value:</strong> A nominal value assigned to a share in the corporate charter (e.g., $0.01). It is a legal and accounting concept and has no relation to the market price.</li>
+                <li><strong>No-Par Value:</strong> Shares issued without a nominal value, which is common in many modern jurisdictions.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">7. Capital Allocation Decisions</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Capital allocation describes how a company uses its free cash flow. The main options include:</p>
+            <ul>
+                <li>Paying dividends to shareholders.</li>
+                <li>Buying back shares to reduce the share count.</li>
+                <li>Reinvesting in growth (R&D, new markets, capex).</li>
+                <li>Paying down or refinancing debt.</li>
+                <li>Acquiring other companies.</li>
+            </ul>
+            <blockquote><strong>Interview Tip:</strong> High-performing companies prioritize allocating capital to projects where the expected return is greater than the cost of capital.</blockquote>
+        </div>
+
+        <button class="accordion">8. Dividends vs. Buybacks vs. Reinvestment</button>
+        <div class="panel">
+             <h4>Dividends</h4>
+            <p>Direct cash return to shareholders. Signals financial health and confidence but reduces retained earnings available for growth.</p>
+            <h4>Buybacks</h4>
+            <p>Reduces the number of outstanding shares, which boosts EPS. Can signal that management believes the stock is undervalued. More flexible than dividends as they can be stopped at any time.</p>
+            <h4>Reinvestment</h4>
+            <p>Using cash to fund growth projects to build long-term value. Common in high-growth industries like technology.</p>
+             <h4>Debt vs. Equity Trade-off</h4>
+            <p>Using debt is often cheaper and the interest is tax-deductible, but it adds financial risk. Using equity is less risky as there is no obligation to repay, but it is dilutive to existing owners.</p>
+        </div>
+
+        <button class="accordion">9. Leverage & Impact on Equity Returns</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Leverage is the use of debt to increase the potential returns on equity. It magnifies both gains and losses.</p>
+            <ul>
+                <li><strong>EPS (Earnings Per Share):</strong> Net Income / Shares Outstanding</li>
+                <li><strong>ROE (Return on Equity):</strong> Net Income / Shareholders’ Equity</li>
+            </ul>
+            <h4>Example</h4>
+            <p>If a company earns a return on its capital that is higher than the cost of its debt, leverage will boost its ROE.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>No Debt</th>
+                            <th>With Debt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>EBIT</td>
+                            <td>$100m</td>
+                            <td>$100m</td>
+                        </tr>
+                        <tr>
+                            <td>Interest</td>
+                            <td>$0</td>
+                            <td>$20m</td>
+                        </tr>
+                        <tr>
+                            <td>Net Income</td>
+                            <td>$80m</td>
+                            <td>$60m</td>
+                        </tr>
+                        <tr>
+                            <td>Equity</td>
+                            <td>$800m</td>
+                            <td>$400m</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ROE</strong></td>
+                            <td><strong>10%</strong></td>
+                            <td><strong>15%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <button class="accordion">10. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Quick Summary Table</h4>
+             <div class="table-container">
+                <table>
+                   <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>What It Means</th>
+                            <th>Key Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Authorized Shares</td>
+                            <td>Max shares allowed</td>
+                            <td>Legal limit for issuance</td>
+                        </tr>
+                        <tr>
+                            <td>Outstanding Shares</td>
+                            <td>Shares held by investors</td>
+                            <td>Used for EPS, voting</td>
+                        </tr>
+                        <tr>
+                            <td>Treasury Shares</td>
+                            <td>Repurchased shares</td>
+                            <td>No voting/dividend</td>
+                        </tr>
+                        <tr>
+                            <td>Float</td>
+                            <td>Tradable shares</td>
+                            <td>Affects liquidity</td>
+                        </tr>
+                        <tr>
+                            <td>Fully Diluted Shares</td>
+                            <td>Potential max shares</td>
+                            <td>Used for diluted EPS</td>
+                        </tr>
+                        <tr>
+                            <td>Leverage</td>
+                            <td>Debt impact on returns</td>
+                            <td>Boosts ROE but raises risk</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>These topics are often tested with short numerical exercises. Be prepared for questions like: "Given these numbers, calculate fully diluted shares using the Treasury Stock Method," or "How does a share buyback affect EPS and ROE?"</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equity Markets & Market Structure - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="equity.html" class="back-link">← Back to Equity</a>
+        <h1>Equity Markets & Market Structure</h1>
+        <p>Understanding where and how equity securities are traded, from primary issuance to secondary market liquidity.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Primary vs. Secondary Markets</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <ul>
+                <li><strong>Primary Market:</strong> Where companies issue new securities to raise capital — typically through IPOs, follow-on offerings, or private placements.</li>
+                <li><strong>Secondary Market:</strong> Where existing securities are bought and sold among investors. The issuing company does not receive any money here.</li>
+            </ul>
+            <h4>Mechanism</h4>
+            <ul>
+                <li><strong>Primary:</strong> Company issues new shares → Investors subscribe → Company receives proceeds.</li>
+                <li><strong>Secondary:</strong> Investor A sells shares to Investor B → Proceeds go to Investor A, not the company.</li>
+            </ul>
+            <h4>Example</h4>
+            <p><strong>Primary:</strong> Tesla raises $2B by issuing new shares in a follow-on offering.<br>
+            <strong>Secondary:</strong> You buy Tesla shares from another investor on Nasdaq — Tesla receives no new capital.</p>
+            <blockquote><strong>Interview Tip:</strong> Primary Market = Capital Formation. Secondary Market = Liquidity Provision.</blockquote>
+        </div>
+
+        <button class="accordion">2. Stock Exchanges & Alternative Trading Venues</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <ul>
+                <li><strong>Stock Exchange:</strong> A regulated marketplace where securities are listed and traded (e.g., NYSE, Nasdaq, LSE, BSE).</li>
+                <li><strong>Alternative Trading System (ATS):</strong> Non-exchange trading venues like electronic communication networks (ECNs) or dark pools.</li>
+                <li><strong>Dark Pools:</strong> Private venues for large trades with minimal pre-trade transparency to reduce market impact.</li>
+            </ul>
+            <h4>Mechanism</h4>
+            <p>Exchanges match buy and sell orders based on price and time priority. ATS and dark pools are often used by institutions for block trades to avoid market impact.</p>
+            <h4>Example</h4>
+            <p>A hedge fund wants to sell 5 million shares of Apple. If placed on the NYSE all at once, the large supply might push the price down. Instead, it executes the trade in a dark pool to minimize this price impact (slippage).</p>
+        </div>
+
+        <button class="accordion">3. Order-Driven vs. Quote-Driven Markets</button>
+        <div class="panel">
+            <h4>Order-Driven Markets</h4>
+            <p>Prices are determined by the supply and demand of buy and sell orders from the public. Orders are matched directly in a central limit order book. Examples include NYSE, LSE, and NSE.</p>
+            <h4>Quote-Driven Markets</h4>
+            <p>Market makers provide liquidity by quoting continuous bid (buy) and ask (sell) prices. Investors trade against these quotes. Examples include Nasdaq (historically) and OTC markets.</p>
+             <h4>Example</h4>
+            <p><strong>Order-Driven:</strong> The order book shows a bid for 100 shares @ $50.00 and an ask for 200 shares @ $50.05. A market buy order would execute at $50.05.<br>
+            <strong>Quote-Driven:</strong> A dealer quotes a price of $49.95 / $50.05. An investor can sell to the dealer at $49.95 or buy from the dealer at $50.05.</p>
+            <blockquote><strong>Interview Tip:</strong> Most major exchanges today are hybrid systems, using a central order book but also having designated market makers to ensure liquidity.</blockquote>
+        </div>
+
+        <button class="accordion">4. Market Makers, Liquidity Providers, & DMMs</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Market Makers:</strong> Financial firms that provide liquidity by continuously quoting bid and ask prices, profiting from the bid-ask spread.</li>
+                <li><strong>Liquidity Providers:</strong> A broader term that includes market makers, institutional investors, and algorithmic traders who add depth to the market.</li>
+                <li><strong>Designated Market Makers (DMMs):</strong> Specific firms appointed by an exchange (like the NYSE) to maintain a fair and orderly market in certain stocks. They are obligated to provide liquidity during volatile periods.</li>
+            </ul>
+            <h4>Example</h4>
+            <p>A Nasdaq market maker quotes a stock at Bid: $49.90 (their buy price) and Ask: $50.10 (their sell price). The $0.20 difference is their spread. On the NYSE, a DMM for Apple ensures there are always bids and asks available, even during sharp market moves.</p>
+        </div>
+
+        <button class="accordion">5. Order Types (Detailed)</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Market Order</strong></td>
+                            <td>Executes immediately at the best available market price. Guarantees execution, not price.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limit Order</strong></td>
+                            <td>Executes only at a specific price or better. Guarantees price, not execution.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stop-Loss Order</strong></td>
+                            <td>Becomes a market order to sell when the price falls to or below a specified stop price.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stop-Limit Order</strong></td>
+                            <td>Becomes a limit order when the stop price is reached.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>IOC (Immediate or Cancel)</strong></td>
+                            <td>Executes as much of the order as possible immediately, and cancels the rest.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>FOK (Fill or Kill)</strong></td>
+                            <td>Must be filled completely and immediately, or the entire order is canceled.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>GTC (Good Till Cancelled)</strong></td>
+                            <td>The order remains active until it is executed or manually canceled by the trader.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Iceberg Order</strong></td>
+                            <td>A large order that is broken into smaller visible chunks to hide the true order size.</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Peg Order</strong></td>
+                            <td>An order whose price is pegged to a reference, like the midpoint or the best bid/ask.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">6. Best Execution, Order Routing & PFOF</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Best Execution:</strong> A regulatory requirement for brokers to execute client orders on the most favorable terms possible (considering price, speed, cost, etc.).</li>
+                <li><strong>Order Routing:</strong> The process by which brokers use smart order routers (SORs) to send client orders to different venues (exchanges, dark pools) to achieve best execution.</li>
+                <li><strong>Payment for Order Flow (PFOF):</strong> A practice where brokers receive compensation from market makers for routing client orders to them.</li>
+            </ul>
+            <h4>Example</h4>
+            <p>You place a market order on a retail brokerage app. The app routes your order to a large market maker like Citadel Securities. Citadel executes your trade and pays the brokerage a small fee for sending them the order flow.</p>
+        </div>
+        
+        <button class="accordion">7. Off-Exchange Trading & Block Trades</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Off-Exchange Trading:</strong> Trading executed outside traditional exchanges, often through dark pools, OTC, or internalization by brokers.</li>
+                <li><strong>Block Trades:</strong> Large transactions (typically over 10,000 shares) that are executed privately to avoid impacting the public market price.</li>
+            </ul>
+             <h4>Mechanism</h4>
+            <p>Block trades are often negotiated directly between institutions or through specialized brokers. The trade is reported to the public tape after execution for transparency.</p>
+             <h4>Example</h4>
+            <p>A pension fund wants to sell 5 million shares. Selling on the open market would cause the price to collapse. Instead, they execute a block trade with another fund over-the-counter at a privately negotiated price.</p>
+        </div>
+
+        <button class="accordion">8. Tick Size Regimes & Price Improvement</button>
+        <div class="panel">
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>Tick Size:</strong> The minimum price increment at which a security can trade (e.g., $0.01 for most U.S. stocks).</li>
+                <li><strong>Price Improvement:</strong> Executing a trade at a better price than the current national best bid and offer (NBBO).</li>
+            </ul>
+            <h4>Example</h4>
+            <p>The NBBO for a stock is $50.00 / $50.05. Your market buy order is filled at $50.03. You have received $0.02 of price improvement per share.</p>
+        </div>
+        
+        <button class="accordion">9. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table (Cheat Sheet)</h4>
+             <div class="table-container">
+                <table>
+                   <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Primary Market</td>
+                            <td>Raise capital</td>
+                            <td>IPO, Follow-on Offering</td>
+                        </tr>
+                        <tr>
+                            <td>Secondary Market</td>
+                            <td>Provide liquidity</td>
+                            <td>Buying Apple on Nasdaq</td>
+                        </tr>
+                        <tr>
+                            <td>Exchange</td>
+                            <td>Centralized trading</td>
+                            <td>NYSE, LSE</td>
+                        </tr>
+                        <tr>
+                            <td>ATS / Dark Pool</td>
+                            <td>Alternative venue</td>
+                            <td>Institutional block trade</td>
+                        </tr>
+                         <tr>
+                            <td>Market Maker</td>
+                            <td>Liquidity provider</td>
+                            <td>Citadel, Virtu</td>
+                        </tr>
+                         <tr>
+                            <td>Best Execution</td>
+                            <td>Client protection</td>
+                            <td>Smart order routing</td>
+                        </tr>
+                         <tr>
+                            <td>PFOF</td>
+                            <td>Broker compensation</td>
+                            <td>Retail brokerages</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>
+                Be prepared to answer common questions like: "What’s the difference between primary and secondary markets?", "How do dark pools reduce market impact?", "Explain a market order vs. a limit order and when you’d use each.", and "How does payment for order flow work and why is it controversial?"
+            </blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

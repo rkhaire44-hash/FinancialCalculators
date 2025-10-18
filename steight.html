@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulatory Landscape (CSDR, T+1) - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="settlement.html" class="back-link">← Back to Settlement</a>
+        <h1>Regulatory Landscape (CSDR, T+1)</h1>
+        <p>The key post-crisis regulations that have reshaped settlement processes, timelines, and risk management globally.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The Post-GFC Regulatory Overhaul</button>
+        <div class="panel">
+            <h4>The Driver for Change</h4>
+            <p>The 2008 financial crisis exposed significant systemic risks in the post-trade environment, particularly in the uncleared OTC derivatives market. In response, the G20 leaders mandated a series of global reforms aimed at making the financial system safer.</p>
+            <h4>The Three Core Goals of Reform</h4>
+            <ol>
+                <li><strong>Reduce Counterparty Risk:</strong> By moving standardized OTC derivatives into central clearing (CCPs).</li>
+                <li><strong>Increase Transparency:</strong> By requiring all derivative trades to be reported to trade repositories.</li>
+                <li><strong>Improve Settlement Efficiency:</strong> By harmonizing rules and penalizing failures to reduce operational risk.</li>
+            </ol>
+            <p>Regulations like T+1 settlement and CSDR are direct outcomes of this push for a more resilient post-trade infrastructure.</p>
+        </div>
+
+        <button class="accordion">2. The Move to T+1 Settlement</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>T+1 is a market-wide initiative to shorten the settlement cycle for securities (primarily equities) from two business days after the trade date (T+2) to just one business day (T+1).</p>
+            <h4>Key Markets</h4>
+            <p>The transition to T+1 has been a major global focus. Key markets that have moved or are moving include the **United States, Canada, and Mexico (May 2024)**, while **India** has already successfully implemented it.</p>
+            <h4>Benefits of T+1</h4>
+            <ul>
+                <li><strong>Reduced Counterparty Risk:</strong> The risk period between the trade and its final settlement is cut in half, reducing the likelihood of a default impacting the market.</li>
+                <li><strong>Lower Margin Requirements:</strong> CCPs require less collateral (margin) from clearing members because the risk period they need to cover is shorter.</li>
+            </ul>
+            <h4>Operational Challenges & Impact</h4>
+            <p>The move to T+1 creates significant pressure on post-trade operations:</p>
+            <ul>
+                <li><strong>Compressed Timelines:</strong> All processes, including trade allocation, affirmation, and recalls for securities lending, must be completed on the trade date (T=0).</li>
+                <li><strong>FX & Funding Risk:</strong> International investors face a major challenge. They must execute their FX transaction to source the settlement currency and fund their account on the same day as the trade, which is difficult across different time zones.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">3. CSDR & the Settlement Discipline Regime (Europe)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The Central Securities Depositories Regulation (CSDR) is a European regulation designed to harmonize the operations of CSDs and improve settlement safety and efficiency across the EU.</p>
+            <h4>The Settlement Discipline Regime (SDR)</h4>
+            <p>The most impactful part of CSDR is the SDR, which introduced strict measures to address settlement fails.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Component</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Cash Penalties</strong></td><td>An automatic daily cash penalty is levied on any party that causes a settlement fail. The penalty is calculated by the CSD based on the value of the transaction and the type of security.</td></tr>
+                        <tr><td><strong>Mandatory Buy-ins</strong></td><td>The original regulation included a rule for mandatory buy-ins, where the non-failing party would be forced to execute a buy-in after a certain period. While this rule has been postponed, its potential implementation has driven significant improvements in settlement efficiency.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Example</h4>
+            <p>A firm in Germany fails to deliver a bond to a firm in France. Under CSDR, the European CSD (e.g., Euroclear or Clearstream) will automatically calculate and apply a daily cash penalty to the German firm until the trade successfully settles.</p>
+        </div>
+
+        <button class="accordion">4. Other Key Post-Trade Regulations</button>
+        <div class="panel">
+            <h4>Uncleared Margin Rules (UMR)</h4>
+            <p>A global framework from BCBS-IOSCO that requires the exchange of both Variation Margin (VM) and Initial Margin (IM) for uncleared OTC derivatives. The requirement to calculate and post segregated IM daily using models like the ISDA SIMM has dramatically increased the complexity and cost of collateral management.</p>
+            
+            <h4>SFTR (Securities Financing Transactions Regulation)</h4>
+            <p>A European regulation that requires all securities financing transactions (SFTs), such as repos and securities lending, to be reported to a trade repository. This brings transparency to the shadow banking system, similar to what EMIR did for derivatives.</p>
+        </div>
+        
+        <button class="accordion">5. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table of Key Regulations</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Regulation</th><th>Core Purpose</th><th>Key Impact</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>T+1 Settlement</strong></td><td>Reduce counterparty risk by shortening the settlement cycle.</td><td>Compresses operational timelines and increases pressure on FX and funding.</td></tr>
+                        <tr><td><strong>CSDR</strong></td><td>Improve settlement efficiency in Europe.</td><td>Imposes automatic cash penalties for settlement fails.</td></tr>
+                        <tr><td><strong>UMR</strong></td><td>Reduce risk in the uncleared derivatives market.</td><td>Mandates the exchange of Initial and Variation Margin.</td></tr>
+                        <tr><td><strong>SFTR</strong></td><td>Increase transparency in securities financing.</td><td>Requires the reporting of all repo and stock loan transactions.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to discuss the operational challenges of T+1, especially for international investors dealing with different time zones. Explain the two main pillars of the CSDR Settlement Discipline Regime (cash penalties and the postponed mandatory buy-ins). Connect these regulations back to the post-2008 G20 goals of reducing systemic risk and increasing transparency. Demonstrating knowledge of these recent and impactful regulations is key for showing you are up-to-date with the industry.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fails Management & Buy-ins - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="settlement.html" class="back-link">← Back to Settlement</a>
+        <h1>Fails Management & Buy-ins</h1>
+        <p>The operational processes for resolving trade settlement failures and the ultimate remedy of a buy-in.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. What is a Settlement Fail?</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>A settlement fail occurs when a securities transaction does not settle on its scheduled settlement date. This means either the seller has failed to deliver the securities or the buyer has failed to deliver the cash. The trade is not cancelled, but its completion is delayed, creating risk and operational overhead.</p>
+            <h4>Why Fails Matter</h4>
+            <p>Settlement fails introduce counterparty risk, increase operational costs, and can lead to regulatory penalties. Efficiently managing and resolving fails is a core function of any back-office or operations team.</p>
+        </div>
+
+        <button class="accordion">2. Common Causes of Settlement Fails</button>
+        <div class="panel">
+            <p>Fails can occur for a variety of reasons, most of which are operational in nature.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Cause</th><th>Description</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Incorrect Settlement Instructions (SSIs)</strong></td><td>The trade instructions sent to the CSD contain an error (e.g., wrong security ID, wrong quantity, wrong counterparty account). This is one of the most common causes.</td><td>A trade is booked with the wrong CUSIP/ISIN, so the CSD cannot match the buyer's and seller's instructions.</td></tr>
+                        <tr><td><strong>Insufficient Securities Inventory</strong></td><td>The seller does not have the required securities in their account to deliver.</td><td>A short seller is unable to borrow the stock in time for settlement.</td></tr>
+                        <tr><td><strong>Insufficient Funds</strong></td><td>The buyer does not have enough cash in their account to pay for the securities.</td><td>A funding delay prevents a firm's cash account from being credited in time.</td></tr>
+                        <tr><td><strong>Operational Delays</strong></td><td>A human or system error somewhere in the post-trade processing chain causes a delay that makes the trade miss its settlement window for the day.</td><td>A trade affirmation is missed, so the settlement instruction is not sent to the custodian on time.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">3. The Buy-in Process: The Ultimate Remedy</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>A buy-in is a contractual remedy that the non-failing party (the buyer) can use to receive their securities if the seller continues to fail to deliver. The buyer's broker goes into the open market to purchase the securities and any difference in cost is charged to the original, failing seller.</p>
+            <h4>The Workflow</h4>
+            <ol>
+                <li><strong>Settlement Fail Occurs:</strong> The seller fails to deliver the securities on the settlement date.</li>
+                <li><strong>Grace Period:</strong> The market may allow a short grace period for the seller to resolve the issue.</li>
+                <li><strong>Buy-in Notice Issued:</strong> If the fail persists, the buyer's broker issues a formal "buy-in notice" to the seller, stating their intention to buy the securities in the market.</li>
+                <li><strong>Buy-in Execution:</strong> The broker executes the purchase on the open market.</li>
+                <li><strong>Cost Allocation:</strong> If the market price is higher than the original trade price, the failing seller is liable for the difference plus any administrative fees.</li>
+            </ol>
+            <h4>Example</h4>
+            <p>A trader buys 1,000 shares of XYZ at $50 per share. The seller fails to deliver. After two days, the buyer's broker issues a buy-in notice. They then buy 1,000 shares in the market at the current price of $55. The original seller is now responsible for the $5,000 difference (($55 - $50) x 1,000 shares) plus fees.</p>
+        </div>
+
+        <button class="accordion">4. Consequences & Penalties (CSDR)</button>
+        <div class="panel">
+            <h4>Financial and Reputational Impact</h4>
+            <p>Settlement fails are costly. They result in:</p>
+            <ul>
+                <li><strong>Direct Costs:</strong> Daily cash penalties for failing, and potential losses from buy-ins.</li>
+                <li><strong>Operational Costs:</strong> The human effort required to investigate and resolve fails is significant.</li>
+                <li><strong>Reputational Risk:</strong> A high fail rate can damage a firm's reputation and relationships with counterparties and clients.</li>
+            </ul>
+            <h4>The CSDR Settlement Discipline Regime (Europe)</h4>
+            <p>The Central Securities Depositories Regulation (CSDR) in Europe introduced a strict **Settlement Discipline Regime** to improve settlement efficiency. Its key components are:</p>
+            <ul>
+                <li><strong>Cash Penalties:</strong> Automatic daily penalties are levied on any party that causes a settlement fail.</li>
+                <li><strong>Mandatory Buy-ins:</strong> The regulation originally included a mandatory buy-in process, although this has been postponed. The threat of its implementation has already pushed firms to improve their settlement processes.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">5. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Concept</th><th>Core Function</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Settlement Fail</strong></td><td>A delay in the final transfer of securities or cash.</td><td>A seller not having the shares in their account to deliver.</td></tr>
+                        <tr><td><strong>Common Cause</strong></td><td>Incorrect Settlement Instructions (SSIs).</td><td>A wrong CUSIP or counterparty account number.</td></tr>
+                        <tr><td><strong>Buy-in</strong></td><td>The ultimate remedy where the buyer purchases the failed securities in the market.</td><td>Forcing the failing seller to cover the cost difference.</td></tr>
+                        <tr><td><strong>CSDR</strong></td><td>A European regulation that imposes penalties for settlement fails.</td><td>Daily cash penalties for failing trades.</td></tr>
+                        <tr><td><strong>Fails Management</strong></td><td>The operational process of investigating and resolving fails.</td><td>A back-office team chasing counterparties to correct instructions.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to explain the most common cause of a settlement fail (incorrect SSIs) and walk through the buy-in process step-by-step. Mentioning specific regulations like CSDR demonstrates up-to-date market knowledge. For an operations role, emphasize the importance of proactive fails management, including pre-matching trades and communicating with counterparties, to prevent fails before they occur.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash & FX Settlement (CLS) - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="settlement.html" class="back-link">← Back to Settlement</a>
+        <h1>Cash & FX Settlement (CLS)</h1>
+        <p>How the global financial system mitigates settlement risk in foreign exchange markets through Continuous Linked Settlement.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The Problem: FX Settlement Risk (Herstatt Risk)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Foreign Exchange (FX) settlement risk is the risk that one party in an FX transaction pays out the currency it sold but does not receive the currency it bought. This is also known as **principal risk**, as a party could lose the full principal value of the transaction.</p>
+            <h4>The Origin: Herstatt Risk</h4>
+            <p>This risk is famously named after the 1974 failure of a German bank, Bankhaus Herstatt. German regulators closed the bank after it had received its Deutsche Mark payments in Europe but before it could make its corresponding US Dollar payments in New York due to the time zone difference. Its counterparties never received their USD payments, leading to a chain reaction of losses across the financial system.</p>
+            <h4>Example of Herstatt Risk</h4>
+            <p>Bank A in London sells £10 million and buys USD from Bank B in New York. At 10:00 AM London time, Bank A sends its £10 million payment. At 1:00 PM London time (8:00 AM in New York), before Bank B can send its USD payment, Bank B declares bankruptcy. Bank A has now lost the full principal of £10 million.</p>
+        </div>
+
+        <button class="accordion">2. The Solution: Continuous Linked Settlement (CLS)</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>CLS (Continuous Linked Settlement) is a global financial market utility that provides a settlement service for FX transactions, designed to eliminate settlement risk. It is operated by CLS Bank International, which is owned and regulated by the world's largest central banks and financial institutions.</p>
+            <h4>The Core Principle: Payment vs. Payment (PvP)</h4>
+            <p>The entire CLS system is built on the principle of Payment versus Payment (PvP). This means that the final transfer of one currency occurs only if and when the final transfer of the other currency also occurs. CLS acts as a trusted third party, ensuring that neither party can lose its principal.</p>
+        </div>
+
+        <button class="accordion">3. The CLS Settlement Mechanism</button>
+        <div class="panel">
+            <h4>The Workflow</h4>
+            <ol>
+                <li><strong>Trade Submission:</strong> Both parties to an FX trade submit their settlement instructions to the CLS system.</li>
+                <li><strong>Funding Schedule:</strong> CLS calculates the net funding obligation for each member in each currency.</li>
+                <li><strong>Funding:</strong> On the settlement date, during a specific funding window, each member pays the net amount of the currencies it is selling into its account at CLS Bank.</li>
+                <li><strong>Settlement (PvP):</strong> CLS continuously monitors the accounts. Once it confirms that both parties to a transaction have sufficient funds, it executes the settlement by simultaneously making the payments to the respective recipients.</li>
+                <li><strong>Finality:</strong> The settlement is final and irrevocable.</li>
+            </ol>
+            <h4>Example (Revisited with CLS)</h4>
+            <p>Bank A (selling GBP) and Bank B (selling USD) submit their trade to CLS. On the settlement date, Bank A pays its GBP to CLS Bank, and Bank B pays its USD. CLS will only release the USD to Bank A and the GBP to Bank B at the exact same moment. If Bank B defaults and fails to pay its USD, CLS will not release Bank A's GBP, thus protecting Bank A from any principal loss.</p>
+        </div>
+
+        <button class="accordion">4. The Power of Multilateral Netting</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>A major benefit of CLS is its use of multilateral netting. Instead of settling every single trade on a gross basis, CLS aggregates all of a member's pay-ins and pay-outs in a single currency and calculates one net amount to be paid or received.</p>
+            <h4>Mechanism and Benefit</h4>
+            <p>This drastically reduces the amount of liquidity that firms need to have on hand for settlement. By netting down transactions, CLS eliminates over 96% of the payments that would otherwise need to be exchanged, significantly improving liquidity efficiency in the financial system.</p>
+            <h4>Example</h4>
+            <p>A bank has hundreds of EUR/USD trades in a day. Instead of making 50 individual EUR payments totaling €500 million and receiving 40 payments totaling €480 million, CLS calculates that the bank has a single net obligation to pay €20 million. The bank only needs to fund this one net amount.</p>
+        </div>
+        
+        <button class="accordion">5. Summary & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Comparison</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Aspect</th><th>Traditional Gross Settlement</th><th>CLS (PvP) Settlement</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Settlement Risk</strong></td><td>Full principal (Herstatt) risk exists.</td><td>Principal risk is eliminated.</td></tr>
+                        <tr><td><strong>Mechanism</strong></td><td>Each party pays the other directly, creating a time lag.</td><td>Both parties pay a central third party (CLS) for simultaneous exchange.</td></tr>
+                        <tr><td><strong>Liquidity Requirement</strong></td><td>High (each trade is funded on a gross basis).</td><td>Low (multilateral netting reduces funding needs by ~96%).</td></tr>
+                        <tr><td><strong>Finality</strong></td><td>Can be uncertain until all payments are confirmed.</td><td>Final and irrevocable once PvP settlement occurs.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to explain Herstatt Risk by name and use the time-zone difference as a clear example of how it occurs. Articulate that CLS solves this problem through the Payment vs. Payment (PvP) mechanism. Highlighting the benefit of multilateral netting (liquidity efficiency) shows a deeper understanding of CLS's value beyond just risk mitigation. This is a core topic for any role related to FX, treasury, or international settlement operations.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

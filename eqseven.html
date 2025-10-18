@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Metrics, Ratios & Performance - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="equity.html" class="back-link">← Back to Equity</a>
+        <h1>Financial Metrics, Ratios & Performance</h1>
+        <p>The core metrics used to evaluate a company's market value, profitability, leverage, and performance.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. Market Metrics</button>
+        <div class="panel">
+            <h4>Market Capitalization (Market Cap)</h4>
+            <p><strong>Definition:</strong> The total equity value of a company based on its current share price and shares outstanding.</p>
+            <p><strong>Formula:</strong> Market Cap = Share Price × Shares Outstanding</p>
+            <p><strong>Example:</strong> A company with a share price of $50 and 100 million shares outstanding has a Market Cap of $5 billion.</p>
+            
+            <h4>Enterprise Value (EV)</h4>
+            <p><strong>Definition:</strong> The total value of a company’s operating assets, representing the value of the entire business to both equity and debt holders.</p>
+            <p><strong>Formula:</strong> EV = Market Cap + Total Debt - Cash and Cash Equivalents</p>
+            <p><strong>Example:</strong> Market Cap = $5B, Debt = $2B, Cash = $500M → EV = $6.5B. EV is considered the true theoretical acquisition cost.</p>
+            
+            <h4>Free Float Market Cap</h4>
+            <p><strong>Definition:</strong> Market capitalization based only on shares available for public trading (excluding insider and government holdings).</p>
+            <p><strong>Formula:</strong> Free Float Market Cap = Share Price × Free Float Shares</p>
+            <p><strong>Example:</strong> Total shares = 100M, Free float = 70M, Price = $50 → Free Float Market Cap = $3.5B. This is often used for index inclusion.</p>
+        </div>
+
+        <button class="accordion">2. Profitability & Efficiency Metrics</button>
+        <div class="panel">
+            <h4>EPS (Earnings Per Share)</h4>
+            <p><strong>Definition:</strong> The amount of net income earned per share of stock. Basic EPS uses current shares, while Diluted EPS includes the impact of options and convertibles.</p>
+            <p><strong>Formula:</strong> EPS = (Net Income - Preferred Dividends) / Weighted Avg. Shares Outstanding</p>
+            <p><strong>Example:</strong> Net Income = $200M, Shares = 100M → EPS = $2.00.</p>
+            
+            <h4>ROE (Return on Equity)</h4>
+            <p><strong>Definition:</strong> Measures how efficiently a company uses shareholder equity to generate profit.</p>
+            <p><strong>Formula:</strong> ROE = Net Income / Average Shareholders' Equity</p>
+            <p><strong>Example:</strong> Net Income = $300M, Equity = $2B → ROE = 15%.</p>
+            
+            <h4>ROIC (Return on Invested Capital)</h4>
+            <p><strong>Definition:</strong> Shows how effectively a company uses all its capital (debt + equity) to generate returns.</p>
+            <p><strong>Formula:</strong> ROIC = NOPAT / Invested Capital (where NOPAT is Net Operating Profit After Tax)</p>
+            <p><strong>Example:</strong> NOPAT = $500M, Invested Capital = $5B → ROIC = 10%. This should be compared against WACC.</p>
+
+            <h4>ROA (Return on Assets)</h4>
+            <p><strong>Definition:</strong> Profitability relative to a company's total assets.</p>
+            <p><strong>Formula:</strong> ROA = Net Income / Average Total Assets</p>
+            <p><strong>Example:</strong> Net Income = $200M, Assets = $4B → ROA = 5%.</p>
+
+            <h4>Margins</h4>
+             <ul>
+                <li><strong>Gross Margin:</strong> (Revenue - COGS) / Revenue</li>
+                <li><strong>Operating Margin:</strong> Operating Income / Revenue</li>
+                <li><strong>Net Margin:</strong> Net Income / Revenue</li>
+            </ul>
+        </div>
+
+        <button class="accordion">3. Leverage & Coverage Ratios</button>
+        <div class="panel">
+            <h4>Debt-to-Equity (D/E)</h4>
+            <p><strong>Formula:</strong> Total Debt / Shareholders' Equity. A high D/E ratio implies more leverage and more risk.</p>
+            <p><strong>Example:</strong> Debt = $3B, Equity = $2B → D/E = 1.5x.</p>
+            
+            <h4>Net Debt / EBITDA</h4>
+            <p><strong>Formula:</strong> (Total Debt - Cash) / EBITDA. Shows how many years of EBITDA it would take to pay off all debt.</p>
+             <p><strong>Example:</strong> Debt = $4B, Cash = $1B, EBITDA = $1B → Net Debt / EBITDA = 3.0x.</p>
+             
+            <h4>Interest Coverage Ratio</h4>
+            <p><strong>Formula:</strong> EBIT / Interest Expense. Measures a company's ability to meet its interest payments.</p>
+            <p><strong>Example:</strong> EBIT = $500M, Interest Expense = $100M → Interest Coverage = 5.0x. A ratio below 2.0x is often considered risky.</p>
+        </div>
+
+        <button class="accordion">4. Cash Flow Metrics</button>
+        <div class="panel">
+            <h4>Free Cash Flow (FCF)</h4>
+            <p><strong>Definition:</strong> The cash available to all providers of capital (debt and equity holders) after all investments in the business have been made.</p>
+            <p><strong>Formula:</strong> FCF = Operating Cash Flow - Capital Expenditures (CapEx)</p>
+            <p><strong>Example:</strong> OCF = $800M, CapEx = $300M → FCF = $500M. This is a core metric for DCF valuation.</p>
+            
+            <h4>CapEx Ratios</h4>
+            <ul>
+                <li><strong>CapEx / Sales:</strong> Measures reinvestment intensity.</li>
+                <li><strong>CapEx / Depreciation:</strong> If >1, it indicates growth CapEx; if <1, it suggests the company is in maintenance mode.</li>
+            </ul>
+        </div>
+
+        <button class="accordion">5. Valuation Multiples</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Multiple</th><th>Formula</th><th>Insight</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>P/E</strong></td><td>Price per Share / EPS</td><td>A core earnings valuation multiple.</td></tr>
+                        <tr><td><strong>EV/EBITDA</strong></td><td>Enterprise Value / EBITDA</td><td>Capital structure-neutral multiple for core operations.</td></tr>
+                        <tr><td><strong>EV/Sales</strong></td><td>Enterprise Value / Revenue</td><td>Used for loss-making or early-stage growth companies.</td></tr>
+                        <tr><td><strong>P/B</strong></td><td>Price / Book Value per Share</td><td>Common in asset-heavy sectors like banks.</td></tr>
+                        <tr><td><strong>P/CF</strong></td><td>Price / Operating Cash Flow per Share</td><td>Focuses on cash-generating ability.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>Example:</strong> Price = $50, EPS = $5 → P/E = 10x. EV = $10B, EBITDA = $2B → EV/EBITDA = 5x. Lower multiples can signal undervaluation or higher risk.</p>
+        </div>
+
+        <button class="accordion">6. Dividend Metrics</button>
+        <div class="panel">
+            <h4>Dividend Yield</h4>
+            <p><strong>Formula:</strong> Annual Dividend per Share / Share Price</p>
+            <p><strong>Example:</strong> Annual Dividend = $2, Share Price = $50 → Yield = 4%.</p>
+            
+            <h4>Payout Ratio</h4>
+            <p><strong>Formula:</strong> Total Dividends / Net Income. Shows the proportion of earnings paid out as dividends.</p>
+             <p><strong>Example:</strong> Dividends = $100M, Net Income = $200M → Payout Ratio = 50%.</p>
+             
+            <h4>Dividend Coverage</h4>
+            <p><strong>Formula:</strong> EPS / DPS (Dividend Per Share). Measures the safety of the dividend.</p>
+        </div>
+
+        <button class="accordion">7. Risk & Performance Metrics</button>
+        <div class="panel">
+            <h4>Beta (β)</h4>
+            <p>Measures a stock's sensitivity to market movements. Beta > 1 means more volatile than the market; Beta < 1 means less volatile.</p>
+            
+            <h4>Alpha (α)</h4>
+            <p>The excess return of an investment relative to its benchmark, after adjusting for risk (beta).</p>
+            
+            <h4>Sharpe Ratio</h4>
+            <p>Measures risk-adjusted return. A ratio > 1.0 is generally considered good.</p>
+            
+            <h4>Sortino Ratio</h4>
+            <p>Similar to the Sharpe Ratio, but it only penalizes for downside volatility, not all volatility.</p>
+            
+            <h4>Information Ratio</h4>
+            <p>Measures a portfolio manager's ability to generate excess returns relative to a benchmark, adjusted for the volatility of those returns (tracking error).</p>
+        </div>
+        
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

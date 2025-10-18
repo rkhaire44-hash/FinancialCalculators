@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practical Study & Interview Roadmap - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Practical Study / Interview Roadmap</h1>
+        <p>A structured approach to mastering the topics in this guide and preparing for derivatives-focused interviews.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. How to Use This Roadmap</button>
+        <div class="panel">
+            <h4>A Phased Approach to Learning</h4>
+            <p>This roadmap is designed to build your knowledge from the ground up. Follow these phases to ensure a strong and comprehensive understanding, regardless of your target role. While all phases are important, you can spend more time on the phase most relevant to your desired career path.</p>
+            <ol>
+                <li><strong>Phase 1: Master the Foundations</strong> - The "What"</li>
+                <li><strong>Phase 2: The 'Quant' Layer: Pricing & Risk</strong> - The "Why"</li>
+                <li><strong>Phase 3: The 'How It Works' Layer: Market Mechanics</strong> - The "How"</li>
+                <li><strong>Phase 4: Role-Specific Preparation & Interview Strategy</strong> - The Application</li>
+            </ol>
+        </div>
+
+        <button class="accordion">2. Phase 1: Master the Foundations (The "What")</button>
+        <div class="panel">
+            <h4>Priority 1: Big Picture / Basic Concepts</h4>
+            <p>You must be able to explain what a derivative is, its purpose, and the fundamental differences between payoff types (linear, convex, etc.) and trading venues (Exchange vs. OTC) from memory.</p>
+            <h4>Priority 2: Core Instruments</h4>
+            <p>Deeply understand the mechanics of Forwards, Futures, Options, and Swaps. You should be able to draw payoff diagrams, explain who uses them and why, and walk through a simple example for each without hesitation.</p>
+            <h4>Self-Test Questions for this Phase:</h4>
+            <ul>
+                <li>"Explain the difference between a forward and a future."</li>
+                <li>"Draw the profit/loss diagram for a short put option."</li>
+                <li>"Walk me through the cash flows of a plain vanilla interest rate swap."</li>
+            </ul>
+        </div>
+
+        <button class="accordion">3. Phase 2: The 'Quant' Layer: Pricing & Risk (The "Why")</button>
+        <div class="panel">
+            <h4>Focus Area: Volatility, Surfaces, & Calibration</h4>
+            <p>This is where you move from mechanics to valuation. Understanding volatility is the key to understanding derivatives pricing.</p>
+            <h4>Key Concepts to Master:</h4>
+            <ul>
+                <li><strong>Implied Volatility:</strong> Know what it is and why it's important. Be able to explain the Volatility Smile/Smirk and why it exists in equity markets (crash risk, demand for puts).</li>
+                <li><strong>The Greeks:</strong> You must know Delta, Gamma, Vega, and Theta. Be able to explain what each one measures and how it's used in hedging.</li>
+                <li><strong>Arbitrage Constraints:</strong> Have a high-level understanding that a vol surface must be arbitrage-free (e.g., no calendar or butterfly arbitrage).</li>
+            </ul>
+             <blockquote><strong>For Quant/Trading Roles:</strong> Go deeper. Understand calibration concepts, parametric models like SVI/SABR, and the difference between sticky-delta and sticky-strike conventions.</blockquote>
+        </div>
+
+        <button class="accordion">4. Phase 3: The 'How It Works' Layer: Market Mechanics</button>
+        <div class="panel">
+            <p>This phase covers the entire ecosystem that supports derivative trading. For any operational, risk, or middle office role, this is the most critical area.</p>
+            <h4>Focus Areas to Connect:</h4>
+            <ul>
+                <li><strong>Clearing, Settlement & Post-Trade:</strong> The role of a CCP, the margin waterfall, and the settlement process.</li>
+                <li><strong>Market Microstructure:</strong> Order books, execution algos (VWAP/TWAP), and HFT.</li>
+                <li><strong>Operations, Middle & Back Office:</strong> P&L attribution, IPV, lifecycle events, and reconciliations.</li>
+                <li><strong>Common Conventions:</strong> The ISDA/CSA framework, day counts, and regulatory identifiers (LEI/UTI).</li>
+            </ul>
+            <h4>Self-Test Questions for this Phase:</h4>
+            <ul>
+                <li>"Walk me through the lifecycle of a cleared OTC swap, from execution to settlement."</li>
+                <li>"What is a CCP and what is its primary role in mitigating risk?"</li>
+                <li>"Explain the role of the Middle Office in P&L attribution and independent price verification."</li>
+            </ul>
+        </div>
+
+        <button class="accordion">5. Phase 4: Role-Specific Preparation</button>
+        <div class="panel">
+            <p>Tailor your deep-dive study to the role you are interviewing for. While you need a general understanding of all topics, your expertise should align with your target job.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Role</th><th>Key Topics to Emphasize</th><th>Typical Interview Question Style</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Quant Analyst</strong></td><td>Volatility & Calibration, Advanced Pricing Models, Greeks.</td><td>"How would you model the volatility surface for an exotic option? Explain your arbitrage checks."</td></tr>
+                        <tr><td><strong>Trader</strong></td><td>Core Instruments, Greeks, Market Microstructure, HFT, Hedging Strategies.</td><td>"You are long gamma. What is your market view and how would you manage the position?"</td></tr>
+                        <tr><td><strong>Structurer / Sales</strong></td><td>Core Instruments, Exotics, Payoff Types, Client Hedging Needs.</td><td>"A corporate client is worried about rising interest rates. Propose and explain a suitable hedging solution."</td></tr>
+                        <tr><td><strong>Risk Management</strong></td><td>Margining (IM/VM), CCPs, Greeks, Stress Testing, VaR.</td><td>"Explain how a CCP's risk waterfall works during a member default."</td></tr>
+                        <tr><td><strong>Operations / Middle Office</strong></td><td>Clearing & Settlement, Lifecycle Events, Reconciliations, ISDA/CSA, P&L Attribution.</td><td>"You have a trade break with a counterparty on a swap's reset date. What are the steps you would take to resolve it?"</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <button class="accordion">6. General Interview Strategies</button>
+        <div class="panel">
+             <h4>Behavioral & Market Questions</h4>
+            <ul>
+                <li><strong>Prepare Your Story:</strong> Be ready to answer "Why derivatives?", "Why our firm?", and "Tell me about a time you solved a complex problem." with clear, structured examples.</li>
+                <li><strong>Have a Market View:</strong> Be aware of current market trends. What are interest rates doing? What is the level of the VIX? Have an opinion on a recent market event. Read the Financial Times, Wall Street Journal, or Bloomberg daily.</li>
+                <li><strong>Practice Brainteasers:</strong> Many firms still use logic and probability puzzles. The goal is to see your thought process, so talk through your logic out loud.</li>
+                <li><strong>Ask Good Questions:</strong> Prepare insightful questions for your interviewers about their role, the desk's strategy, or the biggest challenges they face. This shows genuine interest.</li>
+            </ul>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

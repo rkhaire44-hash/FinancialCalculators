@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volatility, Surfaces & Calibration - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Volatility, Surfaces & Calibration</h1>
+        <p>A deep, interview-ready explanation of the implied volatility surface, arbitrage constraints, calibration, and market conventions.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The Implied Volatility Surface</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p><strong>Implied Volatility (IV)</strong> is the volatility value that, when plugged into an option pricing model (like Black-Scholes), yields the market price of that option. The <strong>IV Surface</strong> is a 3D plot or function that shows the implied volatility for every available strike price (K) and expiry date (T).</p>
+            <h4>Key Slices of the Surface</h4>
+            <ul>
+                <li><strong>Strike Dimension (Smile/Smirk):</strong> Shows how IV changes across different strike prices for a fixed expiry. Equity markets typically show a "smirk" or "skew," where IV is higher for lower strikes (out-of-the-money puts) due to higher demand for crash protection.</li>
+                <li><strong>Expiry Dimension (Term Structure):</strong> Shows how IV for a given moneyness (e.g., at-the-money) changes across different expiry dates.</li>
+            </ul>
+            <h4>Example (Equity Smirk)</h4>
+            <p>For a 3-month option on a stock with a spot price of $100:</p>
+            <ul>
+                <li>Strike K=120 (OTM call) → IV = 18%</li>
+                <li>Strike K=100 (ATM) → IV = 20%</li>
+                <li>Strike K=80 (OTM put) → IV = 28% (This demonstrates the skew/smirk)</li>
+            </ul>
+        </div>
+
+        <button class="accordion">2. Arbitrage Constraints</button>
+        <div class="panel">
+            <p>An IV surface cannot be arbitrary; it must satisfy certain conditions to prevent static arbitrage opportunities.</p>
+            <h4>A. No Calendar Arbitrage (Across Maturities)</h4>
+            <p>Total implied variance (σ²T) must be non-decreasing with time (T) for a fixed strike. If violated, one could execute a calendar spread for a risk-free profit.</p>
+            <p><strong>Practical Test:</strong> For two maturities T1 < T2, you must ensure that (σ²(K, T1) * T1) ≤ (σ²(K, T2) * T2).</p>
+            
+            <h4>B. No Butterfly Arbitrage (Across Strikes)</h4>
+            <p>The call price as a function of strike, C(K), must be convex. This means the price of a butterfly spread must be non-negative. Violations of this convexity in the implied volatility curve would allow for static butterfly arbitrage.</p>
+        </div>
+
+        <button class="accordion">3. Interpolation & Extrapolation Methods</button>
+        <div class="panel">
+            <p>Since market quotes are only available for discrete strikes and expiries, a surface must be constructed by interpolating between points and extrapolating to the wings.</p>
+            <h4>Popular Approaches</h4>
+            <ul>
+                <li><strong>Local Interpolation:</strong> Using methods like cubic splines on total variance versus log-moneyness. Naive splines can introduce arbitrage.</li>
+                <li><strong>Parametric Forms:</strong> Using arbitrage-free (or nearly so) models like SVI (Stochastic Volatility Inspired) or SABR to generate a smooth curve.</li>
+            </ul>
+            <h4>SVI (Stochastic Volatility Inspired)</h4>
+            <p>SVI is a popular parametric model that expresses total variance as a function of log-moneyness. It is defined by 5 parameters that control the level, slope, skew, and curvature of the smile, and it tends to produce realistic wing behavior.</p>
+        </div>
+        
+        <button class="accordion">4. Model Calibration</button>
+        <div class="panel">
+            <h4>Goal</h4>
+            <p>To choose model parameters (e.g., for Heston, SABR, or SVI) so that the model's output prices or implied volatilities match the market's prices or IVs as closely as possible.</p>
+            <h4>Objective Function</h4>
+            <p>The calibration process typically minimizes the sum of squared errors between model and market. Best practice is to use <strong>vega-weighted price errors</strong>, which gives more weight to options that are more sensitive to volatility (i.e., at-the-money options).</p>
+            <h4>Optimization Methods</h4>
+            <p>A hybrid approach is often used, starting with a global search algorithm (like differential evolution) to find a good starting point and then refining it with a local optimizer (like Levenberg-Marquardt).</p>
+        </div>
+
+        <button class="accordion">5. SABR & Heston Calibration Examples</button>
+        <div class="panel">
+            <h4>SABR Calibration (Swaption Volatility)</h4>
+            <p>The SABR model is widely used in interest rate markets to fit the smile of swaptions. It has parameters for volatility level (α), elasticity (β), correlation (ρ), and vol-of-vol (ν). Calibration involves fitting these parameters to the market-implied volatilities for a given expiry, often by fixing β and using the ATM vol to pin down α, then fitting ρ and ν to the skew and curvature.</p>
+
+            <h4>Heston Calibration (Equity Volatility)</h4>
+            <p>The Heston model is a stochastic volatility model used for equities. Calibration involves finding the set of model parameters (mean reversion speed κ, long-term variance θ, vol-of-vol ξ, correlation ρ, and initial variance v₀) that minimizes the pricing errors across all available strikes and expiries, often using fast pricing methods like FFT (Fast Fourier Transform).</p>
+        </div>
+
+        <button class="accordion">6. Sticky-Delta vs. Sticky-Strike Conventions</button>
+        <div class="panel">
+            <p>These are two conventions describing how the volatility surface is assumed to move when the underlying spot price changes.</p>
+            <h4>Sticky-Strike</h4>
+            <p>The implied volatility for a fixed, absolute strike price (e.g., K=$100) remains constant as the spot price moves. The surface shifts horizontally with the spot, but the IV at a specific strike does not change.</p>
+            
+            <h4>Sticky-Delta</h4>
+            <p>The implied volatility for a fixed moneyness level (often quoted by delta, e.g., a 25-delta put) remains constant as the spot price moves. As the spot moves, the strike corresponding to that delta also moves. This is common practice for quoting FX volatility.</p>
+            <h4>Example</h4>
+            <p>Spot is $100, and the 25-delta put is at strike K=$90 with IV=30%. If the spot moves to $105:</p>
+            <ul>
+                <li><strong>Under sticky-strike:</strong> The IV at K=$90 remains 30%.</li>
+                <li><strong>Under sticky-delta:</strong> The IV for whatever the *new* 25-delta put strike is (e.g., K=$92) remains 30%. The IV at the fixed strike of K=$90 will have changed.</li>
+            </ul>
+        </div>
+        
+        <button class="accordion">7. Practical Calibration Pitfalls & Interview Tips</button>
+        <div class="panel">
+            <h4>Practical Pitfalls</h4>
+            <ul>
+                <li><strong>Weighting:</strong> Always weight calibration errors by vega to avoid giving too much importance to deep out-of-the-money options.</li>
+                <li><strong>Local Minima:</strong> Use multi-start or global search methods before local refinement to avoid getting stuck in a suboptimal solution.</li>
+                <li><strong>Overfitting:</strong> Use regularization to penalize large day-to-day parameter changes and ensure stability.</li>
+                <li><strong>Illiquid Data:</strong> Down-weight or remove quotes for illiquid strikes that produce noisy IVs.</li>
+            </ul>
+             <h4>Final Interview Tips</h4>
+            <blockquote>Be able to explain what the vol surface is, state the key arbitrage constraints (calendar and butterfly), describe a parametric model like SVI, explain the calibration objective (vega-weighted errors), and distinguish between sticky-delta and sticky-strike conventions.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

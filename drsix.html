@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations, Middle & Back Office for Derivatives - Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="derivative.html" class="back-link">← Back to Derivative</a>
+        <h1>Operations, Middle & Back Office for Derivatives</h1>
+        <p>The critical functions that ensure derivative trades are validated, managed, settled, and reported accurately and without risk.</p>
+    </header>
+
+    <main class="content-container">
+
+        <button class="accordion">1. The Three Offices: Front, Middle, and Back</button>
+        <div class="panel">
+            <h4>Role Separation</h4>
+            <p>The structure of a financial institution is typically divided into three parts to ensure segregation of duties and proper risk control.</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Office</th><th>Core Function</th><th>Key Activities</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Front Office</strong></td><td>Revenue Generation</td><td>Sales, Trading, Structuring.</td></tr>
+                        <tr><td><strong>Middle Office</strong></td><td>Risk Management & Control</td><td>Trade Validation, P&L Attribution, Risk Reporting, Collateral Monitoring.</td></tr>
+                        <tr><td><strong>Back Office</strong></td><td>Transaction Processing & Settlement</td><td>Confirmations, Clearing, Settlement, Margining, Reconciliations, Regulatory Reporting.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="accordion">2. Trade Lifecycle Management</button>
+        <div class="panel">
+            <h4>From Execution to Settlement</h4>
+            <p>The journey of a derivative trade through the operational workflow is critical for ensuring accuracy and mitigating risk.</p>
+            <ol>
+                <li><strong>Trade Execution (Front Office):</strong> A trader agrees on a deal with a counterparty.</li>
+                <li><strong>Trade Capture:</strong> The trade's economic details are entered into the firm's trading system (e.g., Murex, Calypso).</li>
+                <li><strong>Trade Enrichment & Validation (Middle Office):</strong> The trade support team validates the booking against the trader's ticket, adds necessary static data (e.g., settlement instructions), and ensures it's correct.</li>
+                <li><strong>Confirmation (Back Office):</strong> An electronic confirmation is sent to and received from the counterparty to legally verify the trade terms. Platforms like MarkitWire or DTCC Deriv/SERV are used.</li>
+                <li><strong>Clearing & Settlement (Back Office):</strong> The trade is either sent to a CCP for clearing or settled bilaterally. This involves the exchange of payments and management of collateral.</li>
+            </ol>
+            <h4>Example</h4>
+            <p>A trader executes a 5-year Interest Rate Swap. The middle office validates that the fixed rate, notional, and dates are booked correctly. The back office then sends a confirmation via MarkitWire, which the counterparty electronically affirms. The affirmed trade is then sent to a CCP like LCH for clearing.</p>
+        </div>
+
+        <button class="accordion">3. P&L Attribution and Independent Price Verification (IPV)</button>
+        <div class="panel">
+            <h4>P&L Attribution (Middle Office)</h4>
+            <p><strong>Definition:</strong> The process of breaking down a trading desk's daily Profit and Loss (P&L) into its constituent risk factors (the "Greeks"). This ensures the P&L is explainable and aligns with the desk's risk positions.</p>
+            <p><strong>Example:</strong> A trader's daily P&L of +$500k is attributed as: +$700k from Delta moves, -$150k from negative Gamma, and -$50k from Theta (time decay).</p>
+            
+            <h4>Independent Price Verification (IPV) (Middle Office)</h4>
+            <p><strong>Definition:</strong> The process of independently verifying the market value (Mark-to-Market) of the trading desk's positions against external, objective sources (e.g., broker quotes, consensus data services) to ensure valuations are fair and accurate.</p>
+             <p><strong>Example:</strong> A trader marks an exotic option at $1.2 million. The IPV team gets quotes from three independent brokers, which average $1.1 million. The $100k difference is flagged as a valuation adjustment.</p>
+        </div>
+        
+        <button class="accordion">4. Collateral Management & Margining</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The operational process of mitigating counterparty credit risk by exchanging collateral (margin). This is a core function for both cleared and uncleared derivatives.</p>
+            <h4>Workflow</h4>
+            <ol>
+                <li><strong>Exposure Calculation:</strong> The current Mark-to-Market exposure of all trades with a counterparty is calculated daily.</li>
+                <li><strong>Margin Call:</strong> Based on the exposure and the terms in the CSA (Credit Support Annex), a margin call for Variation Margin (VM) and/or Initial Margin (IM) is issued or received.</li>
+                <li><strong>Collateral Agreement & Pledging:</strong> The two parties agree on the margin amount and the type of collateral to be posted (e.g., cash, government bonds).</li>
+                <li><strong>Settlement & Reconciliation:</strong> The collateral is transferred and reconciled daily to ensure the correct amount is held.</li>
+            </ol>
+             <h4>Example</h4>
+            <p>A bank's exposure to a hedge fund is +$10 million. The bank's collateral team issues a margin call for $10 million. The hedge fund agrees and pledges $10 million in US Treasury bonds as collateral. The bank's team then verifies the bonds and books them in their system.</p>
+        </div>
+
+        <button class="accordion">5. Lifecycle Event Management</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>Derivatives have complex lifecycles with events that must be managed operationally throughout the life of the trade. This is a key responsibility of the back office and asset servicing teams.</p>
+            <h4>Common Lifecycle Events</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Instrument</th><th>Common Lifecycle Events</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Interest Rate Swaps</strong></td><td>Periodic coupon payments, floating rate resets, fixings against a benchmark.</td></tr>
+                        <tr><td><strong>Options</strong></td><td>Premium payments, exercise, assignment, expiry.</td></tr>
+                        <tr><td><strong>Futures</strong></td><td>Daily variation margin settlement, contract rolls to the next expiry.</td></tr>
+                        <tr><td><strong>Credit Default Swaps (CDS)</strong></td><td>Quarterly premium payments, credit event monitoring and settlement.</td></tr>
+                        <tr><td><strong>Structured Notes</strong></td><td>Barrier monitoring, autocall events, coupon payments.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Example</h4>
+            <p>For a quarterly-paying CDS, the operations team is responsible for calculating and ensuring the premium is paid on each roll date (e.g., March 20, June 20, etc.) and for monitoring the reference entity for any potential credit events that would trigger the contract.</p>
+        </div>
+        
+        <button class="accordion">6. Reconciliations and Fails Management</button>
+        <div class="panel">
+            <h4>Definition</h4>
+            <p>The daily process of matching internal records against external statements from CCPs, custodians, and counterparties to identify and resolve discrepancies ("breaks").</p>
+            <h4>Key Reconciliation Types</h4>
+             <ul>
+                <li><strong>Trade/Position Reconciliation:</strong> Ensuring open positions and their valuations match between the firm and the CCP/counterparty.</li>
+                <li><strong>Cash Reconciliation:</strong> Matching all cash movements (e.g., premiums, margin payments) against bank statements.</li>
+                <li><strong>Collateral Reconciliation:</strong> Verifying that the amount and type of collateral held or posted matches the counterparty's records. Platforms like TriResolve are often used for this.</li>
+            </ul>
+            <p>Any identified breaks must be investigated and resolved promptly to prevent financial loss or operational risk.</p>
+        </div>
+
+        <button class="accordion">7. Summary Table & Final Interview Tips</button>
+        <div class="panel">
+            <h4>Summary Table</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Function</th><th>Office</th><th>Core Task</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Trade Validation</strong></td><td>Middle</td><td>Verifying trade bookings against trader tickets.</td><td>Correcting a wrong notional amount.</td></tr>
+                        <tr><td><strong>P&L Attribution</strong></td><td>Middle</td><td>Explaining daily P&L with risk factors (Greeks).</td><td>Breaking down P&L into delta, gamma, vega.</td></tr>
+                        <tr><td><strong>IPV</strong></td><td>Middle</td><td>Independently marking positions to market.</td><td>Challenging a trader's mark on an exotic.</td></tr>
+                        <tr><td><strong>Confirmations</strong></td><td>Back</td><td>Legally confirming trade terms with counterparties.</td><td>Matching a trade on MarkitWire.</td></tr>
+                        <tr><td><strong>Collateral Management</strong></td><td>Back/Middle</td><td>Issuing and responding to margin calls.</td><td>Calling for $5M in VM.</td></tr>
+                        <tr><td><strong>Settlements</strong></td><td>Back</td><td>Processing payments and managing lifecycle events.</td><td>Handling a swap's quarterly reset.</td></tr>
+                        <tr><td><strong>Reconciliations</strong></td><td>Back</td><td>Matching internal records with external statements.</td><td>Investigating a position break with a CCP.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Final Interview Tips</h4>
+            <blockquote>Be prepared to walk through the entire lifecycle of a specific derivative trade (e.g., a cleared interest rate swap) from execution to settlement. Understand the critical role of the Middle Office as a control function between the Front and Back Office. Emphasize the importance of timely reconciliations and collateral management in mitigating operational and credit risk.</blockquote>
+        </div>
+
+    </main>
+
+    <script>
+        const accordions = document.getElementsByClassName("accordion");
+        for (let i = 0; i < accordions.length; i++) {
+            accordions[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
