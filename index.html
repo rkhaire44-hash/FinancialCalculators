@@ -1,257 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rupesh Khaire - Your Guide to Smart Investing</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0c1322;
-            color: #e2e8f0;
-        }
-        .stellar-bg {
-            background-color: #0c1322;
-            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
-            background-size: 25px 25px;
-        }
-        .hero-gradient {
-             background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #0c1322 70%);
-        }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(59, 130, 246, 0.6);
-        }
-        .glow-btn {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
-        .glow-btn:hover {
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.7);
-            transform: scale(1.05);
-        }
-        
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  .fade-in-section.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rupesh Khaire - Your Guide to Smart Investing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c1322;
+            color: #e2e8f0;
+        }
+        .stellar-bg {
+            background-color: #0c1322;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 25px 25px;
+        }
+        .hero-gradient {
+             background: radial-gradient(ellipse at bottom, #1e3a8a 0%, #0c1322 70%);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(59, 130, 246, 0.6);
+        }
+        .glow-btn {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.7);
+            transform: scale(1.05);
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body class="antialiased stellar-bg">
 
-    <header class="bg-slate-900/70 backdrop-blur-sm sticky top-0 z-40 border-b border-slate-800">
-        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <a href="#" class="text-xl font-bold text-white">Rupesh Khaire</a>
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#services" class="text-slate-300 hover:text-white transition">How It Works</a>
-                    <!-- Added New Links -->
-                    <a href="mutual_fund_dashboard.html" class="text-slate-300 hover:text-white transition">Mutual Fund</a>
-                    <a href="moat_stocks_dashboard.html" class="text-slate-300 hover:text-white transition">Stock Market</a>
-                    <!-- New ETF Link Added -->
-                    <a href="etf_dashboard.html" class="text-slate-300 hover:text-white transition">ETF</a>
-                    <!-- End Added Links -->
-                    <a href="calculators.html" class="text-slate-300 hover:text-white transition">Calculators</a>
-                    <a href="interview.html" target="_blank" class="text-slate-300 hover:text-white transition">Interview</a>
-                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">Contact</a>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                    </button>
-                </div>
-            </div>
-        </nav>
-        <div id="mobile-menu" class="md:hidden hidden bg-slate-900">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#services" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">How It Works</a>
-                <!-- Added New Links -->
-                <a href="mutual_fund_dashboard.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Mutual Fund</a>
-                <a href="moat_stocks_dashboard.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Stock Market</a>
-                <!-- New ETF Link Added -->
-                <a href="etf_dashboard.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">ETF</a>
-                <!-- End Added Links -->
-                <a href="calculators.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Calculators</a>
-                <a href="interview.html" target="_blank" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Interview</a>
-                <a href="#contact" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Contact</a>
-            </div>
-        </div>
-    </header>
+    <header class="bg-slate-900/70 backdrop-blur-sm sticky top-0 z-40 border-b border-slate-800">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="text-xl font-bold text-white">Rupesh Khaire</a>
 
-    <main>
-        <section class="hero-gradient">
-            <div class="max-w-4xl mx-auto py-20 px-4 sm:py-28 text-center">
-                <h1 class="text-4xl sm:text-6xl font-extrabold text-white leading-tight">
-                    Smart Investing, Made Simple.
-                </h1>
-                <p class="mt-6 text-lg sm:text-xl text-slate-300">
-                    I help you achieve financial freedom with personalized mutual fund strategies and powerful, easy-to-use planning tools.
-                </p>
-                <div class="mt-10">
-                    <a href="calculators.html" class="inline-block px-8 py-4 text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
-                        Explore Financial Calculators
-                    </a>
-                </div>
-Note         </div>
-        </section>
-        
-        <section id="services" class="py-20 sm:py-24 fade-in-section">
-             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Your Journey to Financial Success in 3 Simple Steps</h2>
-                    <p class="mt-4 text-lg text-slate-400">A clear and transparent process to build your wealth.</p>
-                </div>
-                <div class="mt-16 grid gap-8 md:grid-cols-3">
-                    <div class="glass-card p-8 text-center">
-                        <div class="text-5xl mb-4">🤝</div>
-                        <h3 class="text-xl font-bold text-white">1. Understand Your Goals</h3>
-                        <p class="mt-2 text-slate-400">We connect to discuss your dreams—be it retirement, education, or wealth creation.</p>
-                    </div>
-                    <div class="glass-card p-8 text-center">
-                        <div class="text-5xl mb-4">🗺️</div>
-                        <h3 class="text-xl font-bold text-white">2. Create Your Plan</h3>
-                        <p class="mt-2 text-slate-400">I design a personalized mutual fund strategy tailored to your unique goals and comfort level.</p>
-                    </div>
-                    <div class="glass-card p-8 text-center">
-                        <div class="text-5xl mb-4">📈</div>
-                        <h3 class="text-xl font-bold text-white">3. Invest & Track</h3>
-                        <p class="mt-2 text-slate-400">I guide you through the investment and provide regular check-ins to ensure you stay on track.</p>
-          .</div>
-                </div>
-            </div>
-        </section>
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="etf.html" class="text-slate-300 hover:text-white transition">ETF</a>
+                    <a href="mflist.html" class="text-slate-300 hover:text-white transition">MF</a>
+                    <a href="moatstocks.html" class="text-slate-300 hover:text-white transition">Stocks</a>
 
-        <section class="py-20 sm:py-24 bg-slate-900/50 fade-in-section">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-A               <div class="md:w-1/3 text-center">
-                        <img class="h-40 w-40 rounded-full object-cover border-4 border-slate-700 shadow-lg mx-auto" src="https://placehold.co/200x200/e2e8f0/334155?text=RK" alt="Rupesh Khaire">
-                    </div>
-                    <div class="md:w-2/3 text-center md:text-left">
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Hi, I'm Rupesh Khaire</h2>
-                        <p class="mt-4 text-lg text-slate-300">As a certified Mutual Fund Distributor, my mission is to demystify investing. I combine expert knowledge with powerful digital tools to provide you with a clear, straightforward path to achieving your financial goals. Your success is my priority.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <a href="#services" class="text-slate-300 hover:text-white transition">How It Works</a>
+                    <a href="calculators.html" class="text-slate-300 hover:text-white transition">Calculators</a>
+                    <a href="interview.html" target="_blank" class="text-slate-300 hover:text-white transition">Interview</a>
+                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">Contact</a>
+                </div>
 
-        <section class="py-20 sm:py-24 fade-in-section">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center">
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Trusted by Investors</h2>
-                </div>
-                <div class="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-2">
-                    <blockquote class="glass-card p-8">
-                        <p class="text-lg text-slate-300">"Rupesh's guidance was a game-changer. He made investing feel simple and accessible. I finally have a clear plan for my future."</p>
-                        <footer class="mt-6">
-                            <div class="text-base font-medium text-white">- Anjali V.</div>
-                        </footer>
-                    </blockquote>
-                     <blockquote class="glass-card p-8">
-s                   <p class="text-lg text-slate-300">"The calculators are incredibly helpful, and the personalized advice is invaluable. Rupesh helped me plan for my child's education with confidence."</p>
-                         <footer class="mt-6">
-                            <div class="text-base font-medium text-white">- Rohan S.</div>
-                        </footer>
-                    </blockquote>
-                </div>
-            </div>
-        </section>
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
 
-        <section id="contact" class="py-20 sm:py-24 bg-slate-900/50 fade-in-section">
-            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                 <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Ready to Build Your Wealth?</h2>
-                 <p class="mt-4 text-lg text-slate-300">Take the first step. Contact me for a free, no-obligation consultation to discuss your financial future.</p>
-SAN             <button id="contact-btn" class="mt-8 inline-block px-8 py-4 text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
-                    Get in Touch
-                </button>
-            </div>
-        </section>
-    </main>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="md:hidden hidden bg-slate-900">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="etf.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">ETF</a>
+                <a href="mflist.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">MF</a>
+                <a href="moatstocks.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Stocks</a>
 
-    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="modal-card rounded-xl shadow-2xl p-8 max-w-md w-full relative transform transition-all duration-300 scale-95 opacity-0" style="background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-            <h3 class="text-2xl font-bold text-white text-center mb-6">Contact Information</h3>
-            <div class="space-y-4 text-slate-300">
-                <div class="flex items-center space-x-3"><svg class="h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>Rupesh Khaire (Registered Distributor)</span></div>
-DE             <div class="flex items-center space-x-3"><svg class="h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg><a href="mailto:rkhaire44@gmail.com" class="hover:text-blue-400">rkhaire44@gmail.com</a></div>
-                <div class="flex items-start space-x-3"><svg class="h-6 w-6 text-blue-400 mt-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>Kalyan, Maharashtra, India</span></div>
-            </div>
-            <div class="mt-8">
-                <a href="https://wa.me/918669095783" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.001 2.001C4.486 2.001 0 6.487 0 12.001c0 1.75.45 3.403 1.255 4.86l-1.25 4.38 4.5-1.248C5.92 20.55 7.906 21 10.001 21c5.514 0 10-4.486 10-8.999s-4.486-9-10-9zm0 16.25c-1.85 0-3.6-.5-5.1-1.38l-.36-.21-3.8 1.05 1.07-3.71-.23-.38c-.96-1.57-1.53-3.41-1.53-5.38C.05 7.6 4.536 3.11 10.001 3.11c5.464 0 9.95 4.486 9.95 8.89 0 4.93-4.486 8.94-9.95 8.94zM14.89 13.51c-.22-.11-.82-.4-1.12-.5-.3-.1-.52-.15-.74.15-.22.3-.42.5-.52.6-.1.1-.2.15-.37.04-.69-.25-1.4-1.04-2.58-2.22-.92-.92-1.63-2.03-1.83-2.38-.2-.35-.02-.54.1-.7.1-.13.22-.35.33-.52.1-.17.15-.3.2-.5.04-.2-.02-.38-.13-.5s-.74-1.78-.9-2.42c-.15-.64-.3-.55-.42-.55h-.37c-.15 0-.4.05-.6.25-.2.2-.74.72-.74 1.78 0 1.05.76 2.05.86 2.2.1.15 1.5 2.5 3.64 3.59.5.25.9.4 1.2.5.5.2 1 .15 1.35.1.4-.05 1.2-.5 1.37-1 .17-.48.17-.9.12-1s-.22-.27-.42-.37z"/></svg>Message on WhatsApp</a>
-            </div>
-        </div>
-    </div>
+                <a href="#services" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">How It Works</a>
+                <a href="calculators.html" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Calculators</a>
+                <a href="interview.html" target="_blank" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Interview</a>
+                <a href="#contact" class="text-slate-300 hover:bg-slate-700 block px-3 py-2 rounded-md">Contact</a>
+            </div>
+        </div>
+    </header>
 
-    <footer class="bg-slate-900 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-base text-slate-400">&copy; 2025 Rupesh Khaire, Mutual Fund Distributor. All rights reserved.</p>
-            <p class="text-sm text-slate-500 mt-2">Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully.</p>
-        </div>
-    </footer>
-    
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+    <main>
+        <section class="hero-gradient">
+            <div class="max-w-4xl mx-auto py-20 px-4 sm:py-28 text-center">
+                <h1 class="text-4xl sm:text-6xl font-extrabold text-white leading-tight">
+                    Smart Investing, Made Simple.
+                </h1>
+                <p class="mt-6 text-lg sm:text-xl text-slate-300">
+                    I help you achieve financial freedom with personalized mutual fund strategies and powerful, easy-to-use planning tools.
+                </p>
+                <div class="mt-10">
+                    <a href="calculators.html" class="inline-block px-8 py-4 text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
+                        Explore Financial Calculators
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <section id="services" class="py-20 sm:py-24 fade-in-section">
+             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Your Journey to Financial Success in 3 Simple Steps</h2>
+                    <p class="mt-4 text-lg text-slate-400">A clear and transparent process to build your wealth.</p>
+                </div>
+                <div class="mt-16 grid gap-8 md:grid-cols-3">
+                    <div class="glass-card p-8 text-center">
+                        <div class="text-5xl mb-4">🤝</div>
+                        <h3 class="text-xl font-bold text-white">1. Understand Your Goals</h3>
+                        <p class="mt-2 text-slate-400">We connect to discuss your dreams—be it retirement, education, or wealth creation.</p>
+                    </div>
+                    <div class="glass-card p-8 text-center">
+                        <div class="text-5xl mb-4">🗺️</div>
+                        <h3 class="text-xl font-bold text-white">2. Create Your Plan</h3>
+                        <p class="mt-2 text-slate-400">I design a personalized mutual fund strategy tailored to your unique goals and comfort level.</p>
+                    </div>
+                    <div class="glass-card p-8 text-center">
+                        <div class="text-5xl mb-4">📈</div>
+                        <h3 class="text-xl font-bold text-white">3. Invest & Track</h3>
+                        <p class="mt-2 text-slate-400">I guide you through the investment and provide regular check-ins to ensure you stay on track.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        // Modal Logic
-        const contactBtn = document.getElementById('contact-btn');
-        const contactModal = document.getElementById('contact-modal');
-        const modalContent = contactModal.querySelector('.modal-card');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const openModal = () => {
-            contactModal.classList.remove('hidden');
-            setTimeout(() => {
-                contactModal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        };
-        const closeModal = () => {
-            modalContent.classList.add('scale-95', 'opacity-0');
-            contactModal.classList.add('opacity-0');
-            setTimeout(() => {
-                contactModal.classList.add('hidden');
-            }, 300);
-        };
-        contactBtn.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
-        contactModal.addEventListener('click', (e) => {
-            if (e.target === contactModal) closeModal();
-        });
+        <section class="py-20 sm:py-24 bg-slate-900/50 fade-in-section">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+                    <div class="md:w-1/3 text-center">
+                        <img class="h-40 w-40 rounded-full object-cover border-4 border-slate-700 shadow-lg mx-auto" src="https://placehold.co/200x200/e2e8f0/334155?text=RK" alt="Rupesh Khaire">
+                    </div>
+                    <div class="md:w-2/3 text-center md:text-left">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Hi, I'm Rupesh Khaire</h2>
+                        <p class="mt-4 text-lg text-slate-300">As a certified Mutual Fund Distributor, my mission is to demystify investing. I combine expert knowledge with powerful digital tools to provide you with a clear, straightforward path to achieving your financial goals. Your success is my priority.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        // Scroll animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in-section').forEach(section => {
-            observer.observe(section);
-        });
-    </script>
+        <section class="py-20 sm:py-24 fade-in-section">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Trusted by Investors</h2>
+                </div>
+                <div class="mt-12 grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+                    <blockquote class="glass-card p-8">
+                        <p class="text-lg text-slate-300">"Rupesh's guidance was a game-changer. He made investing feel simple and accessible. I finally have a clear plan for my future."</p>
+                        <footer class="mt-6">
+                            <div class="text-base font-medium text-white">- Anjali V.</div>
+                        </footer>
+                    </blockquote>
+                     <blockquote class="glass-card p-8">
+                        <p class="text-lg text-slate-300">"The calculators are incredibly helpful, and the personalized advice is invaluable. Rupesh helped me plan for my child's education with confidence."</p>
+                         <footer class="mt-6">
+                            <div class="text-base font-medium text-white">- Rohan S.</div>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-20 sm:py-24 bg-slate-900/50 fade-in-section">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                 <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Ready to Build Your Wealth?</h2>
+                 <p class="mt-4 text-lg text-slate-300">Take the first step. Contact me for a free, no-obligation consultation to discuss your financial future.</p>
+                 <button id="contact-btn" class="mt-8 inline-block px-8 py-4 text-lg font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
+                    Get in Touch
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="modal-card rounded-xl shadow-2xl p-8 max-w-md w-full relative transform transition-all duration-300 scale-95 opacity-0" style="background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <h3 class="text-2xl font-bold text-white text-center mb-6">Contact Information</h3>
+            <div class="space-y-4 text-slate-300">
+                <div class="flex items-center space-x-3"><svg class="h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>Rupesh Khaire (Registered Distributor)</span></div>
+                <div class="flex items-center space-x-3"><svg class="h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg><a href="mailto:rkhaire44@gmail.com" class="hover:text-blue-400">rkhaire44@gmail.com</a></div>
+                <div class="flex items-start space-x-3"><svg class="h-6 w-6 text-blue-400 mt-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>Kalyan, Maharashtra, India</span></div>
+            </div>
+            <div class="mt-8">
+                <a href="https://wa.me/918669095783" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.001 2.001C4.486 2.001 0 6.487 0 12.001c0 1.75.45 3.403 1.255 4.86l-1.25 4.38 4.5-1.248C5.92 20.55 7.906 21 10.001 21c5.514 0 10-4.486 10-8.999s-4.486-9-10-9zm0 16.25c-1.85 0-3.6-.5-5.1-1.38l-.36-.21-3.8 1.05 1.07-3.71-.23-.38c-.96-1.57-1.53-3.41-1.53-5.38C.05 7.6 4.536 3.11 10.001 3.11c5.464 0 9.95 4.486 9.95 8.89 0 4.93-4.486 8.94-9.95 8.94zM14.89 13.51c-.22-.11-.82-.4-1.12-.5-.3-.1-.52-.15-.74.15-.22.3-.42.5-.52.6-.1.1-.2.15-.37.04-.69-.25-1.4-1.04-2.58-2.22-.92-.92-1.63-2.03-1.83-2.38-.2-.35-.02-.54.1-.7.1-.13.22-.35.33-.52.1-.17.15-.3.2-.5.04-.2-.02-.38-.13-.5s-.74-1.78-.9-2.42c-.15-.64-.3-.55-.42-.55h-.37c-.15 0-.4.05-.6 .25-.2 .2-.74 .72-.74 1.78 0 1.05 .76 2.05 .86 2.2 .1 .15 1.5 2.5 3.64 3.59 .5 .25 .9 .4 1.2 .5 .5 .2 1 .15 1.35 .1 .4 -.05 1.2 -.5 1.37 -1 .17 -.48 .17 -.9 .12 -1 s-.22 -.27 -.42 -.37z"/></svg>Message on WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-base text-slate-400">&copy; 2025 Rupesh Khaire, Mutual Fund Distributor. All rights reserved.</p>
+            <p class="text-sm text-slate-500 mt-2">Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Modal Logic
+        const contactBtn = document.getElementById('contact-btn');
+        const contactModal = document.getElementById('contact-modal');
+        const modalContent = contactModal.querySelector('.modal-card');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const openModal = () => {
+            contactModal.classList.remove('hidden');
+            setTimeout(() => {
+                contactModal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        };
+        const closeModal = () => {
+            modalContent.classList.add('scale-95', 'opacity-0');
+            contactModal.classList.add('opacity-0');
+            setTimeout(() => {
+                contactModal.classList.add('hidden');
+            }, 300);
+        };
+        contactBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModal();
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
 </body>
 </html>
