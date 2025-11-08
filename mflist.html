@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutual Fund Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(to bottom, #111827, #1d2b3a);
+            color: #f3f4f6;
+            min-height: 100vh;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.75);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: #1f2937;
+            margin: 5% auto;
+            padding: 24px;
+            border: 1px solid #4f46e5;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 0.75rem;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 0 30px rgba(79, 70, 229, 0.2);
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        .close-btn {
+            color: #9ca3af;
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* --- New Button Animation --- */
+        @keyframes pulse-glow {
+          0%, 100% {
+            /* A slightly stronger base glow for the animation */
+            box-shadow: 0 0 15px 2px rgba(79, 70, 229, 0.6); 
+          }
+          50% {
+            /* A much brighter, spread-out glow */
+            box-shadow: 0 0 25px 5px rgba(165, 180, 252, 0.7); 
+          }
+        }
+
+        /* Custom button styling (for categories and funds) */
+        .mf-button {
+            background-color: #1f2337; /* Darker bg */
+            /* --- New default glow border --- */
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+            /* --- End new style --- */
+            transition: all 0.3s ease-in-out;
+            /* Set a min-height for consistent button size */
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mf-button:hover {
+            background-color: #4f46e5;
+            border-color: #a5b4fc;
+            transform: translateY(-6px);
+            /* Use the pulse animation on hover */
+            animation: pulse-glow 1.5s infinite;
+        }
+        
+        /* Fund button style */
+        .fund-button {
+            background-color: #1f2337; /* Darker bg */
+            /* --- New default glow border --- */
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+            /* --- End new style --- */
+            transition: all 0.3s ease-in-out;
+            min-height: 80px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .fund-button:hover {
+             background-color: #4f46e5;
+            border-color: #a5b4fc;
+            transform: translateY(-6px);
+             /* Use the pulse animation on hover */
+            animation: pulse-glow 1.5s infinite;
+        }
+        
+        /* FAQ button style */
+        .faq-button {
+            background-color: #1f2337; /* Darker bg */
+            /* --- New default glow border --- */
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+            /* --- End new style --- */
+            transition: all 0.3s ease-in-out;
+            min-height: 70px;
+            padding: 1rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .faq-button:hover {
+            background-color: #4f46e5;
+            border-color: #a5b4fc;
+            transform: translateY(-4px);
+             /* Use the pulse animation on hover */
+            animation: pulse-glow 1.5s infinite;
+        }
+
+
+        /* Back button style */
+        .back-button {
+            color: #a5b4fc;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .back-button:hover {
+            color: #c7d2fe;
+            transform: translateX(-2px);
+        }
+
+        /* Keyframe animations for modal */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Utility class to hide/show sections */
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body class="h-full antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-blue-400">
+                Mutual Fund Dashboard
+            </h1>
+            <p class="text-lg text-gray-400 mt-2">Select a goal or category to learn more.</p>
+        </header>
+
+        <!-- Disclaimer -->
+        <div class="bg-yellow-900/30 border border-yellow-700 text-yellow-300 px-4 py-3 rounded-lg mb-8" role="alert">
+            <p class="font-bold">Disclaimer</p>
+            <p class="text-sm">The funds and figures listed are for illustrative purposes only and do not constitute financial advice. Returns are illustrative and past performance is not a guarantee of future returns. Please consult a financial advisor before investing.</p>
+        </div>
+
+        <!-- Category Container -->
+        <div id="categoryContainer">
+            <h2 class="text-2xl font-semibold text-white mb-6">1. Select Your Goal or Category</h2>
+            <main id="categoryGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <!-- Category buttons will be dynamically inserted here -->
+            </main>
+        </div>
+        
+        <!-- Fund List Container (hidden by default) -->
+        <div id="fundListContainer" class="hidden">
+            <button id="backButton" class="back-button mb-4">&larr; Back to Goals</button>
+            <h2 id="fundListTitle" class="text-2xl font-semibold text-white mb-6">2. Select a Fund</h2>
+            <main id="fundGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <!-- Fund buttons will be dynamically inserted here -->
+            </main>
+        </div>
+        
+        <!-- FAQ/Basics List Container (hidden by default) -->
+        <div id="faqContainer" class="hidden">
+            <button id="faqBackButton" class="back-button mb-4">&larr; Back to Goals</button>
+            <h2 id="faqListTitle" class="text-2xl font-semibold text-white mb-6">Myths & FAQs</h2>
+            <main id="faqGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- FAQ/Basics buttons will be dynamically inserted here -->
+            </main>
+        </div>
+
+    </div>
+
+    <!-- The Modal -->
+    <div id="mfModal" class="modal pt-10 sm:pt-16">
+        <!-- Modal content -->
+        <div class="modal-content text-gray-200">
+            <span class="close-btn">&times;</span>
+            
+            <!-- Fund Details Block (hidden by default) -->
+            <div id="modalFundDetails" class="hidden space-y-5">
+                <!-- Modal Header -->
+                <h2 id="modalFundName" class="text-2xl font-bold mb-1 text-white">Fund Name</h2>
+                <p id="modalType" class="text-base text-indigo-300 mb-4">Fund Type</p>
+                
+                <!-- Modal Body -->
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-100">Aim:</h3>
+                    <p id="modalAim" class="text-gray-300"></p>
+                </div>
+
+                <!-- Key Info Grid -->
+                <div class="grid grid-cols-2 gap-4 bg-gray-800/50 p-4 rounded-lg">
+                    <div>
+                        <h3 class="font-semibold text-gray-100">AUM</h3>
+                        <p id="modalAUM" class="text-lg text-gray-300"></p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-100">Min. Horizon</h3>
+                        <p id="modalHorizon" class="text-lg text-gray-300"></p>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-gray-100">Risk</h3>
+                        <p id="modalRisk" class="text-lg text-gray-300"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-100">Illustrative Annualized Returns:</h3>
+                    <ul id="modalReturns" class="list-disc list-inside text-gray-300 space-y-1 mt-2">
+                        <!-- Returns will be populated by JS -->
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-100">Growth & Risk Outlook:</h3>
+                    <p id="modalOutlook" class="text-gray-300"></p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-100">Top 5 Holdings:</h3>
+                    <ul id="modalHoldings" class="list-disc list-inside text-gray-300 space-y-1 mt-2">
+                        <!-- Holdings will be populated by JS -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- FAQ Details Block (hidden by default) -->
+            <div id="modalFaqDetails" class="hidden space-y-4">
+                <h2 id="modalFaqQuestion" class="text-2xl font-bold text-white"></h2>
+                <p id="modalFaqAnswer" class="text-gray-300 text-base leading-relaxed"></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Mutual Fund Data ---
+        // This is illustrative data and does not constitute financial advice.
+        const mutualFundData = {
+            'shortTerm': {
+                categoryName: 'Short Term Goals (1-3 Years)',
+                description: 'Lower-risk funds, good for capital preservation.',
+                funds: [
+                    {
+                        id: 'iciciLiquid',
+                        name: 'ICICI Prudential Liquid Fund',
+                        details: {
+                            type: 'Liquid Fund',
+                            aim: 'To provide high liquidity (easy access to your money) and reasonable returns with low volatility.',
+                            aum: '₹45,000 Cr+',
+                            minHorizon: '1 Day - 6 Months',
+                            risk: 'Low',
+                            returns: { '3yr': '5.5%', '5yr': '4.8%', '10yr': '6.0%' },
+                            outlook: 'Think of this like a savings account but with potentially slightly better returns. It\'s designed for parking emergency money or cash you\'ll need very soon. Returns are expected to be stable and low.',
+                            topHoldings: ['Treasury Bills', 'Certificates of Deposit (CDs)', 'Commercial Paper (CPs)', 'Govt. Securities']
+                        }
+                    },
+                    {
+                        id: 'axisShortTerm',
+                        name: 'Axis Short Term Debt Fund',
+                        details: {
+                            type: 'Short Duration Debt Fund',
+                            aim: 'To generate stable returns with low market risk over a short-term period.',
+                            aum: '₹8,000 Cr+',
+                            minHorizon: '1 - 3 Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '5.8%', '5yr': '5.2%', '10yr': '6.5%' },
+                            outlook: 'This fund invests in bonds that mature in 1-3 years. It\'s a step up from a liquid fund, aiming for slightly higher returns in exchange for slightly higher (but still low) volatility. Good for goals that are 1-3 years away.',
+                            topHoldings: ['Govt. Securities', 'Corporate Bonds (AAA)', 'Commercial Paper', 'NCDs']
+                        }
+                    },
+                    {
+                        id: 'sbiMagnumUltra',
+                        name: 'SBI Magnum Ultra Short Duration',
+                        details: {
+                            type: 'Ultra Short Duration Fund',
+                            aim: 'To provide liquidity and generate returns by investing in very short-term debt instruments.',
+                            aum: '₹12,000 Cr+',
+                            minHorizon: '3 - 6 Months',
+                            risk: 'Low',
+                            returns: { '3yr': '5.6%', '5yr': '4.9%', '10yr': '6.2%' },
+                            outlook: 'A middle ground between a Liquid Fund and a Short Duration Fund. It holds bonds that mature in 3-6 months. It aims for slightly better returns than a liquid fund and is suitable for parking money for a few months.',
+                            topHoldings: ['Certificates of Deposit (CDs)', 'Commercial Paper (CPs)', 'Corporate Bonds (AAA)', 'Treasury Bills']
+                        }
+                    },
+                    {
+                        id: 'kotakMoneyMarket',
+                        name: 'Kotak Money Market Fund',
+                        details: {
+                            type: 'Money Market Fund',
+                            aim: 'To generate returns with low risk and high liquidity by investing in money market instruments.',
+                            aum: '₹22,000 Cr+',
+                            minHorizon: '6 Months - 1 Year',
+                            risk: 'Low',
+                            returns: { '3yr': '5.7%', '5yr': '5.0%', '10yr': '6.3%' },
+                            outlook: 'This fund invests in high-quality, short-term debt (like T-Bills and CPs) that mature in up to 1 year. It\'s considered very safe and aims for stable returns, slightly better than liquid funds, for a 6-12 month horizon.',
+                            topHoldings: ['Treasury Bills', 'Certificates of Deposit (CDs)', 'Commercial Paper (CPs)', 'Repo']
+                        }
+                    },
+                    {
+                        id: 'iciciPruSavings',
+                        name: 'ICICI Prudential Savings Fund',
+                        details: {
+                            type: 'Debt Savings Fund',
+                            aim: 'To generate income and capital appreciation by investing in a mix of short-to-medium-term debt and money market instruments.',
+                            aum: '₹25,000 Cr+',
+                            minHorizon: '1 - 2 Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '5.9%', '5yr': '5.4%', '10yr': '6.8%' },
+                            outlook: 'This fund is more flexible than a simple short-term fund. It actively manages its portfolio to capture opportunities. It\'s a good option if your goal is 1-2 years away and you want a fund managed by experts.',
+                            topHoldings: ['Govt. Securities', 'Corporate Bonds (AAA/AA+)', 'NCDs', 'Money Market Instruments']
+                        }
+                    }
+                ]
+            },
+            'mediumTerm': {
+                categoryName: 'Medium Term Goals (3-5 Years)',
+                description: 'Balanced funds for moderate growth.',
+                funds: [
+                    {
+                        id: 'sbiEquityHybrid',
+                        name: 'SBI Equity Hybrid Fund',
+                        details: {
+                            type: 'Aggressive Hybrid Fund',
+                            aim: 'To provide long-term capital appreciation and income by investing in a mix of equity (65-80%) and debt (20-35%).',
+                            aum: '₹68,000 Cr+',
+                            minHorizon: '3 - 5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '15.2%', '5yr': '14.8%', '10yr': '13.5%' },
+                            outlook: 'A "balanced" fund that invests mostly in stocks but keeps a portion in bonds for safety. It gives you stock market-like growth but with a bit less risk. Good for goals where you want growth but can\'t risk everything.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Reliance Industries', 'Infosys', 'Govt. Securities']
+                        }
+                    },
+                    {
+                        id: 'iciciBalanced',
+                        name: 'ICICI Prudential Balanced Advantage',
+                        details: {
+                            type: 'Dynamic Asset Allocation Fund',
+                            aim: 'To provide capital appreciation and income by dynamically managing investments between equity and debt based on market valuations.',
+                            aum: '₹55,000 Cr+',
+                            minHorizon: '3 - 5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '13.5%', '5yr': '12.9%', '10yr': '11.8%' },
+                            outlook: 'This is a "smart" fund that tries to buy more stocks when the market is cheap and sell them (moving to bonds) when the market is expensive. It aims to give you a smoother ride than a pure stock fund.',
+                            topHoldings: ['ICICI Bank', 'HDFC Bank', 'Infosys', 'Reliance Industries', 'Bharti Airtel']
+                        }
+                    },
+                    {
+                        id: 'hdfcHybridEquity',
+                        name: 'HDFC Hybrid Equity Fund',
+                        details: {
+                            type: 'Aggressive Hybrid Fund',
+                            aim: 'To generate capital appreciation and income from a portfolio of equity (65%+) and debt instruments.',
+                            aum: '₹23,000 Cr+',
+                            minHorizon: '3 - 5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '16.0%', '5yr': '15.5%', '10yr': '13.8%' },
+                            outlook: 'Similar to other hybrid funds, this one also invests in both stocks and bonds. It\'s a classic "balanced" approach, aiming for long-term growth with some stability from the bond investments.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Infosys', 'State Bank of India', 'Larsen & Toubro']
+                        }
+                    },
+                    {
+                        id: 'sbiCorporateBond',
+                        name: 'SBI Corporate Bond Fund',
+                        details: {
+                            type: 'Corporate Bond Fund',
+                            aim: 'To generate returns by investing in high-quality (AA+ and above) corporate bonds.',
+                            aum: '₹19,000 Cr+',
+                            minHorizon: '3+ Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '6.0%', '5yr': '5.5%', '10yr': '7.0%' },
+                            outlook: 'A pure debt fund for a 3+ year horizon. It invests only in bonds from high-quality companies, making it relatively safe. It\'s for investors who want stable, predictable returns that are better than a bank FD, not stock market growth.',
+                            topHoldings: ['NABARD', 'Reliance Industries', 'HDFC Ltd.', 'REC Ltd.', 'Power Finance Corp.']
+                        }
+                    },
+                    {
+                        id: 'axisBankingPSU',
+                        name: 'Axis Banking & PSU Debt Fund',
+                        details: {
+                            type: 'Banking & PSU Fund',
+                            aim: 'To invest in debt instruments of banks, Public Sector Undertakings (PSUs), and Public Financial Institutions.',
+                            aum: '₹12,000 Cr+',
+                            minHorizon: '3+ Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '5.9%', '5yr': '5.3%', '10yr': 'N/A' },
+                            outlook: 'This fund invests in bonds from what are considered very safe issuers: banks and government-owned companies (PSUs). It\'s a low-risk debt fund, good for adding stability to your portfolio for a 3+ year goal.',
+                            topHoldings: ['NABARD', 'State Bank of India', 'Bank of Baroda', 'REC Ltd.', 'Small Industries Dev. Bank']
+                        }
+                    }
+                ]
+            },
+            'longTerm': {
+                categoryName: 'Long Term Wealth (5+ Years)',
+                description: 'Equity funds for high growth potential.',
+                funds: [
+                    {
+                        id: 'paragParikhFlexi',
+                        name: 'Parag Parikh Flexi Cap Fund',
+                        details: {
+                            type: 'Flexi Cap Fund',
+                            aim: 'To generate long-term capital growth from an actively managed portfolio of Indian and foreign (US) equity securities.',
+                            aum: '₹70,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '18.5%', '5yr': '20.1%', '10yr': '18.0%' },
+                            outlook: 'This fund is very popular. It invests in Indian stocks of all sizes (large, mid, small) and also in major US tech stocks (like Google, Microsoft). This mix gives you both Indian and global growth potential.',
+                            topHoldings: ['HDFC Bank', 'Alphabet Inc. (Google)', 'Microsoft Corp.', 'Bajaj Holdings', 'ITC Ltd.']
+                        }
+                    },
+                    {
+                        id: 'utiNifty50',
+                        name: 'UTI Nifty 50 Index Fund',
+                        details: {
+                            type: 'Index Fund',
+                            aim: 'To provide returns that, before expenses, closely correspond to the total returns of the Nifty 50 Index.',
+                            aum: '₹18,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '14.5%', '5yr': '15.0%', '10yr': '13.0%' },
+                            outlook: 'The simplest way to invest in the stock market. This fund just buys the top 50 companies in India (the Nifty 50) and holds them. Your return will be almost identical to the Nifty 50 index. It\'s a cheap, "set it and forget it" option.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Reliance Industries', 'Infosys', 'Larsen & Toubro']
+                        }
+                    },
+                    {
+                        id: 'axisBluechip',
+                        name: 'Axis Bluechip Fund',
+                        details: {
+                            type: 'Large Cap Fund',
+                            aim: 'To generate long-term capital appreciation by investing in a diversified portfolio of large-cap (bluechip) stocks.',
+                            aum: '₹30,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '12.0%', '5yr': '13.5%', '10yr': '12.8%' },
+                            outlook: 'This fund invests in India\'s largest, most stable companies (called "bluechips"). It aims to provide steady, reliable growth over the long term. It\'s generally considered less risky than funds that invest in smaller companies.',
+                            topHoldings: ['ICICI Bank', 'HDFC Bank', 'Infosys', 'Bajaj Finance', 'Reliance Industries']
+                        }
+                    },
+                    {
+                        id: 'miraeLargeCap',
+                        name: 'Mirae Asset Large Cap Fund',
+                        details: {
+                            type: 'Large Cap Fund',
+                            aim: 'To generate long-term capital appreciation by investing in a diversified portfolio of large-cap (bluechip) stocks.',
+                            aum: '₹38,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '14.0%', '5yr': '15.2%', '10yr': '15.0%' },
+                            outlook: 'Another high-quality fund that focuses on India\'s biggest companies. It has a strong long-term track record. Like other large-cap funds, it aims for stable growth and is a core part of many investors\' portfolios.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Infosys', 'Reliance Industries', 'Larsen & Toubro']
+                        }
+                    },
+                    {
+                        id: 'quantActive',
+                        name: 'Quant Active Fund',
+                        details: {
+                            type: 'Multi Cap Fund',
+                            aim: 'To achieve long-term capital appreciation by investing in a diversified portfolio of equity stocks across large, mid, and small caps.',
+                            aum: '₹10,000 Cr+',
+                            minHorizon: '5 - 7+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '24.0%', '5yr': '28.0%', '10yr': '20.5%' },
+                            outlook: 'This fund is an aggressive "active" fund. It invests in all company sizes (large, mid, small) and changes its strategy often based on market trends. It has shown very high returns but is also very volatile (risky).',
+                            topHoldings: ['Reliance Industries', 'Jio Financial Services', 'Adani Power', 'Tata Power', 'HDFC Bank']
+                        }
+                    }
+                ]
+            },
+            'childEducation': {
+                categoryName: "Child's Education (10+ Years)",
+                description: 'Aggressive growth funds for long horizons.',
+                funds: [
+                    {
+                        id: 'axisSmallCap',
+                        name: 'Axis Small Cap Fund',
+                        details: {
+                            type: 'Small Cap Fund',
+                            aim: 'To generate long-term capital appreciation by investing in a diversified portfolio of small-cap stocks.',
+                            aum: '₹21,000 Cr+',
+                            minHorizon: '7 - 10+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '25.0%', '5yr': '24.5%', '10yr': '21.0%' },
+                            outlook: 'This fund invests in small, high-growth companies. This is one of the riskiest categories, but it also has the highest potential for returns over 10+ years, making it suitable for very long-term goals.',
+                            topHoldings: ['Narayan Hrudayalaya', 'Finolex Industries', 'Krishna Institute (KIMS)', 'Blue Star Ltd.', 'JB Chemicals']
+                        }
+                    },
+                    {
+                        id: 'kotakEmerging',
+                        name: 'Kotak Emerging Equity Fund',
+                        details: {
+                            type: 'Mid Cap Fund',
+                            aim: 'To generate long-term capital appreciation from a portfolio of mid-cap stocks.',
+                            aum: '₹45,000 Cr+',
+                            minHorizon: '7 - 10+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '22.0%', '5yr': '21.5%', '10yr': '19.5%' },
+                            outlook: 'This fund focuses on "mid-sized" companies, which are the potential large companies of tomorrow. It offers a balance between the high growth of small-caps and the stability of large-caps. A core choice for long-term goals.',
+                            topHoldings: ['Solar Industries', 'Cummins India', 'Persistent Systems', 'Schaeffler India', 'SKF India']
+                        }
+                    },
+                    {
+                        id: 'sbiSmallCap',
+                        name: 'SBI Small Cap Fund',
+                        details: {
+                            type: 'Small Cap Fund',
+                            aim: 'To provide long-term capital appreciation by investing in a diversified portfolio of small-cap stocks.',
+                            aum: '₹28,000 Cr+',
+                            minHorizon: '7 - 10+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '24.5%', '5yr': '25.0%', '10yr': '20.0%' },
+                            outlook: 'Another popular small-cap fund with a strong long-term record. Like other funds in this category, it is very high risk and only suitable for investors with a long time horizon (10+ years) who can handle market ups and downs.',
+                            topHoldings: ['Blue Star Ltd.', 'Finolex Industries', 'Carborundum Universal', 'GE T&D India', 'Laxmi Machine Works']
+                        }
+                    },
+                    {
+                        id: 'pgimMidcap',
+                        name: 'PGIM India Midcap Opportunities',
+                        details: {
+                            type: 'Mid Cap Fund',
+                            aim: 'To achieve long-term capital appreciation by investing in a diversified portfolio of mid-cap stocks.',
+                            aum: '₹18,000 Cr+',
+                            minHorizon: '7 - 10+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '30.5%', '5yr': '29.0%', '10yr': 'N/A' },
+                            outlook: 'A high-performing mid-cap fund that has gained a lot of attention. It focuses on finding high-quality, growing mid-sized companies. It carries very high risk but has shown excellent returns, making it suitable for aggressive long-term goals.',
+                            topHoldings: ['Persistent Systems', 'Cummins India', 'SKF India', 'Fortis Healthcare', 'Max Healthcare']
+                        }
+                    },
+                    {
+                        id: 'hdfcNiftyNext50',
+                        name: 'HDFC Nifty Next 50 Index Fund',
+                        details: {
+                            type: 'Index Fund',
+                            aim: 'To provide returns that, before expenses, closely correspond to the total returns of the Nifty Next 50 Index.',
+                            aum: '₹1,500 Cr+',
+                            minHorizon: '7 - 10+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '16.0%', '5yr': '15.5%', '10yr': 'N/A' },
+                            outlook: 'This fund invests in the 50 companies *after* the Nifty 50 (i.e., companies ranked 51-100). These are often called "Junior Bluechips." It\'s a passive, low-cost way to invest in the next generation of large companies. It\'s riskier than the Nifty 50.',
+                            topHoldings: ['Trent Ltd.', 'Power Finance Corp.', 'Hindustan Aeronautics (HAL)', 'Bharat Electronics', 'InterGlobe Aviation (IndiGo)']
+                        }
+                    }
+                ]
+            },
+            'retirement': {
+                categoryName: 'Retirement (15+ Years)',
+                description: 'Tax-saving (ELSS) and diversified growth.',
+                funds: [
+                    {
+                        id: 'miraeTaxSaver',
+                        name: 'Mirae Asset ELSS Tax Saver Fund',
+                        details: {
+                            type: 'ELSS (Tax Saver)',
+                            aim: 'To generate long-term capital appreciation from a diversified portfolio of equity stocks, with the added benefit of tax deductions under Sec 80C.',
+                            aum: '₹23,000 Cr+',
+                            minHorizon: '3+ Years (Lock-in)',
+                            risk: 'Very High',
+                            returns: { '3yr': '17.5%', '5yr': '18.0%', '10yr': 'N/A' },
+                            outlook: 'A great "two-in-one" fund. You get a tax deduction on your investment (up to ₹1.5L) and it invests in a good mix of stocks for long-term growth. It has a 3-year lock-in, making it perfect for long-term goals like retirement.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Infosys', 'Reliance Industries', 'Larsen & Toubro']
+                        }
+                    },
+                     {
+                        id: 'quantTaxPlan',
+                        name: 'Quant ELSS Tax Saver Fund',
+                        details: {
+                            type: 'ELSS (Tax Saver)',
+                            aim: 'To generate capital appreciation and provide tax benefits through an actively managed portfolio of equity stocks.',
+                            aum: '₹9,800 Cr+',
+                            minHorizon: '3+ Years (Lock-in)',
+                            risk: 'Very High',
+                            returns: { '3yr': '26.0%', '5yr': '30.5%', '10yr': '22.0%' },
+                            outlook: 'An aggressive tax-saving (ELSS) fund. Like the Quant Active fund, it changes its portfolio often to chase market trends. It has shown exceptional returns but is very high risk. Suitable only for aggressive investors with a long time horizon.',
+                            topHoldings: ['Reliance Industries', 'Adani Power', 'Jio Financial Services', 'Tata Power', 'State Bank of India']
+                        }
+                    },
+                    {
+                        id: 'hdfcNifty50Index',
+                        name: 'HDFC Nifty 50 Index Fund',
+                        details: {
+                            type: 'Index Fund',
+                            aim: 'To provide returns that, before expenses, closely correspond to the total returns of the Nifty 50 Index.',
+                            aum: '₹20,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '14.5%', '5yr': '15.0%', '10yr': '13.0%' },
+                            outlook: 'The most basic and reliable building block for any long-term portfolio. It invests in India\'s top 50 companies at a very low cost. A perfect "core" investment to hold for 15+ years for retirement.',
+                            topHoldings: ['HDFC Bank', 'ICICI Bank', 'Reliance Industries', 'Infosys', 'Larsen & Toubro']
+                        }
+                    },
+                    {
+                        id: 'iciciPruBluechip',
+                        name: 'ICICI Prudential Bluechip Fund',
+                        details: {
+                            type: 'Large Cap Fund',
+                            aim: 'To generate long-term capital appreciation from a portfolio of large-cap (bluechip) stocks.',
+                            aum: '₹55,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'High',
+                            returns: { '3yr': '14.8%', '5yr': '15.3%', '10yr': '14.0%' },
+                            outlook: 'A fund that invests in India\'s largest and most established companies. It is actively managed, meaning a fund manager picks the stocks, aiming to beat the Nifty 50 index. It\'s a solid, relatively stable (for equity) choice for retirement.',
+                            topHoldings: ['ICICI Bank', 'HDFC Bank', 'Infosys', 'Larsen & Toubro', 'Reliance Industries']
+                        }
+                    },
+                    {
+                        id: 'paragParikhFlexi_retire',
+                        name: 'Parag Parikh Flexi Cap Fund',
+                        details: {
+                            type: 'Flexi Cap Fund',
+                            aim: 'To generate long-term capital growth from an actively managed portfolio of Indian and foreign (US) equity securities.',
+                            aum: '₹70,000 Cr+',
+                            minHorizon: '5+ Years',
+                            risk: 'Very High',
+                            returns: { '3yr': '18.5%', '5yr': '20.1%', '10yr': '18.0%' },
+                            outlook: 'This fund is excellent for retirement because it diversifies your money not just in India, but also in strong global companies (like Google). This global exposure can reduce risk and add a different source of growth to your retirement plan.',
+                            topHoldings: ['HDFC Bank', 'Alphabet Inc. (Google)', 'Microsoft Corp.', 'Bajaj Holdings', 'ITC Ltd.']
+                        }
+                    }
+                ]
+            },
+            'debtFunds': {
+                categoryName: 'Debt Funds (By Type)',
+                description: 'Explore debt funds based on their strategy and duration.',
+                funds: [
+                    {
+                        id: 'iciciOvernight',
+                        name: 'ICICI Prudential Overnight Fund',
+                        details: {
+                            type: 'Overnight Fund',
+                            aim: 'To provide high liquidity and stable returns by investing in debt instruments that mature in 1 day.',
+                            aum: '₹8,000 Cr+',
+                            minHorizon: '1 Day',
+                            risk: 'Lowest',
+                            returns: { '3yr': '5.2%', '5yr': '4.5%', '10yr': 'N/A' },
+                            outlook: 'This is the safest type of mutual fund. It only lends money for one day at a time. Returns are very low, similar to a bank savings account, but it\'s extremely safe. Use this for money you cannot risk at all.',
+                            topHoldings: ['Reverse Repo', 'Treasury Bills (maturing in 1 day)', 'Tri-Party Repo (TREPS)']
+                        }
+                    },
+                    {
+                        id: 'hdfcLiquid',
+                        name: 'HDFC Liquid Fund',
+                        details: {
+                            type: 'Liquid Fund',
+                            aim: 'To provide high liquidity and reasonable returns by investing in debt instruments maturing in up to 91 days.',
+                            aum: '₹50,000 Cr+',
+                            minHorizon: '1 Week - 3 Months',
+                            risk: 'Low',
+                            returns: { '3yr': '5.5%', '5yr': '4.8%', '10yr': '6.1%' },
+                            outlook: 'A step up from an Overnight fund. It invests in bonds maturing in up to 3 months. It\'s very safe and aims for slightly higher returns than a savings account. Perfect for an emergency fund or parking money for a few weeks/months.',
+                            topHoldings: ['Treasury Bills', 'Certificates of Deposit (CDs)', 'Commercial Paper (CPs)', 'Govt. Securities']
+                        }
+                    },
+                    {
+                        id: 'sbiMagnumUltra_debt',
+                        name: 'SBI Magnum Ultra Short Duration',
+                        details: {
+                            type: 'Ultra Short Duration Fund',
+                            aim: 'To provide liquidity and generate returns by investing in very short-term (3-6 months) debt instruments.',
+                            aum: '₹12,000 Cr+',
+                            minHorizon: '3 - 6 Months',
+                            risk: 'Low',
+                            returns: { '3yr': '5.6%', '5yr': '4.9%', '10yr': '6.2%' },
+                            outlook: 'This fund takes slightly more risk than a liquid fund by holding bonds for 3-6 months. It\'s used for parking money for a few months, aiming for a small boost in returns over a liquid fund. Still very safe.',
+                            topHoldings: ['Certificates of Deposit (CDs)', 'Commercial Paper (CPs)', 'Corporate Bonds (AAA)', 'Treasury Bills']
+                        }
+                    },
+                    {
+                        id: 'axisShortTerm_debt',
+                        name: 'Axis Short Term Debt Fund',
+                        details: {
+                            type: 'Short Duration Fund',
+                            aim: 'To generate stable returns by investing in debt instruments with a portfolio duration of 1-3 years.',
+                            aum: '₹8,000 Cr+',
+                            minHorizon: '1 - 3 Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '5.8%', '5yr': '5.2%', '10yr': '6.5%' },
+                            outlook: 'This fund is designed for goals that are 1-3 years away. It takes on a bit more risk (from interest rate changes) than liquid funds to give you better returns, often beating FDs. Good for short-term goals.',
+                            topHoldings: ['Govt. Securities', 'Corporate Bonds (AAA)', 'Commercial Paper', 'NCDs']
+                        }
+                    },
+                    {
+                        id: 'sbiCorporateBond_debt',
+                        name: 'SBI Corporate Bond Fund',
+                        details: {
+                            type: 'Corporate Bond Fund',
+                            aim: 'To generate returns by investing at least 80% of its money in high-quality (AA+ and above) corporate bonds.',
+                            aum: '₹19,000 Cr+',
+                            minHorizon: '3+ Years',
+                            risk: 'Low to Moderate',
+                            returns: { '3yr': '6.0%', '5yr': '5.5%', '10yr': '7.0%' },
+                            outlook: 'This fund primarily lends money to the most stable and reliable companies. It\'s considered a very high-quality debt fund. It is a great choice for conservative investors with a 3+ year horizon who want stable, FD-plus returns.',
+                            topHoldings: ['NABARD', 'Reliance Industries', 'HDFC Ltd.', 'REC Ltd.', 'Power Finance Corp.']
+                        }
+                    }
+                ]
+            },
+            // --- NEW BASICS CATEGORY ---
+            'basics': {
+                categoryName: 'All About MF (Basics)',
+                description: 'Start here. What are MFs and how do they work?',
+                questions: [
+                    {
+                        id: 'b1',
+                        question: 'What is a Mutual Fund (MF)?',
+                        answer: 'A mutual fund is a big pool of money collected from many people (like you, your friends, and thousands of others). This big pool is then given to a professional, called a Fund Manager, who invests it in different assets like stocks, bonds, or gold.'
+                    },
+                    {
+                        id: 'b2',
+                        question: 'How does a Mutual Fund work? (Example)',
+                        answer: 'Example: You invest ₹1,000. The fund manager takes your ₹1,000 and money from 10,000 other people. With this large pool (e.g., ₹1 Crore), they buy stocks of many companies (like Reliance, HDFC, Infosys). When the value of those stocks goes up, the value of your ₹1,000 investment also goes up.'
+                    },
+                    {
+                        id: 'b3',
+                        question: 'What is an "Asset Management Company" (AMC)?',
+                        answer: 'An AMC is the company that creates and manages the mutual funds. Think of them as the parent company. Examples you might know are HDFC Mutual Fund, ICICI Prudential Mutual Fund, SBI Mutual Fund, etc. They hire the fund managers and handle all the operations.'
+                    },
+                    {
+                        id: 'b4',
+                        question: 'What is a "Fund Manager"?',
+                        answer: 'The Fund Manager is the expert professional hired by the AMC. Their full-time job is to research and decide which specific stocks or bonds to buy and sell for the fund, with the goal of making your money grow.'
+                    },
+                    {
+                        id: 'b5',
+                        question: 'What is "NAV" (Net Asset Value)?',
+                        answer: 'NAV is simply the price of *one unit* of a mutual fund. Just like 1 share of Tata Motors might cost ₹900, 1 unit of a mutual fund might cost ₹50 (its NAV). If the stocks in the fund do well, the NAV will go up, for example, to ₹52. Your profit is the increase in NAV.'
+                    },
+                    {
+                        id: 'b6',
+                        question: 'What is a "Portfolio"?',
+                        answer: 'A portfolio is simply the list of all the investments (stocks, bonds, etc.) that the fund manager has bought with the fund\'s money. You can see this list on the fund\'s website, so you know exactly where your money is invested.'
+                    },
+                    {
+                        id: 'b7',
+                        question: 'What is "Diversification"? (Example)',
+                        answer: 'This is the most important benefit of MFs. It means "Don\'t put all your eggs in one basket." Instead of you buying only one stock (e.g., Yes Bank), a mutual fund buys 50+ different stocks. If one company does badly, the other 49 can still do well, making your investment much safer.'
+                    },
+                    {
+                        id: 'b8',
+                        question: 'What is an "Equity" Mutual Fund?',
+                        answer: 'This is a fund that invests *only* in the stock market (stocks/shares of companies). These funds have high risk but also the highest potential for returns. They are best for long-term goals (5+ years) like retirement or a child\'s education.'
+                    },
+                    {
+                        id: 'b9',
+                        question: 'What is a "Debt" Mutual Fund?',
+                        answer: 'This is a fund that does *not* invest in stocks. Instead, it lends your money to the government, big companies, or banks (this is called "buying bonds"). It\'s much safer than an equity fund and is used for short-term goals (1-3 years). The returns are lower but more stable, like an FD.'
+                    },
+                    {
+                        id: 'b10',
+                        question: 'What is a "Hybrid" Mutual Fund?',
+                        answer: 'As the name suggests, this fund is a *mix*. It invests *some* of the money in equity (for growth) and *some* in debt (for safety). This is a good "balanced" option for investors who want growth but with less risk than a pure equity fund.'
+                    },
+                    {
+                        id: 'b11',
+                        question: 'What is an "SIP" (Systematic Investment Plan)?',
+                        answer: 'An SIP is just a way to invest. It\'s an instruction you give to your bank to invest a *fixed amount* (e.g., ₹1000) on a *fixed date* (e.g., the 5th) every month into the mutual fund you choose. It\'s like a monthly EMI you pay for your future, and it\'s the best way for most people to start.'
+                    },
+                    {
+                        id: 'b12',
+                        question: 'What is a "Lumpsum" investment?',
+                        answer: 'Lumpsum is the opposite of SIP. It means investing a large, one-time amount. For example, if you get a ₹50,000 bonus, you can invest all of it at once as a lumpsum. You can do both SIP and lumpsum in the same fund.'
+                    },
+                    {
+                        id: 'b13',
+                        question: 'What is the difference between "Direct" and "Regular" plans?',
+                        answer: 'ALWAYS choose **Direct**! A "Regular" plan includes a commission for a broker or agent. This commission is taken from your investment *every year*, reducing your profit. A "Direct" plan has *no commission*, so all the profit is yours. This makes a huge difference to your final amount over many years.'
+                    },
+                    {
+                        id: 'b14',
+                        question: 'What\'s the difference between "Growth" and "Dividend (IDCW)"?',
+                        answer: 'ALWAYS choose **Growth**! In the "Growth" option, any profits the fund makes are automatically re-invested back into the fund, so your money grows faster (this is called compounding). In the "Dividend" or "IDCW" option, the fund pays out profits to your bank account, which breaks the power of compounding and is also tax-inefficient.'
+                    },
+                    {
+                        id: 'b15',
+                        question: 'How do you make money from a Mutual Fund?',
+                        answer: 'You make money when the NAV of your fund goes up. Example: You buy 100 units at an NAV of ₹20 (Total investment: ₹2,000). After 5 years, the stocks in the fund have grown, and the NAV is now ₹35. Your 100 units are now worth ₹3,500. Your profit is ₹1,500. You get this profit when you "redeem" (sell) your units.'
+                    },
+                    {
+                        id: 'b16',
+                        question: 'Are Mutual Fund returns guaranteed?',
+                        answer: 'No. Mutual fund investments are "market-linked," which means their value goes up and down with the stock market or bond market. Unlike a Fixed Deposit (FD), returns are *not* guaranteed. This risk is why they have the potential to give much *higher* returns than FDs over the long term.'
+                    },
+                    {
+                        id: 'b17',
+                        question: 'What does "Risk" mean in a mutual fund?',
+                        answer: 'Risk means two things: 1) "Volatility," which is the sharp ups and downs in your investment\'s value, and 2) The "Risk of Loss," which is the possibility of getting back less money than you invested. Equity funds have high risk, while Liquid (Debt) funds have very low risk.'
+                    },
+                    {
+                        id: 'b18',
+                        question: 'What is a "Risk-o-meter"?',
+                        answer: 'This is a simple chart that every fund has to show. It looks like a speedometer with 6 levels, from "Low" to "Very High." It gives you a quick idea of how risky the fund is. Always check this before investing to make sure it matches your comfort level.'
+                    },
+                    {
+                        id: 'b19',
+                        question: 'What is an "Expense Ratio"?',
+                        answer: 'This is the small annual fee that the AMC charges for managing your money (paying the fund manager, staff, etc.). It\'s shown as a percentage, like 0.5% or 1%. This fee is automatically deducted from the fund\'s NAV, so you don\'t pay it directly. A *lower* expense ratio is always better.'
+                    },
+                    {
+                        id: 'b20',
+                        question: 'What is an "Exit Load"?',
+                        answer: 'An Exit Load is a small penalty (usually 1%) that the fund charges if you sell your units too quickly, typically within 1 year of buying them. This is done to discourage short-term trading. After 1 year, the exit load is almost always 0%.'
+                    },
+                    {
+                        id: 'b21',
+                        question: 'What is an "Index Fund"?',
+                        answer: 'This is a special, "passive" type of equity fund. It has no "Fund Manager" making active choices. Instead, it *automatically* buys the exact same stocks that are in a market index, like the Nifty 50. It\'s a very popular, low-cost way to get the average return of the entire market.'
+                    }
+                ]
+            },
+            // --- MYTHS CATEGORY ---
+            'myths': {
+                categoryName: 'Myths & FAQs about MFs',
+                description: 'Common questions and misunderstandings.',
+                questions: [
+                    {
+                        id: 'q1',
+                        question: 'Is 20-25% return possible every year?',
+                        answer: 'No, this is highly unlikely and not sustainable. While some funds *might* have one amazing year, a realistic long-term (10+ years) expectation from equity MFs is 12-15% *on average*. This average includes years with +30% returns and years with -10% returns. Anyone promising 25% every year is misleading you.'
+                    },
+                    {
+                        id: 'q2',
+                        question: 'I invested for 1-2 years but have no return! Why?',
+                        answer: 'This is very common and normal for equity (stock market) funds. The stock market moves in cycles. It can be flat or even negative for 1-2 years. Equity MFs are designed for long-term goals (5+ years). If you look at 7 or 10-year periods, the returns are much more likely to be positive. Patience is key!'
+                    },
+                    {
+                        id: 'q3',
+                        question: 'Myth: I will lose all my money, MFs are too risky.',
+                        answer: 'Fact: While all MFs have risk, they are designed to *reduce* risk through diversification. A mutual fund invests in 30, 50, or even 100+ stocks. If one company fails, it has a very small impact on the fund. You are highly unlikely to lose *all* your money, especially in a diversified fund held for the long term. Debt funds have even lower risk.'
+                    },
+                    {
+                        id: 'q4',
+                        question: 'Myth: I need a lot of money to start.',
+                        answer: 'Fact: This is one of the biggest myths! You can start investing in most mutual funds with an SIP (Systematic Investment Plan) of just ₹100 or ₹500 per month. MFs are built for everyone, not just the wealthy.'
+                    },
+                    {
+                        id: 'q5',
+                        question: 'Myth: A fund with a low NAV (e.g., ₹10) is "cheaper" and better than a high NAV (e.g., ₹100).',
+                        answer: 'Fact: This is completely false. The NAV is just the price of one unit. What matters is the *percentage growth*. If you invest ₹10,000, you will get 1000 units of the ₹10 NAV fund or 100 units of the ₹100 NAV fund. If both funds grow by 10%, your ₹10,000 becomes ₹11,000 in both cases. Don\'t look at the NAV, look at the fund\'s quality and past performance.'
+                    },
+                    {
+                        id: 'q6',
+                        question: 'Myth: NFOs (New Fund Offers) are like IPOs and are a cheap way to get in.',
+                        answer: 'Fact: An NFO is just a new fund launching, usually at a default NAV of ₹10. It has no track record and no history. You are investing based on a promise. It is often safer to invest in an established fund with a proven 5 or 10-year track record, even if its NAV is higher.'
+                    },
+                    {
+                        id: 'q7',
+                        question: 'Myth: MFs are only for experts.',
+                        answer: 'Fact: MFs are the *opposite*. They are designed for regular people who are *not* experts. You give your money to a professional fund manager (in an active fund) or a simple index (in a passive fund), and they do the hard work of picking and managing the stocks for you.'
+                    },
+                    {
+                        id: 'q8',
+                        question: 'Myth: Past performance guarantees future returns.',
+                        answer: 'Fact: This is the most important warning in investing. A fund that did well for the last 3 years is *not* guaranteed to do well for the next 3. Always check for long-term (5, 10+ year) consistency and the fund\'s investment style, not just the 1-year return.'
+                    },
+                    {
+                        id: 'q9',
+                        question: 'Myth: MFs are only for the long term.',
+                        answer: 'Fact: This is only true for *equity* (stock) funds. There are many other types! Debt funds, like Liquid Funds or Short-Term Funds, are specifically designed for short-term goals (a few days to 1-3 years) and are much safer than equity funds.'
+                    },
+                    {
+                        id: 'q10',
+                        question: 'Myth: Dividends are "extra income" like an FD interest.',
+                        answer: 'Fact: This is a major misunderstanding. When a fund pays you a dividend, the money is taken *out* of your fund\'s NAV. For example, if the NAV is ₹50 and it pays a ₹2 dividend, the NAV will drop to ₹48. You are just getting your own money back. It is almost always better to choose the "Growth" option (which reinvests profits) instead of the "Dividend" (or IDCW) option.'
+                    },
+                    {
+                        id: 'q11',
+                        question: 'What\'s the difference between "Direct" and "Regular" plans?',
+                        answer: 'Always choose "Direct"! A "Regular" plan includes a commission for the broker or agent who sold you the fund. This commission (e.g., 1% per year) comes out of your pocket and reduces your returns. A "Direct" plan has no commission, so all the returns are yours. This makes a *huge* difference over the long term.'
+                    },
+                    {
+                        id: 'q12',
+                        question: 'Do I need a Demat account to invest in MFs?',
+                        answer: 'No. You do not need a Demat account for most mutual funds. You can invest directly with the fund house (like HDFC, ICICI) or through platforms (like Groww, Zerodha Coin, etc.) using just your PAN and bank account. You only need a Demat account to hold *ETF* units (like NIFTYBEES).'
+                    },
+                    {
+                        id: 'q13',
+                        question: 'Are MFs tax-free?',
+                        answer: 'No. Profits (capital gains) from mutual funds are taxed. For equity funds, if you sell after 1 year, the tax is 10% on profits over ₹1 lakh. If you sell before 1 year, the tax is 15% on the profit. Debt funds have different tax rules (they are taxed at your income tax slab rate).'
+                    },
+                    {
+                        id: 'q14',
+                        question: 'My fund\'s 1-year return is 50%. Will I get 50% every year?',
+                        answer: 'Absolutely not. A high 1-year return is usually due to a market recovery or a special event. It is not repeatable. You should look at the 5-year or 10-year *average* return (e.g., 14%) to set a more realistic expectation.'
+                    },
+                    {
+                        id: 'q15',
+                        question: 'What is an SIP (Systematic Investment Plan)?',
+                        answer: 'An SIP is just a way to invest. It\'s like an auto-debit from your bank account to the mutual fund every month. You invest a fixed amount (e.g., ₹1000) on a fixed date. This is the best way for most people to invest, as it builds discipline and averages out your purchase cost over time ("rupee cost averaging").'
+                    },
+                    {
+                        id: 'q16',
+                        question: 'Can I stop my SIP anytime? Will I be penalized?',
+                        answer: 'Yes, you can stop or pause your SIP at any time with no penalty. You can also withdraw your money at any time (unless it\'s a tax-saver ELSS fund, which has a 3-year lock-in). You are in complete control.'
+                    },
+                    {
+                        id: 'q17',
+                        question: 'What is an "Exit Load"?',
+                        answer: 'An Exit Load is a small fee (usually 1%) that some funds charge if you sell your units too quickly, typically within 1 year of buying them. This is done to discourage short-term trading and encourage long-term investing. After 1 year, the exit load is almost always 0%.'
+                    },
+                    {
+                        id: 'q18',
+                        question: 'What is AUM? Does a bigger fund mean a better fund?',
+                        answer: 'AUM means "Assets Under Management," or the total amount of money the fund manages. A large AUM (e.g., ₹50,000 Cr) shows that many people trust the fund. However, it\'s not always better. For Small-Cap funds, a very large AUM can sometimes make it difficult for the manager to invest in small companies, which can hurt performance.'
+                    },
+                    {
+                        id: 'q19',
+                        question: 'Are MFs insured like Fixed Deposits (FDs)?',
+                        answer: 'No. MFs are market-linked investments and are *not* insured by the RBI. Your investment value goes up and down with the market. This is the "risk" you take in exchange for the *potential* to earn much higher returns than an FD. Debt funds are much safer, but still not insured.'
+                    },
+                    {
+                        id: 'q20',
+                        question: 'Myth: I only need to find the "best" fund to invest in.',
+                        answer: 'Fact: There is no single "best" fund. The "best" fund for you depends on your *goal* and *time horizon*. The best fund for your retirement (a small-cap fund) would be a terrible fund to park your emergency money in. The goal of investing is to build a *portfolio* of different funds (equity, debt) that match your different goals.'
+                    },
+                    {
+                        id: 'q21',
+                        question: 'What is an "Expense Ratio"?',
+                        answer: 'This is the small annual fee (e.g., 0.5% or 1%) that the fund house charges for managing your money. This fee is automatically deducted from the fund\'s NAV. A lower expense ratio is always better for you. "Direct" plans have a lower expense ratio than "Regular" plans.'
+                    }
+                ]
+            }
+        };
+
+        // --- Element Selections ---
+        const categoryContainer = document.getElementById('categoryContainer');
+        const categoryGrid = document.getElementById('categoryGrid');
+        
+        const fundListContainer = document.getElementById('fundListContainer');
+        const fundGrid = document.getElementById('fundGrid');
+        const fundListTitle = document.getElementById('fundListTitle');
+        const backButton = document.getElementById('backButton');
+        
+        // This container is now used for BOTH basics and myths
+        const faqContainer = document.getElementById('faqContainer');
+        const faqGrid = document.getElementById('faqGrid');
+        const faqListTitle = document.getElementById('faqListTitle');
+        const faqBackButton = document.getElementById('faqBackButton');
+
+        // Modal Elements
+        const mfModal = document.getElementById('mfModal');
+        const closeBtn = document.querySelector('.close-btn');
+
+        // Modal Content Blocks
+        const modalFundDetails = document.getElementById('modalFundDetails');
+        const modalFaqDetails = document.getElementById('modalFaqDetails');
+        
+        // Fund Modal Elements
+        const modalFundName = document.getElementById('modalFundName');
+        const modalType = document.getElementById('modalType');
+        const modalAim = document.getElementById('modalAim');
+        const modalAUM = document.getElementById('modalAUM');
+        const modalHorizon = document.getElementById('modalHorizon');
+        const modalRisk = document.getElementById('modalRisk');
+        const modalReturns = document.getElementById('modalReturns');
+        const modalOutlook = document.getElementById('modalOutlook');
+        const modalHoldings = document.getElementById('modalHoldings');
+
+        // FAQ/Basics Modal Elements
+        const modalFaqQuestion = document.getElementById('modalFaqQuestion');
+        const modalFaqAnswer = document.getElementById('modalFaqAnswer');
+
+
+        // --- Functions ---
+
+        // Populate Category Buttons
+        function loadCategories() {
+            categoryGrid.innerHTML = ''; // Clear existing
+            // Get keys, but ensure 'basics' comes before 'myths' if both exist
+            const categoryKeys = Object.keys(mutualFundData);
+            const basicsIndex = categoryKeys.indexOf('basics');
+            const mythsIndex = categoryKeys.indexOf('myths');
+
+            if (basicsIndex > -1 && mythsIndex > -1 && basicsIndex > mythsIndex) {
+                 // Swap them if 'basics' is after 'myths'
+                [categoryKeys[basicsIndex], categoryKeys[mythsIndex]] = [categoryKeys[mythsIndex], categoryKeys[basicsIndex]];
+            }
+
+
+            categoryKeys.forEach(key => {
+                const category = mutualFundData[key];
+                const button = document.createElement('button');
+                // Added text-left and padding
+                button.className = 'mf-button text-white font-semibold py-8 px-5 rounded-lg text-left';
+                button.dataset.categoryKey = key;
+                button.innerHTML = `
+                    <h3 class="text-lg font-bold">${category.categoryName}</h3>
+                    <p class="text-sm text-gray-400 mt-1">${category.description}</p>
+                `;
+                
+                // Add specific event listener based on key
+                if (key === 'myths' || key === 'basics') {
+                    button.addEventListener('click', () => showQuestionList(key));
+                } else {
+                    button.addEventListener('click', () => showFundsForCategory(key));
+                }
+                
+                categoryGrid.appendChild(button);
+            });
+        }
+
+        // Show funds for a specific category
+        function showFundsForCategory(categoryKey) {
+            const data = mutualFundData[categoryKey];
+            fundGrid.innerHTML = ''; // Clear existing funds
+            fundListTitle.textContent = `Funds for: ${data.categoryName}`;
+
+            data.funds.forEach(fund => {
+                const button = document.createElement('button');
+                // Using new fund-button class
+                button.className = 'fund-button text-white font-semibold py-6 px-3 rounded-lg';
+                button.textContent = fund.name;
+                button.addEventListener('click', () => openFundModal(categoryKey, fund.id));
+                fundGrid.appendChild(button);
+            });
+
+            categoryContainer.classList.add('hidden');
+            faqContainer.classList.add('hidden');
+            fundListContainer.classList.remove('hidden');
+        }
+        
+        // Show Question list (for Basics OR Myths)
+        function showQuestionList(categoryKey) {
+            const data = mutualFundData[categoryKey];
+            faqGrid.innerHTML = ''; // Clear existing
+            faqListTitle.textContent = data.categoryName; // Set title dynamically
+
+            data.questions.forEach(q => {
+                const button = document.createElement('button');
+                button.className = 'faq-button text-white font-semibold py-6 px-5 rounded-lg';
+                button.textContent = q.question;
+                button.addEventListener('click', () => openQuestionModal(categoryKey, q.id));
+                faqGrid.appendChild(button);
+            });
+            
+            categoryContainer.classList.add('hidden');
+            fundListContainer.classList.add('hidden');
+            faqContainer.classList.remove('hidden');
+        }
+
+        // Go back to categories
+        function showCategories() {
+            fundListContainer.classList.add('hidden');
+            faqContainer.classList.add('hidden');
+            categoryContainer.classList.remove('hidden');
+        }
+
+        // Open and populate the FUND modal
+        function openFundModal(categoryKey, fundId) {
+            // Find the fund
+            const fund = mutualFundData[categoryKey].funds.find(f => f.id === fundId);
+            if (!fund) return;
+
+            // Show Fund block, hide FAQ block
+            modalFundDetails.classList.remove('hidden');
+            modalFaqDetails.classList.add('hidden');
+
+            // Populate modal
+            modalFundName.textContent = fund.name;
+            modalType.textContent = fund.details.type;
+            modalAim.textContent = fund.details.aim;
+            modalAUM.textContent = fund.details.aum;
+            modalHorizon.textContent = fund.details.minHorizon;
+            modalRisk.textContent = fund.details.risk;
+            modalOutlook.textContent = fund.details.outlook;
+
+            // Populate lists
+            modalReturns.innerHTML = '';
+            Object.entries(fund.details.returns).forEach(([key, value]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="font-semibold uppercase text-xs">${key}</span>: <span class="font-bold">${value}</span> ${value !== 'N/A' ? ' (annualized)' : ''}`;
+                modalReturns.appendChild(li);
+            });
+            
+            modalHoldings.innerHTML = '';
+            fund.details.topHoldings.slice(0, 5).forEach(holding => {
+                const li = document.createElement('li');
+                li.textContent = holding;
+                modalHoldings.appendChild(li);
+            });
+
+            mfModal.style.display = 'block';
+        }
+        
+        // Open and populate the FAQ/Basics modal
+        function openQuestionModal(categoryKey, questionId) {
+            const question = mutualFundData[categoryKey].questions.find(q => q.id === questionId);
+            if (!question) return;
+            
+            // Show FAQ block, hide Fund block
+            modalFaqDetails.classList.remove('hidden');
+            modalFundDetails.classList.add('hidden');
+            
+            // Populate modal
+            modalFaqQuestion.textContent = question.question;
+            modalFaqAnswer.innerHTML = question.answer; // Use innerHTML
+            
+            mfModal.style.display = 'block';
+        }
+
+
+        // Close the modal
+        function closeModal() {
+            mfModal.style.display = 'none';
+        }
+
+        // --- Event Listeners ---
+        backButton.addEventListener('click', showCategories);
+        faqBackButton.addEventListener('click', showCategories);
+        closeBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target == mfModal) {
+                closeModal();
+            }
+        });
+
+        // Initial Load
+        loadCategories();
+
+    </script>
+</body>
+</html>

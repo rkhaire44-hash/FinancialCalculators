@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moat Stocks Dashboard</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(to bottom, #111827, #1d2b3a);
+            color: #f3f4f6;
+            min-height: 100vh;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background-color: rgba(0, 0, 0, 0.75);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: #1f2937;
+            margin: 5% auto;
+            padding: 24px;
+            border: 1px solid #4f46e5;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 0.75rem;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 0 30px rgba(79, 70, 229, 0.2);
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        .close-btn {
+            color: #9ca3af;
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* --- Button Animation --- */
+        @keyframes pulse-glow {
+          0%, 100% {
+            /* A slightly stronger base glow for the animation */
+            box-shadow: 0 0 15px 2px rgba(79, 70, 229, 0.6); 
+          }
+          50% {
+            /* A much brighter, spread-out glow */
+            box-shadow: 0 0 25px 5px rgba(165, 180, 252, 0.7); 
+          }
+        }
+
+        /* Custom button styling */
+        .stock-button {
+            background-color: #1f2337; /* Darker bg */
+            /* --- default glow border --- */
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+            /* --- End new style --- */
+            transition: all 0.3s ease-in-out;
+            /* Set a min-height for consistent button size */
+            min-height: 80px;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stock-button:hover {
+            background-color: #4f46e5;
+            border-color: #a5b4fc;
+            transform: translateY(-6px);
+            /* Use the pulse animation on hover */
+            animation: pulse-glow 1.5s infinite;
+        }
+        
+        /* Keyframe animations for modal */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+    </style>
+</head>
+<body class="h-full antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-blue-400">
+                Moat Stocks Dashboard
+            </h1>
+            <p class="text-lg text-gray-400 mt-2">Click a company to learn about its competitive advantage (Moat).</p>
+        </header>
+
+        <!-- Disclaimer -->
+        <div class="bg-yellow-900/30 border border-yellow-700 text-yellow-300 px-4 py-3 rounded-lg mb-8" role="alert">
+            <p class="font-bold">Disclaimer</p>
+            <p class="text-sm">This information is for educational purposes only and not financial advice. Moats can weaken and market dynamics can change. Always do your own research before investing.</p>
+        </div>
+        
+        <!-- Stock Button Grid -->
+        <main class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+            <!-- Buttons will be dynamically inserted here -->
+        </main>
+
+    </div>
+
+    <!-- The Modal -->
+    <div id="stockModal" class="modal pt-10 sm:pt-16">
+        <!-- Modal content -->
+        <div class="modal-content text-gray-200">
+            <span class="close-btn">&times;</span>
+            
+            <!-- Fund Details Block -->
+            <div class="space-y-5">
+                <!-- Modal Header -->
+                <h2 id="modalTitle" class="text-2xl font-bold mb-1 text-white"></h2>
+                
+                <!-- Modal Body -->
+                <div>
+                    <h3 class="font-semibold text-lg text-indigo-300">The Moat:</h3>
+                    <p id="modalMoat" class="text-gray-300"></p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-indigo-300">Reason (with Example):</h3>
+                    <p id="modalReason" class="text-gray-300"></p>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-indigo-300">Moat Sustainability (Future):</h3>
+                    <p id="modalSustainability" class="text-gray-300"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Moat Stock Data ---
+        const stockData = {
+            'cams': {
+                title: 'CAMS (Computer Age Management Services)',
+                moat: 'Duopoly & High Switching Costs',
+                reason: 'CAMS and KFintech are the only two major companies (a duopoly) allowed to act as Registrar and Transfer Agents (RTA) for almost the entire mutual fund industry. **Example:** When you invest in an HDFC, SBI, or ICICI mutual fund, CAMS handles all your data, transactions, and statements. It\'s the official record-keeper. It would be incredibly complex and expensive for a fund house to switch RTAs, creating "high switching costs".',
+                sustainability: 'The moat is extremely sustainable. The mutual fund industry is growing, and CAMS grows with it. As long as SEBI\'s regulations are in place, it\'s nearly impossible for a new competitor to enter. Its future is directly tied to the growth of India\'s financial savings.'
+            },
+            'cdsl': {
+                title: 'CDSL (Central Depository Services Ltd)',
+                moat: 'Duopoly & Network Effect',
+                reason: 'CDSL and NSDL are the only two companies in India that can hold your stocks, bonds, and mutual funds in electronic (demat) form. This is a government-mandated duopoly. **Example:** When you buy a stock on Zerodha or Groww, it is held safely in your name by CDSL. As more brokers (like Zerodha) choose CDSL, more investors are added to its network, making it the default choice for new brokers. This is a powerful "network effect".',
+                sustainability: 'This moat is as strong as it gets. It is regulated by SEBI and is a core part of India\'s financial market. The number of demat accounts is growing rapidly, and CDSL earns a small fee on every transaction and from every company. Its growth is locked in with the growth of the Indian stock market.'
+            },
+            'irctc': {
+                title: 'IRCTC (Indian Railway Catering and Tourism)',
+                moat: 'Pure Government Monopoly',
+                reason: 'IRCTC has an exclusive, government-granted monopoly on all online railway ticket bookings in India. **Example:** Every time you, or anyone you know, books a train ticket on the app or website, you *must* use IRCTC\'s system. They are the only gateway and charge a convenience fee on every single ticket. They also have a monopoly on catering on trains and selling packaged water at stations.',
+                sustainability: 'This is one of the strongest moats in India. As long as Indian Railways is the primary mode of transport, IRCTC\'s dominance is guaranteed by law. Its sustainability is tied to government policy, which is highly stable. It is also expanding into tourism and food catering, using its massive customer base.'
+            },
+            'iex': {
+                title: 'IEX (Indian Energy Exchange)',
+                moat: 'Monopoly (Network Effect)',
+                reason: 'IEX is India\'s premier power trading exchange, with over 90% market share in the short-term electricity market. **Example:** If a state like Maharashtra needs extra electricity for a day, they buy it on IEX. If a factory has surplus power, they sell it on IEX. Because all the buyers and sellers are on IEX, it has the best price and most liquidity, which attracts *more* buyers and sellers. This is a classic "network effect".',
+                sustainability: 'This moat is very strong. A new competitor (like HPX) has found it very difficult to take market share. As India\'s power needs become more complex, the need for a spot market grows. The only risk is a major, unfavorable change in government regulations, but the trend is towards *more* market-based electricity, which helps IEX.'
+            },
+            'mcx': {
+                title: 'MCX (Multi Commodity Exchange)',
+                moat: 'Monopoly (Network Effect)',
+                reason: 'Similar to IEX, MCX is India\'s largest commodity derivatives exchange, with over 95% market share. **Example:** If a jeweler wants to lock in a future price for gold, or a farmer wants to hedge the price of cotton, they use MCX. Because all the commodity traders are on MCX, it has the highest liquidity, making it the only practical choice. This creates a powerful network effect.',
+                sustainability: 'Very strong. This is another core piece of India\'s financial infrastructure. Its dominance is locked in. Its future growth depends on more Indians trading commodities and new commodity products (like natural gas, electricity futures) being introduced, both of which are long-term positive trends.'
+            },
+            'pidilite': {
+                title: 'Pidilite Industries',
+                moat: 'Brand Monopoly & Distribution',
+                reason: 'Pidilite is the dominant player in adhesives. Its moat is its brand. **Example:** You don\'t ask for "adhesive"; you ask for "Fevicol". The brand has become the name of the product itself. This "brand monopoly" is supported by a massive distribution network that reaches tiny villages, making it impossible for competitors to match its reach.',
+                sustainability: 'Extremely sustainable. This brand trust is built over generations. While new competitors can exist, they are forced to compete on price, while Pidilite enjoys premium pricing and high-profit margins. As construction and crafts grow, so does Pidilite. It has also successfully expanded into new categories like waterproofing (Dr. Fixit).'
+            },
+            'asianpaints': {
+                title: 'Asian Paints',
+                moat: 'Oligopoly (Distribution & Supply Chain)',
+                reason: 'Asian Paints is the leader in the Indian paint industry (an oligopoly with Berger, Kansai Nerolac). Its moat is its supply chain. **Example:** It has a highly advanced IT system that tracks paint sales at thousands of small hardware stores. It can restock a specific color in a specific shop within hours. This efficiency and its vast dealer network are impossible for a new player to replicate.',
+                sustainability: 'Very strong. The brand is trusted, and the distribution network is a massive barrier. The entry of a new, large player (like Grasim) is a potential threat, but Asian Paints\' deep relationships, data, and brand power give it a huge advantage. The "paint-as-a-service" (EzyPainting) model also locks in customers.'
+            },
+            'itc': {
+                title: 'ITC Ltd.',
+                moat: 'Legal Monopoly (Regulatory Barriers)',
+                reason: 'ITC has a near-monopoly in the cigarette market in India (>75% share). This is protected by strict government regulations that ban advertising for tobacco products. **Example:** A new company *cannot* launch a new cigarette brand and advertise it on TV, print, or billboards. This makes it almost impossible to build a brand and challenge ITC, giving it a powerful regulatory moat.',
+                sustainability: 'The cigarette moat is sustainable as long as the regulations are in place. The risk is that the government increases taxes so much that it hurts volumes. However, ITC is using the massive cash flow from this business to build its *new* moats in FMCG (Aashirvaad, Sunfeast) and Hotels.'
+            },
+            'hal': {
+                title: 'Hindustan Aeronautics Ltd. (HAL)',
+                moat: 'Monopoly (Government Regulated)',
+                reason: 'HAL is a state-owned enterprise with a strategic monopoly. It is the primary domestic supplier of aircraft, helicopters, and maintenance services to the Indian Armed Forces. **Example:** When the Indian Air Force needs to buy or service a Tejas fighter jet or a Dhruv helicopter, HAL is the only domestic company with the capability and mandate to do so. These are high-tech, strategic assets.',
+                sustainability: 'Extremely high. The barrier to entry is insurmountable for a private player due to the high-tech nature, massive capital, and strategic importance (national security). As India focuses on "Make in India" for defense, HAL is the primary beneficiary. Its order book is guaranteed for decades.'
+            },
+            'coalindia': {
+                title: 'Coal India Ltd. (CIL)',
+                moat: 'Natural Monopoly (Government Mandate)',
+                reason: 'CIL is a state-owned enterprise that enjoys a monopoly over coal mining in India, accounting for over 80% of production. **Example:** NTPC, India\'s largest power producer, is almost entirely dependent on Coal India for its raw material. CIL\'s control over India\'s coal reserves is its "natural monopoly".',
+                sustainability: 'This moat is strong in the medium term, as India is still heavily dependent on coal for power. The long-term risk (20+ years) is the global shift to renewable energy (solar, wind). However, for the next 1-2 decades, India\'s energy needs are so large that coal will remain critical, protecting CIL\'s position.'
+            },
+            'crisil': {
+                title: 'CRISIL Ltd.',
+                moat: 'Oligopoly (Brand Trust & Regulation)',
+                reason: 'The credit rating industry is an oligopoly (CRISIL, ICRA, CARE). CRISIL (an S&P Global company) is the largest and most reputed. **Example:** When a company like Tata wants to borrow ₹1,000 Cr by issuing a bond, SEBI requires it to get a "credit rating". Investors trust CRISIL\'s "AAA" rating, which allows Tata to borrow at a low-interest rate. This "trust" is the moat and takes decades to build.',
+                sustainability: 'Very sustainable. Trust is the key. As India\'s corporate bond market deepens, the need for ratings will only grow. Being part of S&P Global gives it an international standard of credibility that is hard to challenge. It has also diversified into data and analytics, which is a high-growth area.'
+            },
+            'bse': {
+                title: 'BSE Ltd.',
+                moat: 'Duopoly (Market Infrastructure)',
+                reason: 'BSE operates in a duopoly with the National Stock Exchange (NSE) as the only two major stock exchanges in India. **Example:** While NSE is the leader in equity trading, BSE has a monopoly in other segments, like its BSE StAR MF platform, which is India\'s largest mutual fund distribution platform. Such market infrastructure businesses have extremely high regulatory barriers.',
+                sustainability: 'Very strong. You cannot just open a new stock exchange. This is a regulated duopoly. BSE\'s future growth is tied to the "financialization" of India: more people investing in stocks and mutual funds. It also earns revenue from data services and has a new, growing segment in derivatives.'
+            },
+            'nestle': {
+                title: 'Nestlé India',
+                moat: 'Brand Monopoly (in specific categories)',
+                reason: 'While the FMCG sector is competitive, Nestlé enjoys a monopoly-like status in several key product categories. **Example:** It has over 95% market share in the infant nutrition space with brands like `Cerelac` and `Lactogen`. Its brand `Maggi` also holds a commanding share (over 60%) in the instant noodles market. This brand loyalty is a powerful moat.',
+                sustainability: 'Extremely sustainable. Brand trust, especially in a category like baby food, is paramount. Parents will not switch brands to save a few rupees. Nestlé has held this position for decades and uses its brand power and R&D to launch new, premium products that keep its profit margins high.'
+            },
+            'indigo': {
+                title: 'IndiGo (InterGlobe Aviation)',
+                moat: 'Dominant Market Share & Cost Leadership',
+                reason: 'IndiGo controls over 60% of the Indian domestic aviation market. Its moat is a relentless focus on cost. **Example:** By using only one type of aircraft (Airbus A320), it saves billions on training, maintenance, and spare parts. Its quick 30-minute turnaround time means its planes are in the air (making money) more than competitors. This allows it to offer low prices and still be profitable.',
+                sustainability: 'This moat is very strong. Aviation is a tough business, but IndiGo has proven it can be profitable while competitors fail. Its scale is now so large that it can dictate prices and routes. Its future is tied to India\'s growing middle class, which is increasingly choosing to fly.'
+            },
+            'hindustanzinc': {
+                title: 'Hindustan Zinc Ltd.',
+                moat: 'Natural Resource Monopoly',
+                reason: 'Hindustan Zinc is India’s only integrated producer of zinc, lead, and silver, with over 75% market share in zinc. **Example:** Its moat comes from its exclusive ownership of high-quality mining assets. A competitor cannot simply decide to "start a zinc company"; they would need to find a new mine, which is almost impossible. This "natural resource" moat is very powerful.',
+                sustainability: 'Highly sustainable. The company has mining licenses for decades to come. Zinc is a fundamental commodity used in galvanizing steel (making it rust-proof), which is critical for construction and infrastructure. Demand is stable and tied to economic growth. It is also one of the lowest-cost producers in the *world*.'
+            },
+            'concor': {
+                title: 'CONCOR (Container Corporation of India)',
+                moat: 'Infrastructure & Network Dominance',
+                reason: 'CONCOR is the market leader in moving shipping containers by rail from ports to inland cities. **Example:** When a container arrives at a port in Mumbai, CONCOR uses its massive network of inland container depots (ICDs) and exclusive rail wagons to transport it to a factory near Delhi. This physical infrastructure, built over decades, is its moat.',
+                sustainability: 'The moat is strong but facing new challenges. It was a government-owned monopoly, but the government is now allowing private players to compete. However, CONCOR still *owns* the best-located depots and has the largest network. Its future depends on how well it competes with new, aggressive private companies.'
+            },
+            'marico': {
+                title: 'Marico Ltd.',
+                moat: 'Brand Monopoly',
+                reason: 'Marico has created powerful brand monopolies. **Example:** Its `Parachute` brand is synonymous with coconut oil and has an overwhelming market share, sold in iconic blue bottles. Its `Saffola` brand is a dominant force in the premium edible oil (for heart health) and oats category. This brand power leads to pricing stability and loyal customers.',
+                sustainability: 'Very sustainable. Like Pidilite and Nestlé, these brands are household names. The company has a deep distribution network to get these products to millions of shops. It has also successfully used its brand trust to expand into new areas like honey, peanut butter, and plant-based foods.'
+            },
+            'indiamart': {
+                title: 'Indiamart Intermesh',
+                moat: 'Network Effect',
+                reason: 'Indiamart is India\'s largest B2B (Business-to-Business) online marketplace. Its moat is a classic network effect. **Example:** A small factory making bolts in Ludhiana *must* be on Indiamart to be found by a large construction company in Bangalore. Because all the suppliers are on Indiamart, all the buyers go there. This attracts even more suppliers, creating a cycle.',
+                sustainability: 'Very strong and growing. This is a "winner-take-all" market. As more of India\'s small businesses go online, Indiamart\'s platform becomes more powerful. It has a "first-mover" advantage that is now so large that it is very difficult for a new B2B platform to compete.'
+            },
+            'kfintech': {
+                title: 'KFin Technologies',
+                moat: 'Duopoly & High Switching Costs',
+                reason: 'KFintech is the *other* company in the RTA duopoly with CAMS. It provides the backend data and transaction services for mutual funds. **Example:** When you invest in a Mirae, Axis, or Kotak mutual fund, KFintech is the company handling your data. Just like CAMS, it has high switching costs and benefits from SEBI regulations.',
+                sustainability: 'The moat is extremely sustainable, identical to CAMS. Its future growth is also tied to the long-term growth of India\'s mutual fund industry. The two companies together form a rational duopoly that is protected from new competition.'
+            },
+            'borosilrenew': {
+                title: 'Borosil Renewables',
+                moat: 'Manufacturing Niche (First Mover)',
+                reason: 'This company is the first and, for a long time, was the *only* domestic manufacturer of solar glass in India. **Example:** The glass used on top of a solar panel is a special, high-tech product. Borosil was the only Indian company making it. This unique position was supported by government "Make in India" policies and import duties on cheaper Chinese glass.',
+                sustainability: 'This moat is *weakening*. Its success and high-profit margins have attracted new, large competitors (like Reliance and Adani) who are now building their own solar glass factories. The company\'s future now depends on its technology and efficiency, not its monopoly.'
+            },
+            'aplapollo': {
+                title: 'APL Apollo Tubes',
+                moat: 'Distribution Network & Brand',
+                reason: 'APL Apollo is the dominant leader in the structural steel tube market in India (>50% share). **Example:** It took a "boring" product (steel pipes used in construction) and turned it into a *brand*. It created thousands of small fabricator and dealer relationships, making its products available everywhere. Its scale allows it to produce over 2000 different types of tubes.',
+                sustainability: 'Very strong. The brand and distribution network are a huge moat. It is now the "Fevicol" or "Asian Paints" of its industry. As India builds more infrastructure, sheds, and homes, the demand for its products is locked in. It is consolidating a fragmented, unorganized market.'
+            },
+            'titan': {
+                title: 'Titan Company',
+                moat: 'Brand Trust & Retail Dominance',
+                reason: 'Titan, a Tata group company, is the largest player in India\'s organized jewelry market with its `Tanishq` brand. **Example:** In India, buying gold jewelry is a high-value purchase where trust is the *most* important factor. The "Tata" name provides an unparalleled moat of trust, which unorganized jewelers cannot match. Its `CaratLane` brand is also dominating the online space.',
+                sustainability: 'Extremely sustainable. The "Tata" brand is a permanent asset. Titan is actively "organizing" the unorganized jewelry market, which is a massive, multi-decade growth opportunity. Its other brands like Titan (watches) and EyePlus (eyewear) also have dominant, high-trust positions.'
+            },
+            'divis': {
+                title: 'Divi\'s Laboratories',
+                moat: 'Cost Leadership & Process Chemistry',
+                reason: 'Divi\'s is one of the world\'s leading manufacturers of Active Pharmaceutical Ingredients (APIs) - the core chemical in a medicine. **Example:** Divi\'s is one of the *only* companies in the world that can produce certain complex APIs at a massive scale and a very low cost for global giants like Pfizer or GSK. Its expertise in "process chemistry" is its moat.',
+                sustainability: 'Very sustainable. The moat is its scientific talent and relationship with global pharma. These clients have strict regulatory approvals (US FDA) for Divi\'s factories. Switching to a new, unproven supplier is extremely risky and expensive for them, creating very "sticky" customers.'
+            },
+            'infoedge': {
+                title: 'Info Edge (India) Ltd.',
+                moat: 'Network Effect (Online Classifieds)',
+                reason: 'Info Edge owns a portfolio of dominant online platforms. **Example:** Its main asset, `Naukri.com`, is the #1 job website in India. Job seekers go where the jobs are, and recruiters go where the candidates are. This is a "network effect" that is almost impossible to break. It also owns `99acres.com` (real estate) and `Jeevansathi.com` (matrimony).',
+                sustainability: 'The moat for Naukri.com is extremely strong and highly profitable. The moats for 99acres and Jeevansathi are less dominant but still strong. The company also acts as a "venture capital" fund, holding early stakes in huge start-ups like Zomato and Policybazaar, which adds massive value.'
+            },
+            'gillette': {
+                title: 'Gillette India',
+                moat: 'Brand Monopoly & Technology',
+                reason: 'Gillette has a virtual monopoly in men\'s grooming (razors and blades). Its moat is its brand, technology, and business model. **Example:** It sells the razor "handle" (e.g., Mach 3, Fusion) at a low price, but makes all its profit by selling the high-margin, patented "blades" that fit the handle. This "razor and blade" model locks in customers.',
+                sustainability: 'Very sustainable. The brand is a household name. While new "subscription" clubs are a threat, Gillette\'s dominance in retail stores and its R&D budget are massive. It has pricing power and a sticky customer base built over decades.'
+            },
+            'bajajfinance': {
+                title: 'Bajaj Finance',
+                moat: 'Data, Distribution & Speed',
+                reason: 'Bajaj Finance is the leader in consumer lending (NBFC). Its moat is its data and speed. **Example:** When you buy a TV at a store, the Bajaj Finance agent can access your data (if you are an existing customer) and approve a 0% EMI loan in 2 minutes on their tablet. This speed and convenience are unmatched. They have data on millions of customers, which they use to offer other loans (personal, home).',
+                sustainability: 'The moat is strong but faces rising competition from banks and new fintech apps. However, Bajaj\'s massive customer database, its presence in thousands of stores, and its complex risk-analytics models give it a significant head-start that is hard to replicate.'
+            },
+            'page': {
+                title: 'Page Industries',
+                moat: 'Exclusive Brand Licensing',
+                reason: 'Page Industries is the *only* company with the license to manufacture, distribute, and market the `Jockey` brand in India. **Example:** Jockey is a premium, "aspirational" brand in the innerwear market. Page Industries has the exclusive right to sell it. This brand power allows it to command a premium price and high-profit margins over other local brands.',
+                sustainability: 'The moat is sustainable as long as the license agreement with Jockey International is in place (which it has been for decades). The brand is extremely strong, and Page has built a massive, high-quality distribution network. The only risk is the license not being renewed, but this is a low probability.'
+            },
+            'drlal': {
+                title: 'Dr. Lal PathLabs',
+                moat: 'Brand Trust & Network Scale',
+                reason: 'The diagnostics (blood test) industry is an oligopoly (Dr. Lal, Metropolis, Apollo). The moat is "brand trust". **Example:** When a doctor or a patient needs a critical blood test, they will *not* go to a cheap, unknown lab. They will pay a premium for a brand they trust to give accurate results. Dr. Lal has built this trust over decades.',
+                sustainability: 'Very sustainable. Trust in healthcare is a powerful moat. This trust is supported by a massive logistics network of labs and thousands of collection centers, creating economies of scale that smaller labs cannot match. As health awareness grows, this industry will continue to consolidate around trusted brands.'
+            },
+            'unitedspirits': {
+                title: 'United Spirits (Diageo India)',
+                moat: 'Brand Portfolio & Regulatory Barriers',
+                reason: 'United Spirits is India\'s largest spirits company (whiskey, vodka, etc.). Its moat is its portfolio of brands and complex state-level regulations. **Example:** It owns iconic brands like `McDowell\'s`, `Royal Challenge`, and also sells global brands like `Johnnie Walker`. The alcohol industry is highly taxed and regulated differently in every state, making it a nightmare for new companies to navigate.',
+                sustainability: 'This moat is very strong. The "regulatory maze" protects existing large players like United Spirits, which have the scale and legal teams to manage it. Its portfolio of brands across all price points (cheap to super-premium) gives it a massive advantage in all markets.'
+            },
+            'hawkins': {
+                title: 'Hawkins Cookers',
+                moat: 'Duopoly & Brand Trust',
+                reason: 'The Indian pressure cooker market is a duopoly between Hawkins and TTK Prestige. **Example:** For decades, Hawkins has built a reputation for safety, reliability, and durability. This immense "brand trust" is often passed down from a mother to a daughter, making it a default choice for millions of households.',
+                sustainability: 'Very sustainable. In a product that can be dangerous if it fails, brand trust is a huge moat. While newer appliance brands (like Butterfly) exist, Hawkins and Prestige control the market and have pricing power. It\'s a stable, slow-growing, but highly protected business.'
+            },
+            'supreme': {
+                title: 'Supreme Industries',
+                moat: 'Distribution & Scale (Plastics)',
+                reason: 'Supreme is a leader in India\'s plastic processing industry, with dominant positions in plastic piping and molded furniture. **Example:** Its moat is its massive product range (over 9,000 different products) and a deep distribution network. A contractor building a house can get all their pipes, water tanks, and fittings from a single, trusted brand. This scale and availability are its moat.',
+                sustainability: 'Very strong. The company is a "one-stop-shop" in a fragmented market. As India\'s housing and infrastructure sectors grow, the demand for its products will continue. It is an efficient, large-scale operator in a market with high-volume, low-margin products, making it hard for small players to compete.'
+            },
+            'lt': {
+                title: 'Larsen & Toubro (L&T)',
+                moat: 'Monopoly on Complex Project Execution',
+                reason: 'L&T is a giant in engineering and construction. Its moat is its *capability* to execute projects that no one else in India can. **Example:** When India needs to build a nuclear power plant, a new metro system, or a massive sea-bridge (like the Atal Setu), the government trusts *only* L&T to get it done on time and to the right quality. This is a "moat of execution".',
+                sustainability: 'Extremely sustainable. This moat is built on 50+ years of engineering talent and a track record of completing India\'s most iconic projects. As India spends trillions on infrastructure (highways, ports, defense), L&T is the default partner. It is too complex and too critical to be challenged by newcomers.'
+            },
+            'honeywell': {
+                title: 'Honeywell Automation India',
+                moat: 'Technology & High Switching Costs',
+                reason: 'Honeywell provides automation and control systems for large industries like refineries, power plants, and factories. **Example:** A new Reliance refinery is built using Honeywell\'s complex control systems. The entire factory, its staff, and its processes are trained and integrated with this system. To "switch" to a competitor would mean retraining everyone and halting production for months. This "high switching cost" is the moat.',
+                sustainability: 'Very sustainable. This is a high-tech B2B business where reliability is everything. Customers are locked in for decades and pay Honeywell for ongoing service and upgrades. It is a deeply embedded, mission-critical partner, not just a supplier.'
+            },
+            'eicher': {
+                title: 'Eicher Motors (Royal Enfield)',
+                moat: 'Niche Monopoly & Brand Power',
+                reason: 'Eicher owns Royal Enfield, which has an >90% market share in the 250cc-750cc motorcycle market in India. **Example:** It\'s not just a motorcycle; it\'s a "cult" brand. People buy `Royal Enfield` for its heritage, its sound (the "thump"), and the community. This "brand moat" is so strong that even global giants like Harley-Davidson and Triumph have failed to compete with it in India.',
+                sustainability: 'Very sustainable, but now being tested. The brand is iconic. The risk is that the "cult" status fades as new, technically superior bikes from Triumph and Hero/Harley enter the market. However, RE has a massive head-start, a huge service network, and a deeply loyal community.'
+            },
+            'exide': {
+                title: 'Exide Industries',
+                moat: 'Duopoly & Distribution Network',
+                reason: 'The organized battery market in India is a duopoly between Exide and Amara Raja. **Example:** When your car battery dies, you go to a local workshop. That workshop will almost certainly stock Exide. Its "replacement market" distribution network is unparalleled, built over 75+ years. This "reach" is the moat.',
+                sustainability: 'The moat in the current (lead-acid) battery market is strong. The major, long-term threat is the shift to Electric Vehicles (EVs), which use Lithium-ion batteries. Exide\'s future sustainability depends entirely on how successfully it pivots and builds a new business in Lithium-ion battery manufacturing, which it is now investing heavily in.'
+            },
+            'astral': {
+                title: 'Astral Ltd.',
+                moat: 'Brand & Distribution (Plumbing)',
+                reason: 'Astral is a leader in CPVC (hot water) and PVC (cold water) plastic pipes, part of an oligopoly. **Example:** Astral was one of the first to advertise its pipes on TV, turning a "boring" product into a *brand* that homeowners ask for by name. Its moat is this brand, built by convincing plumbers (its key influencers) and customers that its quality is superior.',
+                sustainability: 'Very strong. The brand is trusted, and the distribution network is massive. It has successfully used this brand to expand into new, related categories like adhesives (competing with Pidilite) and bathroom fittings, which gives it more products to sell through the same network.'
+            },
+            'zfcv': {
+                title: 'ZF Commercial Vehicle (formerly WABCO)',
+                moat: 'Technology & High Switching Costs',
+                reason: 'This company is a dominant supplier of critical safety systems (like advanced braking) for trucks and buses. **Example:** Its systems are *designed into* new truck models by manufacturers like Tata Motors or Ashok Leyland from day one. The R&D is collaborative. To switch to a competitor, Tata Motors would have to re-design its entire truck platform, which is extremely expensive.',
+                sustainability: 'Very sustainable. This is a high-tech, mission-critical product (brakes must not fail). The moat is protected by technology, patents, and deep, long-term client relationships. As safety regulations in India (like ABS, airbags for trucks) get stricter, the demand for its advanced products only increases.'
+            },
+            'symphony': {
+                title: 'Symphony Ltd.',
+                moat: 'Brand Monopoly in a Niche',
+                reason: 'Symphony is the world\'s largest manufacturer of air coolers. **Example:** It took a low-tech product, which was mostly made by small, unorganized players, and turned it into a branded, reliable consumer appliance. Its moat is its brand, R&D in cooling technology, and a massive distribution network.',
+                sustainability: 'Highly sustainable. Air coolers are the only affordable cooling solution for millions in India who cannot afford an air conditioner. Symphony dominates this category. The threat from ACs is real but limited to higher-income segments. Symphony\'s brand and reach give it pricing power over small, local competitors.'
+            },
+            'relaxo': {
+                title: 'Relaxo Footwears',
+                moat: 'Scale & Cost Leadership',
+                reason: 'Relaxo is the largest footwear producer in India by volume, dominating the affordable (mass-market) segment. **Example:** Brands like `Sparx` (sports shoes), `Bahamas` (slippers), and `Flite` (sandals) are all from Relaxo. Its moat is its massive scale, which allows it to produce footwear at an extremely low cost. This scale is also its distribution moat, reaching millions of small shops.',
+                sustainability: 'Very sustainable. Relaxo is a "good-enough" brand for the masses. It offers style and durability at a price that unorganized players can\'t beat for quality, and premium brands (Nike, Adidas) can\'t beat on price. It is perfectly positioned for the "value-conscious" Indian consumer.'
+            },
+            'praj': {
+                title: 'Praj Industries',
+                moat: 'Technology & Niche Dominance',
+                reason: 'Praj is a global leader in technology and engineering for ethanol and biofuel plants. **Example:** When a sugar mill wants to build a factory to convert sugarcane juice into ethanol (to be mixed with petrol), they go to Praj. Praj has the core technology and patents to build this plant. It is a highly specialized, high-tech engineering company.',
+                sustainability: 'Very sustainable. The moat is its proprietary technology. Its future is directly tied to the global push for "clean energy" and India\'s ethanol blending program (E20), which is mandated by the government. Praj is a key enabler of this national policy, ensuring high demand for its technology for years to come.'
+            },
+            'syngene': {
+                title: 'Syngene International',
+                moat: 'Expertise & High Switching Costs',
+                reason: 'Syngene is a "Contract Research Organization" (CRO). It provides R&D services (drug discovery) to the world\'s largest pharmaceutical companies. **Example:** A global pharma giant like Bristol-Myers Squibb outsources some of its early-stage R&D to Syngene\'s scientists in India. This involves sharing highly sensitive intellectual property (new drug formulas).',
+                sustainability: 'Extremely sustainable. The moat is "trust". Once a client trusts Syngene with its "crown jewels" (its R&D pipeline), it is very "sticky". Switching to a new CRO is risky and complex. This leads to long-term contracts and recurring revenue. Syngene benefits from India\'s "cost" advantage and "scientific talent" advantage.'
+            },
+            'adanigreen': {
+                title: 'Adani Green Energy',
+                moat: 'Scale & Capital Access (Oligopoly)',
+                reason: 'India\'s renewable energy sector is an oligopoly (Adani, Reliance, Tata, NTPC). **Example:** To build the world\'s largest solar park, you need three things: 1) access to massive, cheap land, 2) ability to raise billions of dollars, and 3) political and regulatory support to get it done. Adani Green has proven it excels at all three, giving it a massive "execution moat".',
+                sustainability: 'The moat is its scale and its "pipeline" of future projects. As one of the largest renewable players in the world, it can access global capital at a low cost. The sustainability is tied to India\'s 2070 "Net Zero" goal, which guarantees decades of growth for the entire sector. The risk is its high debt, but its business model (long-term fixed-price contracts) is stable.'
+            },
+            'coromandel': {
+                title: 'Coromandel International',
+                moat: 'Oligopoly & Distribution Network',
+                reason: 'The fertilizer industry is a government-regulated oligopoly. Coromandel is a leader in complex fertilizers (which are not just simple Urea). **Example:** Its moat is its massive distribution network of over 750 retail stores and thousands of dealers. This network allows it to sell fertilizers, crop protection, and other agri-products directly to farmers, building deep relationships.',
+                sustainability: 'Very sustainable. The company is a "one-stop-shop" for farmers. The fertilizer business is protected by government subsidies and regulations, limiting competition. Its future growth comes from expanding its retail stores and selling more high-margin, non-subsidy products (like crop chemicals) to its loyal farmer base.'
+            },
+            'tcs': {
+                title: 'TCS (Tata Consultancy Services)',
+                moat: 'Deep Client Relationships & High Switching Costs',
+                reason: 'TCS is one of the world\'s largest IT services companies. Its moat is its deep integration with its clients. **Example:** A giant global bank (like Citibank or Morgan Stanley) has used TCS for 20+ years. TCS employees manage their *entire* critical IT infrastructure. To "switch" to another vendor would be like performing open-heart surgery on the bank—it\'s extremely risky, complex, and expensive.',
+                sustainability: 'Extremely sustainable. This "switching cost" moat is massive. The "Tata" brand adds a layer of trust. Clients don\'t just hire TCS for a project; they hire it as a long-term strategic partner. As long as global companies need technology (which is forever), TCS will be a core vendor, ensuring stable, long-term growth.'
+            },
+            'hdfcbank': {
+                title: 'HDFC Bank',
+                moat: 'Cost of Funds (CASA) & Brand Trust',
+                reason: 'HDFC Bank is India\'s largest and most trusted private bank. Its main moat is its "CASA" ratio (Current Account, Savings Account). **Example:** It has millions of salary accounts and current accounts that pay 0-3% interest. It takes this "low-cost" money and lends it out (e.g., car loans, home loans) at 8-14%. This massive difference (called "Net Interest Margin") makes it more profitable than competitors who have to borrow money at a higher cost.',
+                sustainability: 'Extremely sustainable. The "trust" moat is so strong that people see it as a "safe-haven" bank. Its massive branch and digital network makes it the default choice for millions. Its risk management is considered the best in the industry, allowing it to grow consistently and profitably for over 25 years.'
+            },
+            'vbl': {
+                title: 'Varun Beverages (VBL)',
+                moat: 'Exclusive Franchise Monopoly',
+                reason: 'VBL is one of the largest bottlers for PepsiCo *in the world*. It has an exclusive, long-term franchise (a monopoly) to manufacture, bottle, and distribute all PepsiCo products in 27 states and 7 Union Territories in India, plus other countries. **Example:** If you buy a Pepsi, 7Up, Mirinda, or Aquafina in most of India, it was made and sold by VBL. A competitor *cannot* legally enter its territory.',
+                sustainability: 'Very sustainable. This franchise agreement is the moat, and VBL has a deep, proven relationship with PepsiCo. Its future growth is simple: India is a hot country, and "per capita" consumption of soft drinks is still very low compared to the world. As incomes rise, consumption of these products will grow, and VBL is the *only* company that will benefit from this for the Pepsi brand.'
+            }
+        };
+
+        // --- DOM Elements ---
+        const stockGrid = document.querySelector('.grid');
+        const modal = document.getElementById('stockModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMoat = document.getElementById('modalMoat');
+        const modalReason = document.getElementById('modalReason');
+        const modalSustainability = document.getElementById('modalSustainability');
+        const closeBtn = document.querySelector('.close-btn');
+
+        // --- Functions ---
+        
+        // Populate all stock buttons
+        function loadStockButtons() {
+            stockGrid.innerHTML = ''; // Clear grid
+            
+            // Get all keys and sort them alphabetically
+            const sortedKeys = Object.keys(stockData).sort();
+            
+            sortedKeys.forEach(key => {
+                const stock = stockData[key];
+                const button = document.createElement('button');
+                button.className = 'stock-button text-white font-semibold py-6 px-2 rounded-lg';
+                button.id = key; // Use the key as the id
+                button.textContent = stock.title;
+                
+                button.addEventListener('click', () => {
+                    openModal(key);
+                });
+                
+                stockGrid.appendChild(button);
+            });
+        }
+
+        // Function to open the modal and populate data
+        function openModal(stockKey) {
+            const data = stockData[stockKey];
+            if (!data) return;
+
+            modalTitle.textContent = data.title;
+            modalMoat.innerHTML = data.moat; // Use innerHTML
+            modalReason.innerHTML = data.reason; // Use innerHTML for bolding
+            modalSustainability.innerHTML = data.sustainability; // Use innerHTML
+
+            modal.style.display = 'block';
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // --- Event Listeners ---
+
+        // Close modal event listeners
+        closeBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+        
+        // Initial Load
+        loadStockButtons();
+
+    </script>
+</body>
+</html>
