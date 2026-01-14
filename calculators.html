@@ -1,372 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Financial Calculators — Rupesh Khaire</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg: #f8fafc;          /* Crisp off-white */
-      --card: rgba(255, 255, 255, 0.9); /* Slightly more transparent */
-      --muted: #64748b;       /* Slate-500 */
-      --accent: #0f172a;      /* Slate-900 */
-      --primary: #2563eb;     /* Richer Blue */
-      --primary-dark: #1d4ed8;
-      --primary-light: #eff6ff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Tools Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
-    /* Keyframe Animations */
-    @keyframes floatUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        body {
+            background: #0f172a; /* Slate 900 */
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%), 
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
 
-    html,body{height:100%; min-height: 100vh;}
-    body{
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(at 90% 10%, hsla(210,100%,96%,1) 0px, transparent 40%),
-        radial-gradient(at 10% 80%, hsla(220,100%,97%,1) 0px, transparent 40%),
-        radial-gradient(at 50% 50%, hsla(200,100%,98%,1) 0px, transparent 60%);
-      color: var(--accent);
-      -webkit-font-smoothing: antialiased;
-      margin:0;
-    }
-    .container { max-width:1000px; margin:0 auto; padding:24px 20px; }
-    
-    /* Modern Card Style */
-    .glass { 
-      background: var(--card); 
-      backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px; 
-      box-shadow: 
-        0 10px 15px -3px rgba(15, 23, 42, 0.03), 
-        0 4px 6px -4px rgba(15, 23, 42, 0.04),
-        0 0 0 1px rgba(15,23,42,0.02);
-    }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    .small-muted { color: var(--muted); font-size: 0.925rem; line-height: 1.5; }
-    
-    /* Gradients & Buttons */
-    .cta { 
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
-      color: white; 
-      padding: 12px 22px; 
-      border-radius: 999px; 
-      font-weight: 600; 
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    }
-    .cta:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); 
-    }
-    
-    /* This is the new .calculator-card style */
-    .calculator-card { 
-      display:flex; align-items:center; gap:14px; 
-      padding:20px; 
-      border-radius:16px; 
-      text-decoration:none; 
-      color:var(--accent); 
-      background: #ffffff;
-      border: 1px solid rgba(226, 232, 240, 0.7);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-      /* Animation */
-      opacity: 0;
-      animation: floatUp 0.6s ease-out forwards;
-    }
+        /* Card Hover Effects */
+        .tool-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    .calculator-card:hover { 
-      transform: translateY(-5px); 
-      border-color: rgba(37, 99, 235, 0.4);
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
-    }
-    .calculator-card .icon-box {
-      display: flex; align-items: center; justify-content: center;
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
-    }
-    .calculator-card:hover .icon-box {
-        transform: scale(1.05);
-    }
-    
-    /* Staggered animation delays for the grid */
-    .grid > .calculator-card:nth-child(1) { animation-delay: 0.1s; }
-    .grid > .calculator-card:nth-child(2) { animation-delay: 0.15s; }
-    .grid > .calculator-card:nth-child(3) { animation-delay: 0.2s; }
-    .grid > .calculator-card:nth-child(4) { animation-delay: 0.25s; }
-    .grid > .calculator-card:nth-child(5) { animation-delay: 0.3s; }
-    .grid > .calculator-card:nth-child(6) { animation-delay: 0.35s; }
-    .grid > .calculator-card:nth-child(7) { animation-delay: 0.4s; }
-    .grid > .calculator-card:nth-child(8) { animation-delay: 0.45s; }
-    .grid > .calculator-card:nth-child(9) { animation-delay: 0.5s; }
-    .grid > .calculator-card:nth-child(10) { animation-delay: 0.55s; }
-    .grid > .calculator-card:nth-child(11) { animation-delay: 0.6s; }
+        .tool-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        }
 
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .tool-card:hover::before {
+            opacity: 1;
+        }
 
-    header { padding:16px 0; }
-    nav a { color:var(--muted); text-decoration:none; margin-left:24px; font-weight:500; font-size: 0.95rem; transition: color 0.2s; }
-    nav a:hover { color:var(--primary); }
-    
-    footer { margin-top:48px; padding:32px 0; text-align:center; color:var(--muted); font-size:0.9rem; border-top: 1px solid rgba(0,0,0,0.04); }
-
-    /* Gradient Hero Text */
-    .hero-text-gradient {
-        background: linear-gradient(120deg, var(--primary) 20%, #6d28d9 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    @media (max-width:640px) {
-      .container { padding:16px 14px; }
-      .calculator-card { padding:16px; }
-    }
-  </style>
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
+<body class="p-6 md:p-12 flex flex-col items-center">
 
     <!-- Header -->
-    <header class="flex items-center justify-between">
-      <a href="index.html" class="text-xl font-bold tracking-tight flex items-center gap-2" style="color:var(--accent)">
-        <span style="color:var(--primary)">✦</span> Rupesh Khaire
-      </a>
-      <nav class="hidden sm:flex items-center">
-        <a href="index.html">Home</a>
-        <a href="#contact" class="cta ml-6 !py-2 !px-5 text-sm">Contact</a>
-      </nav>
-
-      <!-- mobile menu icon -->
-      <div class="sm:hidden">
-        <button id="mobile-toggle" aria-label="menu" class="p-2 rounded-lg bg-white shadow-sm border border-gray-100" style="color:var(--accent)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-        </button>
-      </div>
+    <header class="text-center mb-16 animate-fade-in-down">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-400 mb-4 tracking-wider uppercase font-semibold">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Financial Suite v2.0
+        </div>
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+            Wealth <span class="text-gradient bg-gradient-to-r from-blue-400 to-emerald-400">Command</span> Center
+        </h1>
+        <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+            A comprehensive suite of 9 powerful calculators to plan, analyze, and optimize every aspect of your financial life.
+        </p>
     </header>
 
-    <!-- mobile menu -->
-    <div id="mobile-menu" class="glass p-2 mt-2 hidden" style="border-radius: 12px;">
-      <a class="block px-4 py-3 text-base font-medium rounded-lg hover:bg-slate-50" href="index.html">Home</a>
-      <a class="block px-4 py-3 text-base font-medium rounded-lg hover:bg-slate-50" href="#contact">Contact</a>
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl w-full">
+
+        <!-- 1. Wealth Builder (Blue/Green) -->
+        <a href="sip.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="trending-up" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Wealth Builder</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    The classic SIP & Lumpsum calculator. Visualize the power of compounding with interactive charts.
+                </p>
+            </div>
+            <div class="flex items-center text-blue-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 2. Step-Up SIP (Pink/Purple) -->
+        <a href="stepup.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="bar-chart-2" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Step-Up SIP</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Plan for salary hikes. See how increasing your investment annually accelerates wealth creation.
+                </p>
+            </div>
+            <div class="flex items-center text-pink-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 3. Goal Planner (Amber/Orange) -->
+        <a href="goalplanner.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="target" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Goal Planner</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Reverse engineer your finances. Set a target amount and find the exact monthly investment needed.
+                </p>
+            </div>
+            <div class="flex items-center text-amber-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 4. Retirement (Indigo/Violet) -->
+        <a href="retirment.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="umbrella" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Retirement Plan</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Life-cycle analysis. Factor in inflation, life expectancy, and lifestyle costs to secure your future.
+                </p>
+            </div>
+            <div class="flex items-center text-indigo-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 5. Education Planner (Teal/Emerald) -->
+        <a href="education.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="graduation-cap" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Education Plan</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Battle education inflation. Calculate the future cost of degrees and plan savings for your child.
+                </p>
+            </div>
+            <div class="flex items-center text-teal-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 6. Home Loan (Sky Blue) -->
+        <a href="homeloan.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="home" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Home Loan</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Prepayment power. See how small extra payments can slash your loan tenure by years.
+                </p>
+            </div>
+            <div class="flex items-center text-sky-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 7. SIP vs RD (Teal/Indigo Split) -->
+        <a href="siprd.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-400 to-indigo-500 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="scale" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">SIP vs RD</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Risk vs Reward. Visualize the wealth gap between Market-linked growth and Fixed safety.
+                </p>
+            </div>
+            <div class="flex items-center text-teal-300 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 8. Advanced EMI (Rose/Burgundy) -->
+        <a href="emi.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-700 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="calculator" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">EMI Pro</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Decode hidden costs. Compare Flat vs Reducing rates and Advance vs Arrears payments.
+                </p>
+            </div>
+            <div class="flex items-center text-rose-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
+        <!-- 9. FIRE Simulator (Emerald/Green) -->
+        <a href="fire.html" class="tool-card group bg-slate-800/50 rounded-3xl p-6 flex flex-col justify-between h-[240px]">
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="flame" class="text-white w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">F.I.R.E. Sim</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Financial Independence. The legendary calculator to find your Freedom Number and crossover point.
+                </p>
+            </div>
+            <div class="flex items-center text-emerald-400 text-sm font-semibold group-hover:translate-x-2 transition-transform">
+                Launch Tool <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+            </div>
+        </a>
+
     </div>
 
-    <!-- Hero -->
-    <section class="mt-12 mb-16">
-      <div style="display:flex; flex-direction:column; gap:16px; align-items:center; text-align:center; padding: 20px 0;">
-        <h1 class="hero-text-gradient" style="margin:0; font-size:clamp(36px, 6vw, 56px); font-weight:800; letter-spacing:-0.03em; line-height:1.1;">
-          Financial Tools Suite
-        </h1>
-        <p class="small-muted" style="font-size:1.1rem; max-width:600px; margin:4px auto 0;">
-            Access your custom-built SIP, Loan, and Goal Planners.
-        </p>
-      </div>
-    </section>
-
-    <!-- Main Grid Navigation -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" style="margin-top:32px;">
-      
-        <!-- SIP Calculator -->
-      <a href="sip.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:var(--primary-light); color:var(--primary)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">SIP Calculator</div>
-          <div class="small-muted" style="font-size:14px">Future value of monthly investments.</div>
-        </div>
-      </a>
-
-      <!-- Lumpsum Calculator -->
-      <a href="lumpsum.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#fff7ed; color:#ea580c">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Lumpsum Calculator</div>
-          <div class="small-muted" style="font-size:14px">Future value of a one-time investment.</div>
-        </div>
-      </a>
-
-      <!-- Step-Up SIP Calculator -->
-      <a href="Step-Up%20SIP.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#ecfdf5; color:#059669">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.34a10 10 0 1 1-14.995 8.984L2 12"/><path d="M22 12l-5-5"/><path d="M17 12h5"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Step-Up SIP Calculator</div>
-          <div class="small-muted" style="font-size:14px">Future value with annual SIP increase.</div>
-        </div>
-      </a>
-
-      <!-- Goal Planning (SIP) -->
-      <a href="Goal%20SIP.html" class="calculator-card" target="_blank">
-         <div class="icon-box" style="background:#f5f3ff; color:#7c3aed">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Goal Planning (SIP)</div>
-          <div class="small-muted" style="font-size:14px">Calculate the required monthly SIP.</div>
-        </div>
-      </a>
-
-       <!-- Goal Planning (Lumpsum) -->
-       <a href="Goal%20Lumpsum.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#f5f3ff; color:#7c3aed">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-       </div>
-       <div style="text-align:left; flex:1">
-         <div style="font-weight:700; font-size:17px">Goal Planning (Lumpsum)</div>
-         <div class="small-muted" style="font-size:14px">Calculate the required one-time investment.</div>
-       </div>
-     </a>
-
-     <!-- Retirement Planner -->
-     <a href="retirement.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#ecfdf5; color:#059669">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Retirement Planner</div>
-          <div class="small-muted" style="font-size:14px">Determine the SIP needed for your future.</div>
-        </div>
-      </a>
-
-      <!-- Children Education Planner -->
-      <a href="Childeren%20Education.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#f1f5f9; color:#475569">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Children Education Planner</div>
-          <div class="small-muted" style="font-size:14px">Plan the SIP for future education costs.</div>
-        </div>
-      </a>
-
-      <!-- EMI Calculator -->
-      <a href="emi.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#fdf2f8; color:#db2777">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">EMI Calculator</div>
-          <div class="small-muted" style="font-size:14px">Calculate the monthly installment for any loan.</div>
-        </div>
-      </a>
-
-      <!-- Home Loan Pre-Pay EMI Savings -->
-      <a href="Home%20Loan%20Pre-Pay.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#f0f9ff; color:#0284c7">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Home Loan Pre-Pay</div>
-          <div class="small-muted" style="font-size:14px">See interest savings from prepayments.</div>
-        </div>
-      </a>
-
-      <!-- Advanced Home Loan Planner -->
-      <a href="Home%20Loan.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#f0f9ff; color:#0284c7">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">Advanced Home Loan</div>
-          <div class="small-muted" style="font-size:14px">Detailed amortization and savings.</div>
-        </div>
-      </a>
-
-      <!-- SIP vs RD Calculator -->
-      <a href="sipvsrd.html" class="calculator-card" target="_blank">
-        <div class="icon-box" style="background:#f1f5f9; color:#475569">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h3v3"/><path d="M14 10l6.13-6.13"/><path d="M8 20H5v-3"/><path d="M10 14l-6.13 6.13"/><path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/></svg>
-        </div>
-        <div style="text-align:left; flex:1">
-          <div style="font-weight:700; font-size:17px">SIP vs RD Calculator</div>
-          <div class="small-muted" style="font-size:14px">Compare returns to make a better decision.</div>
-        </div>
-      </a>
-
-    </div>
-
-    <footer id="contact">
-      <div class="small-muted" style="opacity:0.8">© 2025 Rupesh Khaire — Mutual Fund Distributor</div>
+    <footer class="mt-20 text-slate-500 text-sm">
+        <p>Built with ❤️ by your AI Financial Assistant</p>
     </footer>
 
-  </div>
-
-  <!-- Refined Contact Modal (from index.html) -->
-  <div id="contact-modal" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index:80; padding:20px;">
-    <div class="glass" style="width:100%; max-width:400px; padding:24px; border-radius:20px; animation: floatUp 0.4s ease-out;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <div style="font-weight:700; font-size:1.25rem">Get in touch</div>
-        <button id="close-modal" class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors" style="border:none; cursor:pointer; color:var(--accent);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-      </div>
-      
-      <div style="display:flex; flex-direction:column; gap:12px;">
-          <a href="https://wa.me/918669095783" class="calculator-card" style="padding:16px; background:#f0fdf4; border-color:#bbf7d0; animation:none; opacity: 1;">
-            <div class="icon-box" style="background:#dcfce7; color:#16a34a; width:40px; height:40px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            </div>
-            <div style="flex:1;">
-                 <div style="font-weight:600; font-size:15px; color:#15803d">WhatsApp</div>
-                 <div class="small-muted" style="font-size:13px">+91 86690 95783</div>
-            </div>
-          </a>
-          
-          <a href="mailto:rkhaire44@gmail.com" class="calculator-card" style="padding:16px; animation:none; opacity: 1;">
-            <div class="icon-box" style="background:#f1f5f9; color:#475569; width:40px; height:40px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </div>
-            <div style="flex:1;">
-                 <div style="font-weight:600; font-size:15px">Email</div>
-                 <div class="small-muted" style="font-size:13px">rkhaire44@gmail.com</div>
-            </div>
-          </a>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    // Mobile toggle
-    const mobileToggle = document.getElementById('mobile-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileToggle && mobileToggle.addEventListener('click', ()=> {
-      if (!mobileMenu) return;
-      mobileMenu.classList.toggle('hidden');
-    });
-
-    // Contact modal
-    const contactBtns = document.querySelectorAll('.cta[href="#contact"]');
-    const contactModal = document.getElementById('contact-modal');
-    const closeModal = document.getElementById('close-modal');
-    
-    contactBtns.forEach(btn => {
-        btn.addEventListener('click', (e)=> { 
-            if(btn.getAttribute('href') === '#contact') e.preventDefault();
-            contactModal.style.display = 'flex'; 
-        });
-    });
-
-    closeModal && closeModal.addEventListener('click', ()=> { contactModal.style.display = 'none'; });
-    contactModal && contactModal.addEventListener('click', (e)=> { if (e.target === contactModal) contactModal.style.display = 'none'; });
-  </script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
