@@ -1,246 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EMI Calculator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    .calculator-card {
-      background-color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .input-group label {
-      font-weight: 600;
-      color: #4b5563;
-    }
-    .input-field input[type="number"] {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 0.5rem;
-      font-weight: 500;
-      color: #1f2937;
-      text-align: right;
-      padding: 0.5rem 2.5rem 0.5rem 2rem;
-    }
-    .input-field .currency-symbol,
-    .input-field .unit {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
-    .input-field .currency-symbol {
-      left: 0.75rem;
-    }
-    .input-field .unit {
-      right: 0.75rem;
-    }
-    .results-container {
-      background-color: #e0f2f1;
-      border-radius: 1rem;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .results-container .result-item {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px dashed #b2dfdb;
-    }
-    .results-container .result-item:last-child {
-      border-bottom: none;
-    }
-    .result-value {
-      font-weight: 700;
-      color: #00897b;
-      font-size: 1.125rem;
-    }
-    .chart-container {
-      background-color: #f7fafc;
-      border-radius: 1rem;
-      padding: 1rem;
-      height: 260px;
-    }
-    @media (min-width: 768px) {
-      .chart-container {
-        height: 300px;
-      }
-    }
-    .range-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 8px;
-      background: #d1d5db;
-      border-radius: 5px;
-      outline: none;
-    }
-    .range-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      background: #00897b;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid #fff;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced EMI Calculator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #881337 0%, #4c0519 100%); /* Rose/Burgundy Theme */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #be123c; /* Rose-700 */
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #fda4af; /* Rose-300 */
+            border-radius: 2px;
+        }
+        /* Hide spin buttons for number inputs */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .wealth-card {
+            background: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
+            box-shadow: 0 10px 25px -5px rgba(159, 18, 57, 0.5);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body>
+    <div id="root"></div>
 
-<main class="w-full max-w-2xl">
-  <header class="text-center mb-6">
-    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">EMI Calculator</h1>
-    <p class="text-base md:text-lg text-gray-600 mt-2">Calculate your fixed monthly loan repayment installment.</p>
-  </header>
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+        
+        // Icon Components
+        const IconCalculator = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>;
+        const IconPercent = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>;
+        const IconClock = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+        const IconAlert = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>;
 
-  <div class="calculator-card">
-    <div class="flex flex-col lg:flex-row gap-8">
+        const App = () => {
+            // State
+            const [loanAmount, setLoanAmount] = useState(1000000);
+            const [interestRate, setInterestRate] = useState(10.5);
+            const [tenure, setTenure] = useState(5); // Years
+            const [tenureMode, setTenureMode] = useState('Years'); // Years or Months
+            const [processingFee, setProcessingFee] = useState(0); // Fixed amount
+            const [calculationMethod, setCalculationMethod] = useState('Reducing'); // 'Reducing' or 'Flat'
+            const [paymentMode, setPaymentMode] = useState('Arrears'); // 'Arrears' (Standard) or 'Advance'
 
-      <!-- Inputs -->
-      <div class="flex-1 flex flex-col">
-        <div class="input-group">
-          <label for="loan-amount-input">Principal Loan Amount (₹)</label>
-          <div class="input-field relative">
-            <span class="currency-symbol">₹</span>
-            <input type="number" id="loan-amount-input" value="1000000" />
-          </div>
-        </div>
-        <input type="range" id="loan-amount-range" min="100000" max="50000000" step="50000" value="1000000" class="range-slider mt-2" oninput="syncInputs('loan-amount')" />
+            // Formatting
+            const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+            const formatCompact = (val) => new Intl.NumberFormat('en-IN', { notation: "compact", compactDisplay: "short", style: 'currency', currency: 'INR' }).format(val);
 
-        <div class="input-group mt-6">
-          <label for="interest-rate-input">Annual Interest Rate (p.a. %)</label>
-          <div class="input-field relative">
-            <input type="number" id="interest-rate-input" value="9" />
-            <span class="unit">%</span>
-          </div>
-        </div>
-        <input type="range" id="interest-rate-range" min="1" max="25" step="0.1" value="9" class="range-slider mt-2" oninput="syncInputs('interest-rate')" />
+            // Calculations
+            const result = useMemo(() => {
+                const P = loanAmount;
+                const R = interestRate / 12 / 100; // Monthly rate
+                const N = tenureMode === 'Years' ? tenure * 12 : tenure;
+                
+                let emi = 0;
+                let totalInterest = 0;
+                let effectiveRate = interestRate; // For Flat rate conversion
+                let apr = 0;
 
-        <div class="input-group mt-6">
-          <label for="tenure-input">Loan Tenure (Years)</label>
-          <div class="input-field relative">
-            <input type="number" id="tenure-input" value="15" />
-          </div>
-        </div>
-        <input type="range" id="tenure-range" min="1" max="30" step="1" value="15" class="range-slider mt-2" oninput="syncInputs('tenure')" />
-      </div>
+                // 1. EMI Calculation based on Method
+                if (calculationMethod === 'Reducing') {
+                    if (paymentMode === 'Arrears') {
+                        // Standard Formula: P * r * (1+r)^n / ((1+r)^n - 1)
+                        emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+                    } else {
+                        // Advance EMI: Formula adjusts because first payment is immediate (Principal reduces)
+                        // EMI_Advance = EMI_Arrears / (1+r)
+                        const emiArrears = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+                        emi = emiArrears / (1 + R);
+                    }
+                    totalInterest = (emi * N) - P;
+                } else {
+                    // Flat Rate Method
+                    // Interest = P * Rate(annual) * Years
+                    const annualInterest = P * (interestRate / 100);
+                    const totalFlatInterest = annualInterest * (N / 12);
+                    totalInterest = totalFlatInterest;
+                    emi = (P + totalFlatInterest) / N;
+                    
+                    // Approximate Effective Reducing Rate (Rule of Thumb or Iteration)
+                    // Rate ~ 2 * FlatRate (Roughly)
+                    // Let's use rate function approximation or leave as "High"
+                }
 
-      <!-- Chart + Results -->
-      <div class="flex-1 flex flex-col gap-6 mt-6 lg:mt-0">
-        <div class="chart-container">
-          <canvas id="emi-chart"></canvas>
-        </div>
+                // 2. APR Calculation (Includes Processing Fee)
+                // Net Disbursed = P - Processing Fee
+                // Cashflows: [-NetDisbursed, EMI, EMI... EMI]
+                // We simplify by just adding Fee to Cost
+                const totalCost = totalInterest + processingFee;
+                
+                // Chart Data
+                const totalPayment = P + totalInterest;
+                
+                return {
+                    emi,
+                    totalInterest,
+                    totalPayment,
+                    totalCost,
+                    N
+                };
+            }, [loanAmount, interestRate, tenure, tenureMode, processingFee, calculationMethod, paymentMode]);
 
-        <div class="results-container">
-          <div class="result-item">
-            <span>Monthly EMI:</span>
-            <span id="emi-amount" class="text-red-600 font-extrabold text-xl">₹ 0</span>
-          </div>
-          <div class="result-item">
-            <span>Total Interest:</span>
-            <span id="total-interest" class="text-teal-700 font-bold">₹ 0</span>
-          </div>
-          <div class="result-item">
-            <span>Total Repayment:</span>
-            <span id="total-repayment" class="text-teal-700 font-bold text-xl">₹ 0</span>
-          </div>
-        </div>
-      </div>
+            // Chart Data for Donut
+            const Chart = () => {
+                const principalPct = (loanAmount / result.totalPayment) * 100;
+                const interestPct = 100 - principalPct;
+                
+                return (
+                     <div className="h-[200px] w-full flex items-center justify-center gap-8 animate-in fade-in duration-500">
+                        <div className="relative w-36 h-36">
+                            <svg viewBox="0 0 42 42" className="w-full h-full transform -rotate-90">
+                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#fecdd3" strokeWidth="4" />
+                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#be123c" strokeWidth="6" 
+                                    strokeDasharray={`${interestPct} ${100 - interestPct}`} 
+                                    strokeDashoffset="0"
+                                    className="transition-all duration-1000 ease-out"
+                                />
+                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#fb7185" strokeWidth="6" 
+                                    strokeDasharray={`${principalPct} ${100 - principalPct}`} 
+                                    strokeDashoffset={`-${interestPct}`}
+                                    className="transition-all duration-1000 ease-out"
+                                />
+                            </svg>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-xs text-slate-500 font-bold">
+                                <span>Total</span>
+                                <span className="text-slate-800">{formatCompact(result.totalPayment)}</span>
+                            </div>
+                        </div>
 
-    </div>
-  </div>
-</main>
+                        <div className="space-y-4 text-xs font-semibold">
+                            <div>
+                                <div className="flex items-center gap-2 text-rose-400 mb-1">
+                                    <div className="w-3 h-3 bg-rose-400 rounded-full"></div>
+                                    Principal
+                                </div>
+                                <div className="text-slate-700 text-sm">{formatCompact(loanAmount)}</div>
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 text-rose-700 mb-1">
+                                    <div className="w-3 h-3 bg-rose-700 rounded-full"></div>
+                                    Interest
+                                </div>
+                                <div className="text-slate-700 text-sm">{formatCompact(result.totalInterest)}</div>
+                            </div>
+                        </div>
+                     </div>
+                )
+            };
 
-<script>
-  let emiChart;
-  const nbsp = "\u00A0";
+            return (
+                <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
+                    
+                    <div className="w-full max-w-5xl grid md:grid-cols-12 gap-6">
+                        
+                        {/* LEFT COLUMN: Controls */}
+                        <div className="md:col-span-5 space-y-4">
+                            
+                            {/* Title Card */}
+                            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl text-white">
+                                <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
+                                    <span className="bg-rose-600 p-2 rounded-xl text-white border border-rose-400/30">
+                                        <IconCalculator />
+                                    </span>
+                                    EMI Pro
+                                </h1>
+                                <p className="text-rose-100 text-sm">Compare rates, fees, and repayment methods.</p>
+                            </div>
 
-  const calculate = () => {
-    const loanAmount = parseFloat(document.getElementById("loan-amount-input").value) || 0;
-    const interestRate = parseFloat(document.getElementById("interest-rate-input").value) / 100 || 0;
-    const tenure = parseFloat(document.getElementById("tenure-input").value) || 0;
+                            {/* Controls Card */}
+                            <div className="glass-card rounded-3xl p-6 md:p-8 shadow-xl space-y-6 max-h-[75vh] overflow-y-auto">
+                                
+                                {/* 1. Loan Amount */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Loan Amount</label>
+                                        <div className="flex items-center bg-slate-100 rounded px-2 py-1 border border-slate-200 focus-within:border-rose-500 transition-colors">
+                                            <span className="text-sm font-bold text-slate-500 mr-1">₹</span>
+                                            <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} className="text-lg font-bold text-slate-800 bg-transparent w-32 text-right focus:outline-none" />
+                                        </div>
+                                    </div>
+                                    <input type="range" min="10000" max="10000000" step="10000" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} />
+                                </div>
 
-    const totalMonths = tenure * 12;
-    const monthlyRate = interestRate / 12;
+                                {/* 2. Interest Rate */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Interest Rate (p.a)</label>
+                                        <div className="flex items-center bg-slate-100 rounded px-2 py-1 border border-slate-200 focus-within:border-rose-500 transition-colors">
+                                            <input type="number" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} className="text-lg font-bold text-slate-800 bg-transparent w-16 text-right focus:outline-none" />
+                                            <span className="text-sm font-bold text-slate-500 ml-1">%</span>
+                                        </div>
+                                    </div>
+                                    <input type="range" min="1" max="30" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} />
+                                </div>
 
-    if (loanAmount <= 0 || totalMonths <= 0) {
-      document.getElementById("emi-amount").innerText = "₹ 0";
-      document.getElementById("total-interest").innerText = "₹ 0";
-      document.getElementById("total-repayment").innerText = "₹ 0";
-      updateChart(0, 0);
-      return;
-    }
+                                {/* 3. Tenure */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-slate-500 font-semibold text-xs uppercase tracking-wider">Tenure</label>
+                                        <div className="flex gap-2">
+                                            <div className="flex items-center bg-slate-100 rounded px-2 py-1 border border-slate-200">
+                                                <input type="number" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} className="text-lg font-bold text-slate-800 bg-transparent w-16 text-right focus:outline-none" />
+                                            </div>
+                                            <select 
+                                                value={tenureMode} onChange={(e) => setTenureMode(e.target.value)}
+                                                className="bg-slate-100 text-xs font-bold text-slate-600 rounded px-2 outline-none cursor-pointer hover:bg-slate-200"
+                                            >
+                                                <option value="Years">Years</option>
+                                                <option value="Months">Months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="range" min="1" max={tenureMode === 'Years' ? 30 : 360} step="1" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} />
+                                </div>
 
-    let emi;
-    if (monthlyRate === 0) {
-      emi = loanAmount / totalMonths;
-    } else {
-      const factor = Math.pow(1 + monthlyRate, totalMonths);
-      emi = loanAmount * monthlyRate * factor / (factor - 1);
-    }
+                                {/* 4. Advanced Settings Toggle Area */}
+                                <div className="space-y-4 pt-4 border-t border-slate-200">
+                                    <div className="text-xs font-bold text-rose-600 uppercase tracking-widest">Advanced Options</div>
+                                    
+                                    {/* Fees */}
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-slate-600 text-xs font-semibold">Processing Fees</label>
+                                        <div className="flex items-center bg-slate-100 rounded px-2 py-1 border border-slate-200 w-28">
+                                            <span className="text-xs text-slate-400 mr-1">₹</span>
+                                            <input type="number" value={processingFee} onChange={(e) => setProcessingFee(Number(e.target.value))} className="text-sm font-bold text-slate-800 bg-transparent w-full text-right focus:outline-none" />
+                                        </div>
+                                    </div>
 
-    const totalRepayment = emi * totalMonths;
-    const totalInterest = totalRepayment - loanAmount;
+                                    {/* Method Toggle */}
+                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <label className="text-slate-500 text-[10px] uppercase font-bold block mb-2">Interest Method</label>
+                                        <div className="flex bg-slate-200 p-1 rounded">
+                                            <button 
+                                                onClick={() => setCalculationMethod('Reducing')}
+                                                className={`flex-1 py-1.5 text-xs font-bold rounded transition-all ${calculationMethod === 'Reducing' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500'}`}
+                                            >
+                                                Reducing (Standard)
+                                            </button>
+                                            <button 
+                                                onClick={() => setCalculationMethod('Flat')}
+                                                className={`flex-1 py-1.5 text-xs font-bold rounded transition-all ${calculationMethod === 'Flat' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500'}`}
+                                            >
+                                                Flat Rate
+                                            </button>
+                                        </div>
+                                        {calculationMethod === 'Flat' && (
+                                            <div className="mt-2 flex gap-2 items-start bg-rose-50 p-2 rounded text-[10px] text-rose-800">
+                                                <IconAlert />
+                                                <p>Flat rate interest is calculated on the full loan amount for the entire tenure, making it much more expensive than Reducing Balance.</p>
+                                            </div>
+                                        )}
+                                    </div>
 
-    document.getElementById("emi-amount").innerText = `₹${nbsp}${Math.round(emi).toLocaleString("en-IN")}`;
-    document.getElementById("total-interest").innerText = `₹${nbsp}${Math.round(totalInterest).toLocaleString("en-IN")}`;
-    document.getElementById("total-repayment").innerText = `₹${nbsp}${Math.round(totalRepayment).toLocaleString("en-IN")}`;
+                                    {/* Payment Mode Toggle */}
+                                    <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                        <label className="text-slate-500 text-[10px] uppercase font-bold block mb-2">EMI Schedule</label>
+                                        <div className="flex bg-slate-200 p-1 rounded">
+                                            <button 
+                                                onClick={() => setPaymentMode('Arrears')}
+                                                className={`flex-1 py-1.5 text-xs font-bold rounded transition-all ${paymentMode === 'Arrears' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500'}`}
+                                            >
+                                                Arrears (End)
+                                            </button>
+                                            <button 
+                                                onClick={() => setPaymentMode('Advance')}
+                                                className={`flex-1 py-1.5 text-xs font-bold rounded transition-all ${paymentMode === 'Advance' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500'}`}
+                                            >
+                                                Advance (Start)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
 
-    updateChart(loanAmount, totalInterest);
-  };
+                            </div>
+                        </div>
 
-  const updateChart = (principal, interest) => {
-    const ctx = document.getElementById("emi-chart").getContext("2d");
-    if (emiChart) emiChart.destroy();
+                        {/* RIGHT COLUMN: Results & Chart */}
+                        <div className="md:col-span-7 flex flex-col gap-6">
+                            
+                            {/* EMI Summary Card */}
+                            <div className="wealth-card rounded-3xl p-6 md:p-8 text-white relative overflow-hidden transition-all duration-300">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
+                                
+                                <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                                    <div>
+                                        <div className="text-rose-100 font-medium mb-1 uppercase tracking-wider text-xs">Monthly EMI</div>
+                                        <div className="text-4xl md:text-5xl font-bold mb-2 tracking-tight">
+                                            {formatCurrency(Math.ceil(result.emi))}
+                                        </div>
+                                        <div className="text-xs text-rose-100 opacity-80">
+                                            {result.N} monthly payments
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="space-y-3">
+                                        <div className="bg-white/10 rounded-lg p-3 border border-white/10 flex justify-between items-center">
+                                            <span className="text-xs font-medium text-rose-100">Total Interest</span>
+                                            <span className="font-bold">{formatCompact(Math.ceil(result.totalInterest))}</span>
+                                        </div>
+                                        <div className="bg-white/10 rounded-lg p-3 border border-white/10 flex justify-between items-center">
+                                            <span className="text-xs font-medium text-rose-100">Total + Fees</span>
+                                            <span className="font-bold">{formatCompact(Math.ceil(result.totalCost + loanAmount))}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-    emiChart = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: ["Principal", "Interest"],
-        datasets: [{
-          data: [principal, interest],
-          backgroundColor: ["#00897b", "#f44336"],
-          hoverOffset: 10,
-        }],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: "bottom" },
-          title: {
-            display: true,
-            text: "Total Repayment Breakdown",
-            font: { size: 18, weight: "bold" },
-            color: "#00897b",
-          },
-        },
-      },
-    });
-  };
+                            {/* Breakdown Container */}
+                            <div className="glass-card rounded-3xl p-6 shadow-xl flex-1 flex flex-col">
+                                <h3 className="font-bold text-slate-700 mb-2">Cost Breakdown</h3>
+                                <Chart />
+                                
+                                <div className="mt-4 border-t border-slate-100 pt-4 grid grid-cols-2 gap-4">
+                                    <div className="p-3 bg-slate-50 rounded-lg">
+                                        <div className="text-xs text-slate-500 mb-1">Loan Type</div>
+                                        <div className="font-bold text-slate-700">{calculationMethod} Rate</div>
+                                    </div>
+                                    <div className="p-3 bg-slate-50 rounded-lg">
+                                        <div className="text-xs text-slate-500 mb-1">Payment Type</div>
+                                        <div className="font-bold text-slate-700">{paymentMode === 'Advance' ? 'Start of Month' : 'End of Month'}</div>
+                                    </div>
+                                </div>
+                                {paymentMode === 'Advance' && (
+                                    <div className="mt-2 text-[10px] text-green-600 bg-green-50 p-2 rounded text-center">
+                                        Paying in advance reduces interest because principal decreases immediately!
+                                    </div>
+                                )}
+                            </div>
 
-  const syncInputs = (id) => {
-    document.getElementById(`${id}-input`).value = document.getElementById(`${id}-range`).value;
-    calculate();
-  };
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-  document.querySelectorAll("input").forEach(input => input.addEventListener("input", calculate));
-  calculate();
-</script>
-
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP vs RD Calculator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range].sip-slider::-webkit-slider-thumb {
+            border: 2px solid #14b8a6; /* Teal */
+        }
+        input[type=range].rd-slider::-webkit-slider-thumb {
+            border: 2px solid #6366f1; /* Indigo */
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #374151;
+            border-radius: 2px;
+        }
+        /* Hide spin buttons for number inputs */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sip-card {
+            background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+        }
+        .rd-card {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+        
+        // Icon Components
+        const IconTrendingUp = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>;
+        const IconShield = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+        const IconScale = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>;
+        const IconArrowRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+
+        const App = () => {
+            // State
+            const [investment, setInvestment] = useState(10000);
+            const [years, setYears] = useState(10);
+            const [sipRate, setSipRate] = useState(12);
+            const [rdRate, setRdRate] = useState(6.5);
+            const [hoveredYear, setHoveredYear] = useState(null);
+
+            // Indian Currency Formatting
+            const formatCurrency = (val) => {
+                return new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 0,
+                }).format(val);
+            };
+            
+            const formatCompact = (val) => {
+                return new Intl.NumberFormat('en-IN', {
+                    notation: "compact",
+                    compactDisplay: "short",
+                    style: 'currency',
+                    currency: 'INR',
+                }).format(val);
+            };
+
+            // Logic
+            const calculation = useMemo(() => {
+                const months = years * 12;
+                
+                // SIP Calculation (Monthly Compounding assumption for simplicity and standard comparison)
+                // FV = P * [ (1+i)^n - 1 ] * (1+i)/i
+                const sipMonthlyRate = sipRate / 12 / 100;
+                const sipValue = investment * ((Math.pow(1 + sipMonthlyRate, months) - 1) / sipMonthlyRate) * (1 + sipMonthlyRate);
+                
+                // RD Calculation (Monthly Compounding assumption for consistency)
+                // Note: Indian RDs typically use Quarterly compounding, but monthly is often used for simple comparison tools.
+                // Using Standard Future Value of Annuity formula for RD as well
+                const rdMonthlyRate = rdRate / 12 / 100;
+                const rdValue = investment * ((Math.pow(1 + rdMonthlyRate, months) - 1) / rdMonthlyRate) * (1 + rdMonthlyRate);
+                
+                const totalInvested = investment * months;
+                
+                // Generate Chart Data
+                const points = [];
+                let currentSip = 0;
+                let currentRd = 0;
+                let invested = 0;
+
+                for (let m = 1; m <= months; m++) {
+                    invested += investment;
+                    
+                    // Accumulate SIP
+                    currentSip = (currentSip + investment) * (1 + sipMonthlyRate);
+                    
+                    // Accumulate RD
+                    currentRd = (currentRd + investment) * (1 + rdMonthlyRate);
+
+                    if (m % 12 === 0) {
+                        points.push({
+                            year: m / 12,
+                            sip: currentSip,
+                            rd: currentRd,
+                            invested: invested
+                        });
+                    }
+                }
+
+                return {
+                    sipValue,
+                    rdValue,
+                    totalInvested,
+                    difference: sipValue - rdValue,
+                    points
+                };
+            }, [investment, years, sipRate, rdRate]);
+
+            const finalData = calculation.points[calculation.points.length - 1] || { sip: 0, rd: 0 };
+
+            // --- Chart Component ---
+            const ComparisonChart = () => {
+                const data = calculation.points;
+                if (data.length === 0) return null;
+
+                const height = 250;
+                const maxVal = finalData.sip * 1.1; 
+
+                const getY = (val) => height - (val / maxVal) * height;
+                const getX = (index) => (index / (data.length - 1)) * 100;
+
+                // SIP Path
+                let sipPath = `M0,${height} `;
+                data.forEach((d, i) => { sipPath += `L${getX(i)},${getY(d.sip)} `; });
+                const sipArea = sipPath + `L100,${height} Z`;
+
+                // RD Path
+                let rdPath = `M0,${height} `;
+                data.forEach((d, i) => { rdPath += `L${getX(i)},${getY(d.rd)} `; });
+                const rdArea = rdPath + `L100,${height} Z`;
+
+                // Invested Path
+                let invPath = `M0,${height} `;
+                data.forEach((d, i) => { invPath += `L${getX(i)},${getY(d.invested)} `; });
+
+                return (
+                    <div className="relative h-[280px] w-full mt-4 select-none">
+                         {/* Y-Axis Labels */}
+                         <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-500 font-mono">
+                            <span>{formatCompact(maxVal)}</span>
+                            <span>{formatCompact(maxVal/2)}</span>
+                            <span>0</span>
+                        </div>
+
+                        <div className="absolute inset-0 ml-8">
+                            <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 250">
+                                <defs>
+                                    <linearGradient id="sipGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
+                                        <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.0" />
+                                    </linearGradient>
+                                    <linearGradient id="rdGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
+                                        <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+
+                                {/* Guidelines */}
+                                <line x1="0" y1={height/2} x2="100" y2={height/2} stroke="#374151" strokeDasharray="3 3" />
+
+                                {/* SIP Area (Back) */}
+                                <path d={sipArea} fill="url(#sipGrad)" />
+                                <path d={sipPath.trim()} fill="none" stroke="#2dd4bf" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+
+                                {/* RD Area (Middle) */}
+                                <path d={rdArea} fill="url(#rdGrad)" />
+                                <path d={rdPath.trim()} fill="none" stroke="#818cf8" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+
+                                {/* Invested Line (Front, Dotted) */}
+                                <path d={invPath.trim()} fill="none" stroke="#9ca3af" strokeWidth="2" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+
+                                {/* Interactive Overlay */}
+                                {data.map((d, i) => (
+                                    <rect 
+                                        key={i}
+                                        x={getX(i) - 0.5} y="0" width="1" height={height} 
+                                        fill="transparent" 
+                                        className="cursor-pointer hover:fill-white/10"
+                                        vectorEffect="non-scaling-stroke"
+                                        onMouseEnter={() => setHoveredYear(d)}
+                                        onMouseLeave={() => setHoveredYear(null)}
+                                        onTouchStart={() => setHoveredYear(d)}
+                                    />
+                                ))}
+                            </svg>
+                            
+                            {/* Floating Tooltip */}
+                            {hoveredYear && (
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-gray-900 text-white text-xs p-3 rounded-xl shadow-2xl border border-gray-700 pointer-events-none mb-2 w-max z-20">
+                                    <div className="font-bold border-b border-gray-700 mb-2 pb-1 text-center">Year {hoveredYear.year}</div>
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                                        <div className="text-teal-400 font-semibold">SIP:</div>
+                                        <div className="text-right">{formatCompact(hoveredYear.sip)}</div>
+                                        
+                                        <div className="text-indigo-400 font-semibold">RD:</div>
+                                        <div className="text-right">{formatCompact(hoveredYear.rd)}</div>
+                                        
+                                        <div className="text-gray-400 text-[10px] mt-1 pt-1 border-t border-gray-700 col-span-2 text-center">
+                                            Gap: {formatCompact(hoveredYear.sip - hoveredYear.rd)}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                             {/* Legend */}
+                             <div className="absolute top-2 left-2 flex flex-col gap-1 text-[10px] bg-gray-900/50 p-2 rounded-lg border border-white/5">
+                                <div className="flex items-center gap-1.5 text-teal-400">
+                                    <div className="w-2 h-2 rounded-full bg-teal-400"></div> SIP ({sipRate}%)
+                                </div>
+                                <div className="flex items-center gap-1.5 text-indigo-400">
+                                    <div className="w-2 h-2 rounded-full bg-indigo-400"></div> RD ({rdRate}%)
+                                </div>
+                                <div className="flex items-center gap-1.5 text-gray-400">
+                                    <div className="w-2 h-2 rounded-full bg-gray-400"></div> Invested
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 flex items-center justify-center text-gray-100">
+                    
+                    <div className="w-full max-w-6xl grid md:grid-cols-12 gap-6">
+                        
+                        {/* LEFT COLUMN: Controls */}
+                        <div className="md:col-span-5 space-y-4">
+                            
+                            {/* Header */}
+                            <div className="p-6 rounded-3xl border border-gray-700 bg-gray-800/50">
+                                <h1 className="text-2xl font-bold flex items-center gap-3 mb-2 text-white">
+                                    <span className="bg-gradient-to-br from-teal-500 to-indigo-500 p-2 rounded-xl text-white">
+                                        <IconScale />
+                                    </span>
+                                    SIP vs RD
+                                </h1>
+                                <p className="text-gray-400 text-sm">Compare Market Growth vs Fixed Safety.</p>
+                            </div>
+
+                            {/* Controls Card */}
+                            <div className="glass-card rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 max-h-[70vh] overflow-y-auto">
+                                
+                                {/* 1. Common Inputs */}
+                                <div className="space-y-4 pb-6 border-b border-gray-700">
+                                    <div className="text-xs font-bold uppercase tracking-widest text-gray-500">Investment Details</div>
+                                    
+                                    {/* Monthly Investment */}
+                                    <div>
+                                        <div className="flex justify-between items-end mb-2">
+                                            <label className="text-gray-300 font-medium text-xs">Monthly Amount</label>
+                                            <div className="flex items-center bg-gray-800 rounded px-2 py-1 border border-gray-600 focus-within:border-teal-500 transition-colors">
+                                                <span className="text-sm font-bold text-gray-500 mr-1">₹</span>
+                                                <input type="number" value={investment} onChange={(e) => setInvestment(Number(e.target.value))} className="text-lg font-bold text-white bg-transparent w-28 text-right focus:outline-none" />
+                                            </div>
+                                        </div>
+                                        <input type="range" min="500" max="100000" step="500" value={investment} onChange={(e) => setInvestment(Number(e.target.value))} className="sip-slider" />
+                                    </div>
+
+                                    {/* Duration */}
+                                    <div>
+                                        <div className="flex justify-between items-end mb-2">
+                                            <label className="text-gray-300 font-medium text-xs">Time Period</label>
+                                            <div className="flex items-center bg-gray-800 rounded px-2 py-1 border border-gray-600 focus-within:border-teal-500 transition-colors">
+                                                <input type="number" value={years} onChange={(e) => setYears(Number(e.target.value))} className="text-lg font-bold text-white bg-transparent w-16 text-right focus:outline-none" />
+                                                <span className="text-sm font-bold text-gray-500 ml-1">Yrs</span>
+                                            </div>
+                                        </div>
+                                        <input type="range" min="1" max="30" step="1" value={years} onChange={(e) => setYears(Number(e.target.value))} className="sip-slider" />
+                                    </div>
+                                </div>
+
+                                {/* 2. Rates Comparison */}
+                                <div className="space-y-6">
+                                    <div className="text-xs font-bold uppercase tracking-widest text-gray-500">Rate of Return</div>
+                                    
+                                    {/* SIP Rate */}
+                                    <div className="bg-teal-900/20 p-4 rounded-xl border border-teal-500/20">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="flex items-center gap-2 text-teal-400 font-bold text-sm">
+                                                <IconTrendingUp size={16}/> SIP (Equity)
+                                            </div>
+                                            <div className="text-xl font-bold text-teal-300">{sipRate}%</div>
+                                        </div>
+                                        <input type="range" min="8" max="25" step="0.5" value={sipRate} onChange={(e) => setSipRate(Number(e.target.value))} className="sip-slider w-full" />
+                                        <div className="flex justify-between text-[10px] text-teal-500/60 mt-1">
+                                            <span>Large Cap (12%)</span>
+                                            <span>Mid Cap (15%)</span>
+                                        </div>
+                                    </div>
+
+                                    {/* RD Rate */}
+                                    <div className="bg-indigo-900/20 p-4 rounded-xl border border-indigo-500/20">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+                                                <IconShield size={16}/> RD (Fixed)
+                                            </div>
+                                            <div className="text-xl font-bold text-indigo-300">{rdRate}%</div>
+                                        </div>
+                                        <input type="range" min="4" max="9" step="0.1" value={rdRate} onChange={(e) => setRdRate(Number(e.target.value))} className="rd-slider w-full" />
+                                        <div className="flex justify-between text-[10px] text-indigo-500/60 mt-1">
+                                            <span>Bank (6%)</span>
+                                            <span>Corporate (8%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: Results & Chart */}
+                        <div className="md:col-span-7 flex flex-col gap-6">
+                            
+                            {/* Comparison Cards */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="rd-card p-5 rounded-3xl text-white relative overflow-hidden shadow-lg border border-white/10">
+                                    <div className="text-indigo-200 text-xs font-bold uppercase mb-1">RD Maturity</div>
+                                    <div className="text-2xl lg:text-3xl font-bold tracking-tight">{formatCompact(calculation.rdValue)}</div>
+                                    <div className="text-[10px] text-indigo-200 mt-2 opacity-80">Safe & Guaranteed</div>
+                                </div>
+
+                                <div className="sip-card p-5 rounded-3xl text-white relative overflow-hidden shadow-lg border border-white/10">
+                                    <div className="text-teal-100 text-xs font-bold uppercase mb-1">SIP Maturity</div>
+                                    <div className="text-2xl lg:text-3xl font-bold tracking-tight">{formatCompact(calculation.sipValue)}</div>
+                                    <div className="text-[10px] text-teal-100 mt-2 opacity-80">Market Linked Growth</div>
+                                </div>
+                            </div>
+
+                            {/* Wealth Gap Analysis */}
+                            <div className="glass-card p-6 rounded-3xl border border-teal-500/30">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="bg-teal-500/20 p-2 rounded-lg text-teal-400">
+                                        <IconTrendingUp size={20} />
+                                    </div>
+                                    <div>
+                                        <div className="text-sm text-gray-400 font-medium">The Wealth Gap</div>
+                                        <div className="text-2xl font-bold text-white">
+                                            + {formatCurrency(Math.floor(calculation.difference))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-700 pt-3">
+                                    By choosing SIP over RD for {years} years, you could potentially earn an extra 
+                                    <strong className="text-teal-400"> {formatCompact(calculation.difference)}</strong>. 
+                                    However, remember that SIPs carry market risk while RDs are virtually risk-free.
+                                </p>
+                            </div>
+
+                            {/* Chart Container */}
+                            <div className="glass-card rounded-3xl p-6 shadow-xl flex-1 flex flex-col">
+                                <h3 className="font-bold text-gray-300 mb-2 text-sm uppercase tracking-wider">Growth Comparison</h3>
+                                <ComparisonChart />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

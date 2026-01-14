@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Based SIP & Lumpsum Planner</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #f59e0b; /* Amber border */
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        /* Hide spin buttons for number inputs */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .wealth-card {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%); /* Amber Gradient */
+            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+        
+        // Icon Components
+        const IconTarget = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>;
+        const IconTrending = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>;
+        const IconInfo = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
+        const IconPiggy = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 5c-1.5 0-2.8.6-3.8 1.5l-2.5 2.5c-.3.3-.7.5-1.1.6l-1.9.6c-.6.2-1.2.6-1.6 1.1l-.3.4c-.2.2-.4.4-.6.6l-2.9 2.9c-.3.3-.5.7-.6 1.1l-.6 2.6c-.2.8.5 1.6 1.3 1.6l2.3-.6c.4-.1.8-.3 1.1-.6l2.9-2.9c.2-.2.4-.4.6-.6l.4-.3c.5-.4.9-1 1.1-1.6l.6-1.9c.1-.4.3-.8.6-1.1l2.5-2.5C16.2 5.6 17.5 5 19 5Z"/><path d="M13 13h.01"/><path d="M16 16h.01"/><path d="M9 20a1.8 1.8 0 0 0 2.6-2.5"/></svg>;
+        const IconCoins = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg>;
+
+        const App = () => {
+            const [mode, setMode] = useState('SIP'); // 'SIP' or 'Lumpsum'
+            const [targetAmount, setTargetAmount] = useState(10000000); // 1 Crore Default
+            const [currentSavings, setCurrentSavings] = useState(0);
+            const [interestRate, setInterestRate] = useState(12);
+            const [years, setYears] = useState(10);
+            const [hoveredYear, setHoveredYear] = useState(null);
+
+            // Indian Currency Formatting
+            const formatCurrency = (val) => {
+                return new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 0,
+                }).format(val);
+            };
+
+            const formatCompact = (val) => formatCurrency(val);
+
+            // Logic: Reverse Calculation
+            const calculation = useMemo(() => {
+                const monthlyRate = interestRate / 12 / 100;
+                const totalMonths = years * 12;
+                
+                // 1. Growth of Current Savings (Always compounds as a lumpsum)
+                const savingsFutureValue = currentSavings * Math.pow(1 + monthlyRate, totalMonths);
+                
+                // 2. Remaining Amount needed
+                let remainingTarget = targetAmount - savingsFutureValue;
+                if (remainingTarget < 0) remainingTarget = 0; // Goal already met by savings
+
+                let requiredInvestment = 0;
+                
+                if (mode === 'SIP') {
+                    // Formula: P = FV / ( [ (1+i)^n - 1 ] * (1+i)/i )
+                    const sipFactor = (Math.pow(1 + monthlyRate, totalMonths) - 1) * (1 + monthlyRate) / monthlyRate;
+                    requiredInvestment = remainingTarget > 0 ? remainingTarget / sipFactor : 0;
+                } else {
+                    // Lumpsum Mode: Need to find Present Value of remaining target
+                    // PV = FV / (1+i)^n
+                    requiredInvestment = remainingTarget > 0 ? remainingTarget / Math.pow(1 + monthlyRate, totalMonths) : 0;
+                }
+
+                // 4. Generate Graph Data
+                const points = [];
+                // Initial Chart Values
+                let currentTotalValue = 0;
+                let totalInvested = 0;
+
+                if (mode === 'SIP') {
+                    currentTotalValue = currentSavings;
+                    totalInvested = currentSavings;
+                } else {
+                    // In Lumpsum mode, we assume the required amount is invested NOW along with savings
+                    currentTotalValue = currentSavings + requiredInvestment;
+                    totalInvested = currentSavings + requiredInvestment;
+                }
+
+                for (let m = 1; m <= totalMonths; m++) {
+                    if (mode === 'SIP') {
+                        // Interest on previous balance
+                        // Add SIP if needed
+                        if (remainingTarget > 0) {
+                            currentTotalValue = (currentTotalValue + requiredInvestment) * (1 + monthlyRate);
+                            totalInvested += requiredInvestment;
+                        } else {
+                            currentTotalValue = currentTotalValue * (1 + monthlyRate);
+                        }
+                    } else {
+                        // Lumpsum Mode: Simple compound of total starting corpus
+                        currentTotalValue = currentTotalValue * (1 + monthlyRate);
+                        // Invested amount doesn't change in lumpsum
+                    }
+
+                    if (m % 12 === 0) {
+                        points.push({
+                            year: m / 12,
+                            value: currentTotalValue,
+                            invested: totalInvested,
+                            goalLine: targetAmount
+                        });
+                    }
+                }
+
+                return {
+                    requiredInvestment,
+                    savingsFutureValue,
+                    remainingTarget,
+                    points
+                };
+            }, [mode, targetAmount, currentSavings, interestRate, years]);
+
+            const finalData = calculation.points[calculation.points.length - 1] || { value: 0 };
+
+            // --- SUB-COMPONENTS ---
+
+            const Chart = () => {
+                const data = calculation.points;
+                if (data.length === 0) return null;
+                
+                const height = 200;
+                const width = 100;
+                
+                // Y-axis Scale
+                const maxVal = Math.max(targetAmount, finalData.value) * 1.15; 
+                
+                const getY = (val) => height - (val / maxVal) * height;
+                const getX = (index) => (index / (data.length - 1)) * 100;
+
+                // Path Construction
+                let startY = 0;
+                if (mode === 'SIP') {
+                    startY = getY(currentSavings);
+                } else {
+                    // Lumpsum starts high
+                    startY = getY(currentSavings + calculation.requiredInvestment);
+                }
+
+                let valuePath = `M0,${startY} `; 
+                data.forEach((d, i) => { valuePath += `L${getX(i)},${getY(d.value)} `; });
+                valuePath += `L100,${height} L0,${height} Z`; 
+
+                let strokePath = `M0,${startY} `;
+                data.forEach((d, i) => { strokePath += `L${getX(i)},${getY(d.value)} `; });
+
+                // Target Line Y-coordinate
+                const targetY = getY(targetAmount);
+
+                return (
+                    <div className="relative h-[250px] w-full mt-6 mb-2 select-none group touch-none">
+                        {/* Y-Axis Labels Container */}
+                        <div className="absolute left-0 top-0 bottom-0 w-16 text-[10px] text-slate-400 font-mono border-r border-slate-100/10 z-10">
+                            <span className="absolute top-0 right-2 transform -translate-y-1/2">{formatCompact(maxVal)}</span>
+                            <span className="absolute top-1/2 right-2 transform -translate-y-1/2">{formatCompact(maxVal/2)}</span>
+                            <span className="absolute bottom-0 right-2 transform translate-y-1/2">0</span>
+                        </div>
+
+                        {/* Graph Area */}
+                        <div className="absolute inset-0 ml-16">
+                            <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox={`0 0 ${width} ${height}`}>
+                                <defs>
+                                    <linearGradient id="goalGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.8" />
+                                        <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.1" />
+                                    </linearGradient>
+                                </defs>
+
+                                <line x1="0" y1="0" x2="100" y2="0" stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.2" vectorEffect="non-scaling-stroke"/>
+                                <line x1="0" y1={height/2} x2="100" y2={height/2} stroke="#94a3b8" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.2" vectorEffect="non-scaling-stroke"/>
+                                <line x1="0" y1={height} x2="100" y2={height} stroke="#94a3b8" strokeWidth="0.5" opacity="0.2" vectorEffect="non-scaling-stroke"/>
+
+                                {/* Target Line & Label */}
+                                <g className="transition-all duration-500 ease-out">
+                                    <line x1="0" y1={targetY} x2="100" y2={targetY} stroke="#dc2626" strokeWidth="1.5" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+                                    <text x="100" y={targetY - 5} textAnchor="end" fill="#dc2626" fontSize="8" fontWeight="bold" className="uppercase tracking-wider shadow-sm">Target Goal</text>
+                                </g>
+
+                                {/* Graph Area */}
+                                <path d={valuePath} fill="url(#goalGradient)" className="transition-all duration-300 ease-out"/>
+                                <path d={strokePath} fill="none" stroke="#d97706" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+                                
+                            </svg>
+
+                            {/* Interactive Hover Overlay */}
+                            <div className="absolute inset-0 flex">
+                                {data.map((d, i) => (
+                                    <div 
+                                        key={i} 
+                                        className="flex-1 hover:bg-white/5 z-10 cursor-pointer relative group/bar"
+                                        onMouseEnter={() => setHoveredYear(d.year)}
+                                        onMouseLeave={() => setHoveredYear(null)}
+                                        onTouchStart={() => setHoveredYear(d.year)}
+                                    >
+                                        <div className="hidden group-hover/bar:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 text-white text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-20 pointer-events-none border border-slate-700">
+                                            <div className="font-bold text-amber-400 border-b border-slate-600 pb-1 mb-1">Year {d.year}</div>
+                                            <div className="text-white mb-1">Value: {formatCompact(d.value)}</div>
+                                            <div className="text-slate-400 text-[10px]">
+                                                {d.value >= targetAmount ? "GOAL REACHED! 🎉" : `${((d.value/targetAmount)*100).toFixed(0)}% of Goal`}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 flex items-center justify-center">
+                    
+                    <div className="w-full max-w-5xl grid md:grid-cols-12 gap-6">
+                        
+                        {/* LEFT COLUMN: Controls */}
+                        <div className="md:col-span-5 space-y-4">
+                            
+                            {/* Title Card */}
+                            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl text-white">
+                                <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
+                                    <span className="bg-amber-500 p-2 rounded-xl text-white">
+                                        <IconTarget />
+                                    </span>
+                                    Goal Planner
+                                </h1>
+                                <p className="text-slate-300 text-sm">Plan backwards from your financial dreams.</p>
+                            </div>
+
+                            {/* Controls Card */}
+                            <div className="glass-card rounded-3xl p-6 md:p-8 shadow-xl space-y-8">
+                                
+                                {/* Mode Toggle */}
+                                <div className="bg-slate-100 p-1 rounded-xl flex relative">
+                                    <button 
+                                        onClick={() => setMode('SIP')}
+                                        className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all z-10 flex items-center justify-center gap-2 ${mode === 'SIP' ? 'text-amber-600 shadow-sm bg-white' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        <IconTrending size={16} /> Monthly SIP
+                                    </button>
+                                    <button 
+                                        onClick={() => setMode('Lumpsum')}
+                                        className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all z-10 flex items-center justify-center gap-2 ${mode === 'Lumpsum' ? 'text-amber-600 shadow-sm bg-white' : 'text-slate-500 hover:text-slate-700'}`}
+                                    >
+                                        <IconCoins size={16} /> Lumpsum
+                                    </button>
+                                </div>
+
+                                {/* Target Amount Input */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-4">
+                                        <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide">
+                                            Target Goal Amount
+                                        </label>
+                                        <div className="flex items-center bg-slate-100 rounded-lg px-3 py-1 border border-transparent focus-within:border-amber-500 focus-within:bg-white transition-all">
+                                            <span className="text-xl font-bold text-slate-500 mr-1">₹</span>
+                                            <input 
+                                                type="number"
+                                                value={targetAmount}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if(val === '') setTargetAmount(''); 
+                                                    else setTargetAmount(parseInt(val) || 0);
+                                                }}
+                                                className="text-2xl font-bold text-slate-800 bg-transparent w-full focus:outline-none text-right"
+                                            />
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="range" min="500000" max="50000000" step="100000" 
+                                        value={targetAmount || 0} 
+                                        onChange={(e) => setTargetAmount(Number(e.target.value))}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                        <span>₹5 Lakh</span>
+                                        <span>₹5 Cr</span>
+                                    </div>
+                                </div>
+
+                                {/* Current Savings Input */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-4">
+                                        <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide flex items-center gap-1">
+                                            <IconPiggy size={16}/> Current Savings
+                                        </label>
+                                        <div className="flex items-center bg-slate-100 rounded-lg px-3 py-1 border border-transparent focus-within:border-amber-500 focus-within:bg-white transition-all">
+                                            <span className="text-xl font-bold text-slate-500 mr-1">₹</span>
+                                            <input 
+                                                type="number"
+                                                value={currentSavings}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if(val === '') setCurrentSavings(''); 
+                                                    else setCurrentSavings(parseInt(val) || 0);
+                                                }}
+                                                className="text-2xl font-bold text-slate-800 bg-transparent w-full focus:outline-none text-right"
+                                            />
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="range" min="0" max="5000000" step="50000" 
+                                        value={currentSavings || 0} 
+                                        onChange={(e) => setCurrentSavings(Number(e.target.value))}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                        <span>₹0</span>
+                                        <span>₹50 Lakh</span>
+                                    </div>
+                                </div>
+
+                                {/* Time Period Input */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-4">
+                                        <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide">Time Horizon</label>
+                                        <div className="text-2xl font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-lg">
+                                            {years} Years
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="range" min="1" max="40" step="1" 
+                                        value={years} 
+                                        onChange={(e) => setYears(Number(e.target.value))}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                        <span>1 Yr</span>
+                                        <span>40 Yrs</span>
+                                    </div>
+                                </div>
+
+                                 {/* Interest Input */}
+                                 <div>
+                                    <div className="flex justify-between items-end mb-4">
+                                        <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide">Exp. Return (p.a)</label>
+                                        <div className="text-2xl font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-lg">
+                                            {interestRate}%
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="range" min="1" max="30" step="0.5" 
+                                        value={interestRate} 
+                                        onChange={(e) => setInterestRate(Number(e.target.value))}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                        <span>6%</span>
+                                        <span>30%</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: Results & Chart */}
+                        <div className="md:col-span-7 flex flex-col gap-6">
+                            
+                            {/* Required SIP/Lumpsum Card */}
+                            <div className="wealth-card rounded-3xl p-6 md:p-8 text-white relative overflow-hidden transition-all duration-300">
+                                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                                <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
+                                
+                                <div className="relative z-10">
+                                    <div className="text-white/80 font-medium mb-1 uppercase tracking-wider text-xs">
+                                        {mode === 'SIP' ? 'Required Monthly Investment' : 'Required Lumpsum Investment'}
+                                    </div>
+                                    <div className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+                                        {formatCurrency(Math.ceil(calculation.requiredInvestment))}
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-4 border-t border-white/20 pt-4">
+                                        <div>
+                                            <div className="text-white/70 text-xs mb-1">Target Amount</div>
+                                            <div className="text-xl font-semibold">{formatCompact(targetAmount)}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-amber-200 text-xs mb-1">Existing Savings Value</div>
+                                            <div className="text-xs text-white/60 mb-1 leading-none">(After {years} yrs)</div>
+                                            <div className="text-xl font-semibold">{formatCompact(calculation.savingsFutureValue)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Chart Container */}
+                            <div className="glass-card rounded-3xl p-6 shadow-xl flex-1 flex flex-col">
+                                <div className="flex justify-between items-center mb-2">
+                                    <h3 className="font-bold text-slate-700">Goal Trajectory</h3>
+                                    <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded font-bold">TARGET: {formatCompact(targetAmount)}</span>
+                                </div>
+
+                                <Chart />
+
+                                <div className="mt-6 pt-6 border-t border-slate-100 flex gap-4 text-xs md:text-sm text-slate-500 bg-slate-50/50 p-4 rounded-xl">
+                                    <IconInfo />
+                                    <p>
+                                        To reach <strong>{formatCompact(targetAmount)}</strong> in {years} years, you need to 
+                                        {mode === 'SIP' 
+                                            ? <span> start a monthly SIP of <strong>{formatCompact(Math.ceil(calculation.requiredInvestment))}</strong> immediately.</span> 
+                                            : <span> invest an additional lumpsum of <strong>{formatCompact(Math.ceil(calculation.requiredInvestment))}</strong> today.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

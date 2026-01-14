@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wealth & SIP Calculator</title>
+    <title>Step-up SIP Calculator</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -16,7 +16,7 @@
     
     <style>
         body {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         /* Custom Slider Styling */
@@ -31,7 +31,7 @@
             width: 24px;
             border-radius: 50%;
             background: #ffffff;
-            border: 2px solid #3b82f6;
+            border: 2px solid #ec4899; /* Pink border for step-up vibe */
             cursor: pointer;
             margin-top: -10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
@@ -61,8 +61,8 @@
             backdrop-filter: blur(10px);
         }
         .wealth-card {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5);
+            background: linear-gradient(135deg, #db2777 0%, #9333ea 100%); /* Pink to Purple */
+            box-shadow: 0 10px 25px -5px rgba(219, 39, 119, 0.5);
         }
     </style>
 </head>
@@ -76,28 +76,17 @@
         const IconTrending = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>;
         const IconPie = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>;
         const IconInfo = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
-        const IconCoins = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg>;
+        const IconStairs = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>; // Generic trending up used as stairs metaphor
 
         const App = () => {
-            const [mode, setMode] = useState('SIP'); // 'SIP' or 'Lumpsum'
-            const [investmentAmount, setInvestmentAmount] = useState(5000); // Shared state for amount
+            const [initialInvestment, setInitialInvestment] = useState(5000);
+            const [stepUpPercentage, setStepUpPercentage] = useState(10);
             const [interestRate, setInterestRate] = useState(12);
             const [years, setYears] = useState(10);
-            const [viewMode, setViewMode] = useState('graph'); // 'graph' or 'pie'
+            const [viewMode, setViewMode] = useState('graph');
             const [hoveredYear, setHoveredYear] = useState(null);
 
-            // Handle mode switch defaults
-            const handleModeChange = (newMode) => {
-                setMode(newMode);
-                // Set sensible defaults when switching
-                if (newMode === 'Lumpsum') {
-                    setInvestmentAmount(100000); // Default 1 Lakh for Lumpsum
-                } else {
-                    setInvestmentAmount(5000); // Default 5k for SIP
-                }
-            };
-
-            // Indian Currency Formatting - Full Value (No 'T' or 'k')
+            // Indian Currency Formatting
             const formatCurrency = (val) => {
                 return new Intl.NumberFormat('en-IN', {
                     style: 'currency',
@@ -106,58 +95,41 @@
                 }).format(val);
             };
 
-            const formatCompact = (val) => {
-                return formatCurrency(val);
-            };
+            const formatCompact = (val) => formatCurrency(val);
 
-            // Logic
+            // Logic: Step-up SIP Calculation
             const data = useMemo(() => {
                 const monthlyRate = interestRate / 12 / 100;
-                const months = years * 12;
+                const totalMonths = years * 12;
                 const points = [];
                 
                 let currentTotalValue = 0;
                 let totalInvested = 0;
+                let currentMonthlyInvestment = initialInvestment;
 
-                if (mode === 'SIP') {
-                    // SIP Calculation
-                    for (let m = 1; m <= months; m++) {
-                        totalInvested += investmentAmount;
-                        currentTotalValue = (currentTotalValue + investmentAmount) * (1 + monthlyRate);
-
-                        if (m % 12 === 0) {
-                            points.push({
-                                year: m / 12,
-                                invested: totalInvested,
-                                value: currentTotalValue,
-                                profit: currentTotalValue - totalInvested
-                            });
-                        }
+                for (let m = 1; m <= totalMonths; m++) {
+                    // Step Up Logic: Increase investment every 12th month (starting year 2)
+                    if (m > 1 && (m - 1) % 12 === 0) {
+                        currentMonthlyInvestment = currentMonthlyInvestment * (1 + stepUpPercentage / 100);
                     }
-                } else {
-                    // Lumpsum Calculation
-                    // Initial investment happens at month 0
-                    totalInvested = investmentAmount;
-                    currentTotalValue = investmentAmount;
 
-                    for (let m = 1; m <= months; m++) {
-                        // Compound interest monthly
-                        currentTotalValue = currentTotalValue * (1 + monthlyRate);
+                    totalInvested += currentMonthlyInvestment;
+                    currentTotalValue = (currentTotalValue + currentMonthlyInvestment) * (1 + monthlyRate);
 
-                        if (m % 12 === 0) {
-                            points.push({
-                                year: m / 12,
-                                invested: totalInvested, // Constant for Lumpsum
-                                value: currentTotalValue,
-                                profit: currentTotalValue - totalInvested
-                            });
-                        }
+                    if (m % 12 === 0) {
+                        points.push({
+                            year: m / 12,
+                            invested: totalInvested,
+                            value: currentTotalValue,
+                            profit: currentTotalValue - totalInvested,
+                            monthlySip: currentMonthlyInvestment // Track current SIP amount
+                        });
                     }
                 }
                 return points;
-            }, [mode, investmentAmount, interestRate, years]);
+            }, [initialInvestment, stepUpPercentage, interestRate, years]);
 
-            const finalData = data[data.length - 1] || { value: 0, invested: 0, profit: 0 };
+            const finalData = data[data.length - 1] || { value: 0, invested: 0, profit: 0, monthlySip: 0 };
 
             // --- SUB-COMPONENTS ---
 
@@ -178,7 +150,7 @@
 
                 return (
                     <div className="relative h-[220px] w-full mt-4 select-none group touch-none">
-                         {/* Axis Labels */}
+                        {/* Axis Labels */}
                         <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 font-mono w-14 leading-none">
                             <span>{formatCompact(maxVal)}</span>
                             <span>{formatCompact(maxVal/2)}</span>
@@ -189,24 +161,24 @@
                             <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 200">
                                 <defs>
                                     <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#22c55e" stopOpacity="0.8" />
-                                        <stop offset="100%" stopColor="#22c55e" stopOpacity="0.2" />
+                                        <stop offset="0%" stopColor="#db2777" stopOpacity="0.8" />
+                                        <stop offset="100%" stopColor="#db2777" stopOpacity="0.1" />
                                     </linearGradient>
                                      <linearGradient id="investedGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.6" />
-                                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
+                                        <stop offset="0%" stopColor="#475569" stopOpacity="0.6" />
+                                        <stop offset="100%" stopColor="#475569" stopOpacity="0.1" />
                                     </linearGradient>
                                 </defs>
 
-                                {/* Profit Area (Green) */}
+                                {/* Profit Area (Pink/Purple) */}
                                 <path d={valuePath} fill="url(#profitGradient)" className="transition-all duration-300 ease-out"/>
                                 
-                                {/* Invested Area (Blue) */}
+                                {/* Invested Area (Slate) */}
                                 <path d={investedPath} fill="url(#investedGradient)" />
                                 
                                 {/* Lines */}
-                                <path d={valuePath.split('L100')[0]} fill="none" stroke="#15803d" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-                                <path d={investedPath.split('L100')[0]} fill="none" stroke="#2563eb" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+                                <path d={valuePath.split('L100')[0]} fill="none" stroke="#be185d" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                                <path d={investedPath.split('L100')[0]} fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                             </svg>
 
                             {/* Interactive Hover Overlay */}
@@ -220,10 +192,13 @@
                                         onTouchStart={() => setHoveredYear(d.year)}
                                     >
                                         {/* Tooltip */}
-                                        <div className="hidden group-hover/bar:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 text-white text-xs p-2 rounded shadow-lg whitespace-nowrap z-20 pointer-events-none border border-slate-700">
-                                            <div className="font-bold text-slate-200 border-b border-slate-600 pb-1 mb-1">Year {d.year}</div>
-                                            <div className="text-green-400">Total: {formatCompact(d.value)}</div>
-                                            <div className="text-blue-300">Self: {formatCompact(d.invested)}</div>
+                                        <div className="hidden group-hover/bar:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 text-white text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-20 pointer-events-none border border-slate-700">
+                                            <div className="font-bold text-pink-300 border-b border-slate-600 pb-1 mb-1">Year {d.year}</div>
+                                            <div className="text-white mb-1">Total: {formatCompact(d.value)}</div>
+                                            <div className="text-slate-400 mb-1">Self: {formatCompact(d.invested)}</div>
+                                            <div className="text-xs text-slate-500 italic mt-1 pt-1 border-t border-slate-700">
+                                                SIP: {formatCompact(d.monthlySip)}/mo
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -243,12 +218,12 @@
                         <div className="relative w-40 h-40">
                             <svg viewBox="0 0 42 42" className="w-full h-full transform -rotate-90">
                                 <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#e2e8f0" strokeWidth="6" />
-                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#22c55e" strokeWidth="6" 
+                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#db2777" strokeWidth="6" 
                                     strokeDasharray={`${profitPct} ${100 - profitPct}`} 
                                     strokeDashoffset="0"
                                     className="transition-all duration-1000 ease-out"
                                 />
-                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#3b82f6" strokeWidth="6" 
+                                <circle cx="21" cy="21" r="15.9155" fill="transparent" stroke="#475569" strokeWidth="6" 
                                     strokeDasharray={`${investedPct} ${100 - investedPct}`} 
                                     strokeDashoffset={`-${profitPct}`}
                                     className="transition-all duration-1000 ease-out"
@@ -262,16 +237,16 @@
 
                         <div className="space-y-4 text-sm">
                             <div>
-                                <div className="flex items-center gap-2 text-blue-500 mb-1">
-                                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                <div className="flex items-center gap-2 text-slate-500 mb-1">
+                                    <div className="w-3 h-3 bg-slate-500 rounded-full"></div>
                                     Your Money
                                 </div>
                                 <div className="font-bold text-slate-700 text-lg">{investedPct.toFixed(1)}%</div>
                                 <div className="text-xs text-slate-400">{formatCompact(finalData.invested)}</div>
                             </div>
                             <div>
-                                <div className="flex items-center gap-2 text-green-500 mb-1">
-                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <div className="flex items-center gap-2 text-pink-600 mb-1">
+                                    <div className="w-3 h-3 bg-pink-600 rounded-full"></div>
                                     Wealth Gained
                                 </div>
                                 <div className="font-bold text-slate-700 text-lg">{profitPct.toFixed(1)}%</div>
@@ -293,71 +268,69 @@
                             {/* Title Card */}
                             <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl text-white">
                                 <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
-                                    <span className="bg-green-500 p-2 rounded-xl text-white">
-                                        {mode === 'SIP' ? <IconTrending /> : <IconCoins />}
+                                    <span className="bg-pink-500 p-2 rounded-xl text-white">
+                                        <IconTrending />
                                     </span>
-                                    Wealth Calc
+                                    Step-up SIP
                                 </h1>
-                                <p className="text-blue-200">
-                                    {mode === 'SIP' 
-                                        ? "Calculate returns on your monthly investments." 
-                                        : "Calculate returns on your one-time investment."}
-                                </p>
+                                <p className="text-slate-300 text-sm">Automate your wealth creation by increasing SIPs annually.</p>
                             </div>
 
                             {/* Controls Card */}
                             <div className="glass-card rounded-3xl p-6 md:p-8 shadow-xl space-y-8">
                                 
-                                {/* Mode Toggle */}
-                                <div className="bg-slate-100 p-1 rounded-xl flex relative">
-                                    <button 
-                                        onClick={() => handleModeChange('SIP')}
-                                        className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all z-10 ${mode === 'SIP' ? 'text-blue-600 shadow-sm bg-white' : 'text-slate-500 hover:text-slate-700'}`}
-                                    >
-                                        Monthly SIP
-                                    </button>
-                                    <button 
-                                        onClick={() => handleModeChange('Lumpsum')}
-                                        className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all z-10 ${mode === 'Lumpsum' ? 'text-blue-600 shadow-sm bg-white' : 'text-slate-500 hover:text-slate-700'}`}
-                                    >
-                                        Lumpsum
-                                    </button>
-                                </div>
-
-                                {/* Amount Input */}
+                                {/* Initial Monthly Input */}
                                 <div>
                                     <div className="flex justify-between items-end mb-4">
                                         <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide">
-                                            {mode === 'SIP' ? 'Monthly Investment' : 'Total Investment'}
+                                            Initial Monthly SIP
                                         </label>
-                                        <div className="flex items-center bg-slate-100 rounded-lg px-3 py-1 border border-transparent focus-within:border-blue-500 focus-within:bg-white transition-all">
+                                        <div className="flex items-center bg-slate-100 rounded-lg px-3 py-1 border border-transparent focus-within:border-pink-500 focus-within:bg-white transition-all">
                                             <span className="text-xl font-bold text-slate-500 mr-1">₹</span>
                                             <input 
                                                 type="number"
-                                                value={investmentAmount}
+                                                value={initialInvestment}
                                                 onChange={(e) => {
                                                     const val = e.target.value;
-                                                    if(val === '') setInvestmentAmount(''); 
-                                                    else setInvestmentAmount(parseInt(val) || 0);
+                                                    if(val === '') setInitialInvestment(''); 
+                                                    else setInitialInvestment(parseInt(val) || 0);
                                                 }}
                                                 className="text-2xl font-bold text-slate-800 bg-transparent w-full focus:outline-none text-right"
                                             />
                                         </div>
                                     </div>
-                                    
-                                    {/* Conditional Slider Ranges based on Mode */}
                                     <input 
-                                        type="range" 
-                                        min={mode === 'SIP' ? "500" : "5000"} 
-                                        max={mode === 'SIP' ? "200000" : "5000000"} 
-                                        step={mode === 'SIP' ? "500" : "5000"} 
-                                        value={investmentAmount || 0} 
-                                        onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+                                        type="range" min="500" max="200000" step="500" 
+                                        value={initialInvestment || 0} 
+                                        onChange={(e) => setInitialInvestment(Number(e.target.value))}
                                     />
                                     <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
-                                        <span>{mode === 'SIP' ? '₹500' : '₹5k'}</span>
-                                        <span>{mode === 'SIP' ? '₹2L' : '₹50L'}</span>
+                                        <span>₹500</span>
+                                        <span>₹2L</span>
                                     </div>
+                                </div>
+
+                                {/* Step Up Input */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-4">
+                                        <label className="text-slate-500 font-semibold text-sm uppercase tracking-wide">Annual Step-up</label>
+                                        <div className="text-2xl font-bold text-slate-800 bg-pink-50 px-3 py-1 rounded-lg border border-pink-100">
+                                            {stepUpPercentage}%
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="range" min="0" max="50" step="1" 
+                                        value={stepUpPercentage} 
+                                        onChange={(e) => setStepUpPercentage(Number(e.target.value))}
+                                    />
+                                    <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                        <span>0% (Fixed)</span>
+                                        <span>50% (Aggressive)</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-2 bg-slate-100 p-2 rounded">
+                                        Increasing SIP by <strong>{stepUpPercentage}%</strong> yearly. 
+                                        Next year SIP: <span className="font-semibold text-slate-700">{formatCompact(initialInvestment * (1 + stepUpPercentage/100))}</span>
+                                    </p>
                                 </div>
 
                                 {/* Interest Input */}
@@ -374,9 +347,8 @@
                                         onChange={(e) => setInterestRate(Number(e.target.value))}
                                     />
                                     <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
-                                        <span>FD (6%)</span>
-                                        <span>Nifty (12%)</span>
-                                        <span>Small Cap (20%)</span>
+                                        <span>6%</span>
+                                        <span>30%</span>
                                     </div>
                                 </div>
 
@@ -422,7 +394,7 @@
                                             <div className="text-xl font-semibold">{formatCompact(finalData.invested)}</div>
                                         </div>
                                         <div>
-                                            <div className="text-emerald-200 text-xs mb-1">Pure Profit</div>
+                                            <div className="text-pink-200 text-xs mb-1">Pure Profit</div>
                                             <div className="text-xl font-semibold">+{formatCompact(finalData.profit)}</div>
                                         </div>
                                     </div>
@@ -432,18 +404,18 @@
                             {/* Chart Container */}
                             <div className="glass-card rounded-3xl p-6 shadow-xl flex-1 flex flex-col">
                                 <div className="flex justify-between items-center mb-2">
-                                    <h3 className="font-bold text-slate-700">Analysis ({mode})</h3>
+                                    <h3 className="font-bold text-slate-700">Growth Analysis</h3>
                                     
                                     <div className="flex bg-slate-100 p-1 rounded-lg">
                                         <button 
                                             onClick={() => setViewMode('graph')}
-                                            className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${viewMode === 'graph' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
+                                            className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${viewMode === 'graph' ? 'bg-white shadow text-pink-600' : 'text-slate-500'}`}
                                         >
                                             <IconTrending />
                                         </button>
                                         <button 
                                             onClick={() => setViewMode('pie')}
-                                            className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${viewMode === 'pie' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
+                                            className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${viewMode === 'pie' ? 'bg-white shadow text-pink-600' : 'text-slate-500'}`}
                                         >
                                             <IconPie />
                                         </button>
@@ -455,10 +427,7 @@
                                 <div className="mt-6 pt-6 border-t border-slate-100 flex gap-4 text-xs md:text-sm text-slate-500 bg-slate-50/50 p-4 rounded-xl">
                                     <IconInfo />
                                     <p>
-                                        {mode === 'SIP' 
-                                            ? "Calculated using monthly compounding on recurring deposits." 
-                                            : "Calculated using monthly compounding on a single initial deposit."}
-                                        <strong className="text-slate-700"> Inflation is not adjusted.</strong>
+                                        In <strong>Year {years}</strong>, your monthly SIP will have grown to <strong className="text-slate-700">{formatCompact(finalData.monthlySip)}</strong> per month due to the annual step-up.
                                     </p>
                                 </div>
                             </div>

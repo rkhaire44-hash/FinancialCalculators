@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Freedom (FIRE) Simulator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #10b981; /* Emerald-500 */
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        
+        /* Specific slider colors */
+        input[type=range].danger-slider::-webkit-slider-thumb { border-color: #ef4444; }
+        
+        /* Hide spin buttons */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; margin: 0; 
+        }
+        input[type=number] { -moz-appearance: textfield; }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .freedom-card {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 10px 30px -5px rgba(5, 150, 105, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+        
+        // Icons
+        const IconFlame = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>;
+        const IconTrendingUp = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>;
+        const IconUnlock = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>;
+        const IconClock = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+
+        const App = () => {
+            // State
+            const [currentAge, setCurrentAge] = useState(28);
+            const [monthlyIncome, setMonthlyIncome] = useState(100000);
+            const [savingsRate, setSavingsRate] = useState(40); // Percentage
+            const [currentCorpus, setCurrentCorpus] = useState(500000);
+            const [inflation, setInflation] = useState(6);
+            const [returnRate, setReturnRate] = useState(12);
+            const [swr, setSwr] = useState(4); // Safe Withdrawal Rate (standard 4%)
+            
+            const [hoveredData, setHoveredData] = useState(null);
+
+            // Derived State
+            const monthlyExpense = monthlyIncome * (1 - savingsRate / 100);
+            const monthlySavings = monthlyIncome - monthlyExpense;
+
+            // Formatting
+            const formatCurrency = (val) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+            const formatCompact = (val) => new Intl.NumberFormat('en-IN', { notation: "compact", compactDisplay: "short", style: 'currency', currency: 'INR' }).format(val);
+
+            // Logic: FIRE Calculation
+            const calculation = useMemo(() => {
+                const points = [];
+                let corpus = currentCorpus;
+                let expense = monthlyExpense; // Current monthly expense
+                let passiveIncome = 0;
+                let age = currentAge;
+                let freedomReached = false;
+                let freedomAge = null;
+                let freedomCorpus = null;
+
+                // Simulate for next 50 years
+                for (let year = 0; year <= 50; year++) {
+                    const annualExpense = expense * 12;
+                    
+                    // Passive Income available from corpus (using SWR)
+                    // If I have X corpus, I can safely withdraw SWR% annually.
+                    // This is my "Salary Replacement"
+                    const annualPassiveIncome = corpus * (swr / 100);
+                    passiveIncome = annualPassiveIncome / 12; // Monthly equivalent
+
+                    // Check for Freedom
+                    if (!freedomReached && passiveIncome >= expense) {
+                        freedomReached = true;
+                        freedomAge = age;
+                        freedomCorpus = corpus;
+                    }
+
+                    // Store Data Point
+                    points.push({
+                        age: age,
+                        yearOffset: year,
+                        corpus: corpus,
+                        monthlyExpense: expense,
+                        monthlyPassiveIncome: passiveIncome,
+                        isFreedom: freedomReached
+                    });
+
+                    // Next Year Calc
+                    // 1. Corpus Grows
+                    corpus = corpus * (1 + returnRate / 100);
+                    // 2. Add Annual Savings (Assuming salary grows with inflation, savings stay constant real value? 
+                    // Let's assume absolute savings grow with inflation to maintain lifestyle parity)
+                    // Savings this year:
+                    const annualSavings = monthlySavings * 12 * Math.pow(1 + inflation/100, year);
+                    corpus += annualSavings;
+
+                    // 3. Expenses Grow with Inflation
+                    expense = expense * (1 + inflation / 100);
+                    
+                    age++;
+                }
+
+                return {
+                    freedomAge,
+                    freedomCorpus,
+                    yearsToFreedom: freedomAge ? freedomAge - currentAge : ">50",
+                    points
+                };
+            }, [currentAge, monthlyIncome, savingsRate, currentCorpus, inflation, returnRate, swr, monthlyExpense, monthlySavings]);
+
+            // Chart
+            const FireChart = () => {
+                const data = calculation.points;
+                const height = 300;
+                // Max Y logic: Determine scale based on Expense vs Passive Income
+                // We want to see the crossover clearly.
+                // Max value should be slightly above the crossover point or end point
+                const maxVal = Math.max(
+                    data[Math.min(data.length-1, 35)].monthlyPassiveIncome, 
+                    data[Math.min(data.length-1, 35)].monthlyExpense
+                ) * 1.5;
+
+                const getY = (val) => height - (val / maxVal) * height;
+                const getX = (index) => (index / (Math.min(data.length-1, 35))) * 100; // Show first 35 years max to keep chart readable
+
+                // Expense Line (Red)
+                let expensePath = `M0,${getY(data[0].monthlyExpense)} `;
+                // Passive Income Line (Green)
+                let passivePath = `M0,${getY(data[0].monthlyPassiveIncome)} `;
+                
+                // Intersection Point
+                let intersectX = 0;
+                let intersectY = 0;
+
+                data.slice(0, 36).forEach((d, i) => {
+                    expensePath += `L${getX(i)},${getY(d.monthlyExpense)} `;
+                    passivePath += `L${getX(i)},${getY(d.monthlyPassiveIncome)} `;
+                    
+                    if (Math.abs(d.age - calculation.freedomAge) < 0.5) {
+                        intersectX = getX(i);
+                        intersectY = getY(d.monthlyExpense);
+                    }
+                });
+
+                // Area under Passive Income
+                const passiveArea = passivePath + `L${getX(35)},${height} L0,${height} Z`;
+
+                return (
+                    <div className="relative h-[320px] w-full mt-4 select-none">
+                        {/* Grid Lines */}
+                        <div className="absolute inset-0 flex flex-col justify-between text-[10px] text-slate-600 font-mono pointer-events-none">
+                            <div className="border-b border-slate-700 w-full h-0 relative"><span className="absolute -top-4 right-0">{formatCompact(maxVal)}/mo</span></div>
+                            <div className="border-b border-slate-700 w-full h-0 relative opacity-50"></div>
+                            <div className="border-b border-slate-700 w-full h-0 relative opacity-50"></div>
+                            <div className="w-full h-0 relative"><span className="absolute bottom-1 right-0">0</span></div>
+                        </div>
+
+                        <div className="absolute inset-0">
+                            <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 300">
+                                <defs>
+                                    <linearGradient id="passiveGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
+                                        <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+
+                                {/* Passive Income Area & Line */}
+                                <path d={passiveArea} fill="url(#passiveGrad)" />
+                                <path d={passivePath} fill="none" stroke="#10b981" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+
+                                {/* Expense Line */}
+                                <path d={expensePath} fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray="4 4" vectorEffect="non-scaling-stroke" />
+
+                                {/* Intersection Marker */}
+                                {calculation.freedomAge && (
+                                    <g>
+                                        <circle cx={intersectX} cy={intersectY} r="4" fill="#fbbf24" stroke="white" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                                        <line x1={intersectX} y1={intersectY} x2={intersectX} y2={height} stroke="#fbbf24" strokeWidth="1" strokeDasharray="2 2" vectorEffect="non-scaling-stroke" />
+                                        <text x={intersectX} y={height + 15} textAnchor="middle" fill="#fbbf24" fontSize="10" fontWeight="bold">Age {calculation.freedomAge}</text>
+                                    </g>
+                                )}
+
+                                {/* Hover Overlay */}
+                                {data.slice(0, 36).map((d, i) => (
+                                    <rect 
+                                        key={i}
+                                        x={getX(i) - 0.5} y="0" width="1" height={height} 
+                                        fill="transparent" 
+                                        stroke="transparent" 
+                                        strokeWidth="5"
+                                        className="cursor-pointer hover:stroke-white/10"
+                                        vectorEffect="non-scaling-stroke"
+                                        onMouseEnter={() => setHoveredData(d)}
+                                        onMouseLeave={() => setHoveredData(null)}
+                                        onTouchStart={() => setHoveredData(d)}
+                                    />
+                                ))}
+                            </svg>
+                        </div>
+
+                         {/* Tooltip */}
+                         {hoveredData && (
+                            <div className="absolute top-4 left-4 bg-slate-800 border border-slate-600 p-3 rounded-lg shadow-xl text-xs z-20 pointer-events-none">
+                                <div className="font-bold text-slate-200 mb-1 border-b border-slate-700 pb-1">Age {hoveredData.age}</div>
+                                <div className="flex justify-between gap-4 text-emerald-400">
+                                    <span>Passive Income:</span>
+                                    <span>{formatCompact(hoveredData.monthlyPassiveIncome)}</span>
+                                </div>
+                                <div className="flex justify-between gap-4 text-red-400">
+                                    <span>Expenses:</span>
+                                    <span>{formatCompact(hoveredData.monthlyExpense)}</span>
+                                </div>
+                                <div className="flex justify-between gap-4 text-slate-400 mt-1 pt-1 border-t border-slate-700">
+                                    <span>Total Corpus:</span>
+                                    <span>{formatCompact(hoveredData.corpus)}</span>
+                                </div>
+                                {hoveredData.isFreedom && <div className="text-yellow-400 font-bold mt-1 text-center">FREEDOM ACHIEVED!</div>}
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 flex items-center justify-center text-slate-100">
+                    
+                    <div className="w-full max-w-6xl grid md:grid-cols-12 gap-6">
+                        
+                        {/* LEFT COLUMN: Input Console */}
+                        <div className="md:col-span-4 space-y-4">
+                            
+                            <div className="p-6 rounded-3xl border border-slate-700 bg-slate-800/50">
+                                <h1 className="text-2xl font-bold flex items-center gap-3 mb-1 text-white">
+                                    <span className="bg-emerald-600 p-2 rounded-xl text-white">
+                                        <IconFlame />
+                                    </span>
+                                    F.I.R.E.
+                                </h1>
+                                <p className="text-emerald-400/80 text-xs font-bold tracking-wider uppercase">Financial Independence Simulator</p>
+                            </div>
+
+                            <div className="glass-card rounded-3xl p-6 shadow-2xl space-y-6 max-h-[75vh] overflow-y-auto">
+                                
+                                {/* 1. Profile */}
+                                <div>
+                                    <label className="text-slate-400 text-xs font-bold uppercase tracking-wider block mb-2">My Profile</label>
+                                    <div className="flex gap-4">
+                                        <div className="flex-1">
+                                            <span className="text-[10px] text-slate-500 block mb-1">Current Age</span>
+                                            <div className="bg-slate-800 rounded px-3 py-2 border border-slate-600">
+                                                <input type="number" value={currentAge} onChange={(e) => setCurrentAge(Number(e.target.value))} className="w-full bg-transparent font-bold text-white focus:outline-none" />
+                                            </div>
+                                        </div>
+                                        <div className="flex-1">
+                                            <span className="text-[10px] text-slate-500 block mb-1">Income/Mo</span>
+                                            <div className="bg-slate-800 rounded px-3 py-2 border border-slate-600 flex items-center">
+                                                <span className="text-slate-500 mr-1">₹</span>
+                                                <input type="number" value={monthlyIncome} onChange={(e) => setMonthlyIncome(Number(e.target.value))} className="w-full bg-transparent font-bold text-white focus:outline-none" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 2. Savings Rate (The Key Slider) */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-emerald-400 text-xs font-bold uppercase tracking-wider">Savings Rate</label>
+                                        <div className="text-xl font-bold text-white">{savingsRate}%</div>
+                                    </div>
+                                    <input type="range" min="5" max="85" step="5" value={savingsRate} onChange={(e) => setSavingsRate(Number(e.target.value))} className="w-full" />
+                                    <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+                                        <span>Spend: {formatCompact(monthlyExpense)}</span>
+                                        <span className="text-emerald-400">Save: {formatCompact(monthlySavings)}</span>
+                                    </div>
+                                </div>
+
+                                {/* 3. Current Corpus */}
+                                <div>
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label className="text-slate-400 text-xs font-bold uppercase tracking-wider">Current Investments</label>
+                                        <div className="bg-slate-800 rounded px-3 py-1 border border-slate-600 flex items-center">
+                                            <span className="text-slate-500 mr-1 text-xs">₹</span>
+                                            <input type="number" value={currentCorpus} onChange={(e) => setCurrentCorpus(Number(e.target.value))} className="w-24 bg-transparent font-bold text-white text-right focus:outline-none text-sm" />
+                                        </div>
+                                    </div>
+                                    <input type="range" min="0" max="10000000" step="100000" value={currentCorpus} onChange={(e) => setCurrentCorpus(Number(e.target.value))} />
+                                </div>
+
+                                {/* 4. Assumptions */}
+                                <div className="pt-4 border-t border-slate-700 space-y-4">
+                                    <label className="text-slate-500 text-[10px] uppercase font-bold">Assumptions</label>
+                                    
+                                    <div>
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span>Inflation</span>
+                                            <span className="text-red-400 font-bold">{inflation}%</span>
+                                        </div>
+                                        <input type="range" min="2" max="10" step="0.5" value={inflation} onChange={(e) => setInflation(Number(e.target.value))} className="danger-slider w-full" />
+                                    </div>
+
+                                    <div>
+                                        <div className="flex justify-between text-xs mb-1">
+                                            <span>Investment Return</span>
+                                            <span className="text-emerald-400 font-bold">{returnRate}%</span>
+                                        </div>
+                                        <input type="range" min="5" max="20" step="0.5" value={returnRate} onChange={(e) => setReturnRate(Number(e.target.value))} className="w-full" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN: The Dashboard */}
+                        <div className="md:col-span-8 flex flex-col gap-6">
+                            
+                            {/* Hero Stats */}
+                            <div className="freedom-card rounded-3xl p-6 md:p-10 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
+                                <div className="relative z-10 flex-1">
+                                    <div className="flex items-center gap-2 mb-2 opacity-90">
+                                        <IconUnlock size={18} />
+                                        <span className="text-xs font-bold uppercase tracking-widest">Freedom Age</span>
+                                    </div>
+                                    <div className="text-6xl font-bold tracking-tighter mb-2">
+                                        {calculation.freedomAge || "Never"}
+                                    </div>
+                                    <div className="inline-flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+                                        <IconClock size={14} />
+                                        <span>{calculation.yearsToFreedom} years from now</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 min-w-[240px]">
+                                    <div className="text-emerald-100 text-xs font-bold uppercase mb-1">The Freedom Number</div>
+                                    <div className="text-3xl font-bold mb-3">{formatCompact(calculation.freedomCorpus)}</div>
+                                    <p className="text-[10px] text-emerald-100 leading-tight opacity-80">
+                                        At this point, your passive income ({formatCompact(calculation.points.find(p => p.isFreedom)?.monthlyPassiveIncome || 0)}/mo) exceeds your expenses.
+                                    </p>
+                                </div>
+
+                                {/* Decor */}
+                                <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                            </div>
+
+                            {/* The Legendary Chart */}
+                            <div className="glass-card rounded-3xl p-6 shadow-xl flex-1 flex flex-col">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="font-bold text-slate-300 flex items-center gap-2">
+                                        <IconTrendingUp size={18} className="text-emerald-500" />
+                                        The Crossover Chart
+                                    </h3>
+                                    <div className="flex gap-4 text-[10px] uppercase font-bold">
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-2 h-2 rounded-full bg-red-500"></div> Expenses
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500"></div> Passive Income
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <FireChart />
+                                
+                                <div className="mt-4 pt-4 border-t border-slate-700 text-center text-xs text-slate-500">
+                                    Pro Tip: Increasing your savings rate by just 5% can often reduce your working life by 3-5 years!
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
